@@ -1,5 +1,5 @@
 [Interface]
-Address = {{ admiral_wireguard_ip }}/24
+Address = {{ admiral_wireguard_ip }}/{{ admiral_wireguard_subnet.split('/')[-1] }}
 PrivateKey = {{ admiral_wg_private_key.stdout }}
 ListenPort = {{ admiral_wireguard_port }}
 

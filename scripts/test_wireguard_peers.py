@@ -40,6 +40,18 @@ class WireGuardPeerExchangeTests(unittest.TestCase):
         self.assertIn("admiral_existing_wireguard_peer_fragments", template)
         self.assertIn("peer.preshared_key", template)
 
+    def test_wireguard_firewall_uses_configured_subnet_and_peer_setup_is_idempotent(self) -> None:
+        defaults = (ROOT / "ansible/roles/admiral_wireguard/defaults/main.yml").read_text(encoding="utf-8")
+        wireguard_tasks = (ROOT / "ansible/roles/admiral_wireguard/tasks/main.yml").read_text(encoding="utf-8")
+        fleet_tasks = (ROOT / "ansible/roles/admiral_fleet/tasks/main.yml").read_text(encoding="utf-8")
+        template = (ROOT / "ansible/roles/admiral_wireguard/templates/wg-admiral.conf.j2").read_text(encoding="utf-8")
+
+        self.assertIn('admiral_wireguard_subnet: "10.99.0.0/24"', defaults)
+        self.assertEqual(wireguard_tasks.count('{{ admiral_wireguard_subnet }}'), 3)
+        self.assertIn("admiral_wireguard_subnet.split('/')[-1]", template)
+        self.assertIn("Require the hub WireGuard interface before registering the worker", fleet_tasks)
+        self.assertIn("map('regex_replace', '\\\\s+', ' ')", fleet_tasks)
+
 
 if __name__ == "__main__":
     unittest.main()

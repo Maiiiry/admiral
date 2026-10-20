@@ -249,7 +249,7 @@
       - --permanent
       - --zone=admiral
       - >-
-        --add-rich-rule=rule family="ipv4" source address="10.99.0.0/24"
+        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_subnet }}"
         port port="8080" protocol="tcp" accept
   when: admiral_effective_host_profile == 'admin'
   register: firewall_admiral_admin_rule
@@ -262,7 +262,7 @@
       - --permanent
       - --zone=admiral
       - >-
-        --add-rich-rule=rule family="ipv4" source address="10.99.0.0/24"
+        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_subnet }}"
         port port="5001" protocol="tcp" accept
   when: admiral_install_mode == 'admin-portal-node'
   register: firewall_admiral_admin_portal_rule
@@ -316,7 +316,7 @@
       - firewall-cmd
       - --zone=admiral
       - >-
-        --query-rich-rule=rule family="ipv4" source address="10.99.0.0/24"
+        --query-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_subnet }}"
         port port="5001" protocol="tcp" accept
   register: firewall_admiral_admin_portal_rule_check
   changed_when: false

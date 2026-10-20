@@ -257,6 +257,27 @@
   delegate_to: localhost
   when: admiral_install_mode == 'worker-node'
 
+- name: Read active hub WireGuard peers before registering the worker
+  command:
+    argv:
+      - wg
+      - show
+      - wg-admiral
+      - allowed-ips
+  delegate_to: localhost
+  register: admiral_hub_wireguard_allowed_ips
+  changed_when: false
+  failed_when: false
+  no_log: true
+  when: admiral_install_mode == 'worker-node'
+
+- name: Require the hub WireGuard interface before registering the worker
+  assert:
+    that:
+      - admiral_hub_wireguard_allowed_ips.rc == 0
+    fail_msg: "The admin node WireGuard interface wg-admiral is unavailable; start the hub VPN before registering a worker."
+  when: admiral_install_mode == 'worker-node'
+
 - name: Add the registered worker's WireGuard peer on the hub before Fleet startup
   command:
     argv:
@@ -272,7 +293,13 @@
   delegate_to: localhost
   changed_when: true
   no_log: true
-  when: admiral_install_mode == 'worker-node'
+  when:
+    - admiral_install_mode == 'worker-node'
+    - >-
+      ((admiral_wg_public_key.stdout | trim) ~ ' ' ~ (admiral_wireguard_ip ~ '/32'))
+      not in
+      (admiral_hub_wireguard_allowed_ips.stdout_lines
+      | default([]) | map('regex_replace', '\\s+', ' ') | list)
 
 - name: Persist the registered worker's WireGuard peer before Fleet startup
   copy:
