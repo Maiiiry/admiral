@@ -15,7 +15,7 @@
 
 Name:    admirald
 Version: 0.0.1rc5
-Release: 36%{?dist}
+Release: 37%{?dist}
 Summary: Admiral Control Plane - Core API and orchestration service
 
 License: Apache-2.0
@@ -60,7 +60,6 @@ go build -trimpath -buildmode=pie -ldflags="-s -w -X main.Version=%{version}" -o
 install -Dm0755 admirald %{buildroot}%{_bindir}/admirald
 install -Dm0644 %{SOURCE1} %{buildroot}%{_unitdir}/admirald.service
 install -Dm0600 %{SOURCE2} %{buildroot}%{_sysconfdir}/admirald.ini
-install -d %{buildroot}/etc/systemd/system/admirald.service.d
 
 %check
 export GOWORK=off
@@ -79,7 +78,6 @@ readelf -h ./admirald | grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86
 %{_bindir}/admirald
 %{_unitdir}/admirald.service
 %attr(0600, root, root) %config(noreplace) %{_sysconfdir}/admirald.ini
-%dir %attr(0750, root, admiral) /etc/systemd/system/admirald.service.d
 
 %post
 %systemd_post admirald.service
@@ -92,6 +90,9 @@ restorecon -F %{_bindir}/admirald 2>/dev/null || :
 %systemd_postun_with_restart admirald.service
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-37
+- Centralize Admiral setup directory ownership in admiral-common
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
 - Rebuild coordinated RC5 candidate with RPM-owned runtime directories
 

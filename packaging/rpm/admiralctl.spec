@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 36%{?dist}
+Release: 37%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -81,13 +81,15 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 %{_bindir}/admiralctl
 %{_mandir}/man1/admiralctl.1*
 %{_mandir}/man8/admiralctl-admin.8*
-%dir %{_sysconfdir}/admiralctl
 %attr(0600, root, root) %config(noreplace) %{_sysconfdir}/admiralctl/config.yaml
 
 %post
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-37
+- Centralize Admiral setup directory ownership in admiral-common
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
 - Rebuild coordinated RC5 candidate with RPM-owned runtime directories
 

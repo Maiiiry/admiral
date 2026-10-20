@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release: 36%{?dist}
+Release: 37%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -46,7 +46,7 @@ backups, and platform operations through a web interface.
 %install
 # Install application files if they exist
 mkdir -p %{buildroot}%{_prefix}/lib/admiral/flagship
-echo "%%dir %{_prefix}/lib/admiral/flagship" > flagships.files
+touch flagships.files
 if [ -d app ]; then
     cp -r app run.py %{buildroot}%{_prefix}/lib/admiral/flagship/
     find %{buildroot}%{_prefix}/lib/admiral/flagship -type f | sed "s|%{buildroot}||" | sort >> flagships.files
@@ -61,13 +61,11 @@ EOF
 fi
 install -Dm0644 %{SOURCE1} %{buildroot}%{_unitdir}/admiral-flagship.service
 install -Dm0600 %{SOURCE2} %{buildroot}%{_sysconfdir}/admiral/flagship.env
-install -d %{buildroot}/etc/systemd/system/admiral-flagship.service.d
 
 %files -f flagships.files
 %license %{_licensedir}/admiral-flagship/LICENSE
 %{_unitdir}/admiral-flagship.service
 %attr(0600, root, root) %config(noreplace) %{_sysconfdir}/admiral/flagship.env
-%dir %attr(0750, root, admiral) /etc/systemd/system/admiral-flagship.service.d
 
 %post
 %systemd_post admiral-flagship.service
@@ -83,6 +81,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-37
+- Centralize Admiral setup directory ownership in admiral-common
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
 - Rebuild coordinated RC5 candidate with RPM-owned runtime directories
 

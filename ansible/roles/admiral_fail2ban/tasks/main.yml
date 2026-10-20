@@ -8,18 +8,6 @@
           - fail2ban-firewalld
         state: present
 
-    - name: Ensure fail2ban jail.d exists
-      file:
-        path: /etc/fail2ban/jail.d
-        state: directory
-        mode: "0755"
-
-    - name: Ensure fail2ban filter.d exists
-      file:
-        path: /etc/fail2ban/filter.d
-        state: directory
-        mode: "0755"
-
     - name: Deploy admiral-flagship fail2ban filter
       copy:
         dest: /etc/fail2ban/filter.d/admiral-flagship.conf

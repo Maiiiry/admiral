@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 36%{?dist}
+Release: 37%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -73,7 +73,21 @@ install -Dm0755 %{SOURCE2} %{buildroot}%{_libexecdir}/admiral-letsencrypt-deploy
 mkdir -p %{buildroot}%{_sysconfdir}/admiral
 mkdir -p %{buildroot}%{_sysconfdir}/admiral/tls
 mkdir -p %{buildroot}%{_sysconfdir}/admiral/ssh
+mkdir -p %{buildroot}%{_sysconfdir}/admiralctl
 mkdir -p %{buildroot}%{_sysconfdir}/wireguard/peers.d
+mkdir -p %{buildroot}%{_sysconfdir}/systemd/resolved.conf.d
+mkdir -p %{buildroot}%{_sysconfdir}/systemd/system/admirald.service.d
+mkdir -p %{buildroot}%{_sysconfdir}/systemd/system/admiral-flagship.service.d
+mkdir -p %{buildroot}%{_sysconfdir}/systemd/system/admiral-harbor.service.d
+mkdir -p %{buildroot}%{_sysconfdir}/systemd/system/caddy.service.d
+mkdir -p %{buildroot}%{_sysconfdir}/ssh/sshd_config.d
+mkdir -p %{buildroot}%{_sysconfdir}/nftables
+mkdir -p %{buildroot}%{_sysconfdir}/fail2ban/jail.d
+mkdir -p %{buildroot}%{_sysconfdir}/fail2ban/filter.d
+mkdir -p %{buildroot}%{_sysconfdir}/audit/rules.d
+mkdir -p %{buildroot}/root/.config/admiralctl
+mkdir -p %{buildroot}%{_prefix}/lib/admiral/flagship
+mkdir -p %{buildroot}%{_prefix}/lib/admiral/harbor
 
 # Log directory (admiral user needs write)
 mkdir -p %{buildroot}%{_localstatedir}/log/admiral
@@ -83,6 +97,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/containers/systemd/admiral
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/outbox
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/backups
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/instances
+mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/harbor/uploads
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/ssh-delivery
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral-apps
 install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
@@ -95,14 +110,31 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 
 %dir %attr(0750, root, admiral) %{_sysconfdir}/admiral
 %dir %attr(0750, root, admiral) %{_sysconfdir}/admiral/ssh
+%dir %attr(0750, root, root) %{_sysconfdir}/admiralctl
 %dir %attr(0755, root, root) %{_sysconfdir}/containers/systemd/admiral
 %dir %attr(0750, root, admiral) %{_sysconfdir}/admiral/tls
 %dir %attr(0700, root, root) %{_sysconfdir}/wireguard/peers.d
+%dir %attr(0755, root, root) %{_sysconfdir}/systemd/resolved.conf.d
+%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admirald.service.d
+%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-flagship.service.d
+%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-harbor.service.d
+%dir %attr(0755, root, root) %{_sysconfdir}/systemd/system/caddy.service.d
+%dir %attr(0755, root, root) %{_sysconfdir}/ssh/sshd_config.d
+%dir %attr(0755, root, root) %{_sysconfdir}/nftables
+%dir %attr(0755, root, root) %{_sysconfdir}/fail2ban/jail.d
+%dir %attr(0755, root, root) %{_sysconfdir}/fail2ban/filter.d
+%dir %attr(0750, root, root) %{_sysconfdir}/audit/rules.d
+%dir %attr(0700, root, root) /root/.config/admiralctl
+%dir %attr(0755, root, root) %{_prefix}/lib/admiral
+%dir %attr(0755, root, root) %{_prefix}/lib/admiral/flagship
+%dir %attr(0755, root, root) %{_prefix}/lib/admiral/harbor
 %dir %attr(0750, admiral, admiral) %{_localstatedir}/log/admiral
 %dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral
 %dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/outbox
 %dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/backups
 %dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/instances
+%dir %attr(0750, admiral, admiral) %{_localstatedir}/lib/admiral/harbor
+%dir %attr(0750, admiral, admiral) %{_localstatedir}/lib/admiral/harbor/uploads
 %dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/ssh-delivery
 %dir %attr(0755, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral-apps
 %{_sysusersdir}/%{name}.conf
@@ -125,31 +157,21 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 %post
 %systemd_post admiral-control-plane-backup.service
 %systemd_post admiral-control-plane-backup.timer
-# Set ownership of log directory
-chown admiral:admiral %{_localstatedir}/log/admiral 2>/dev/null || :
-
-# Restore ownership and permissions of the shared Admiral data tree.
-# admirald runs as root but writes as the admiral user via su.
-chown -R admiral:admiral %{_localstatedir}/lib/admiral 2>/dev/null || :
-chmod 0751 %{_localstatedir}/lib/admiral 2>/dev/null || :
-
 # Ensure rootless runtime directories exist before admiral-fleet first start
-mkdir -p %{_sysconfdir}/containers/systemd/admiral
 if getent passwd admiral-apps >/dev/null 2>&1; then
     ADMIRAL_APPS_UID=$(id -u admiral-apps)
-    mkdir -p %{_localstatedir}/lib/admiral-apps
-    chown admiral-apps:admiral-apps %{_localstatedir}/lib/admiral-apps 2>/dev/null || :
-    mkdir -p %{_sysconfdir}/containers/systemd/users/${ADMIRAL_APPS_UID}
+    # This Quadlet path contains the dynamically assigned account UID; keep
+    # its ownership and mode explicit in the package scriptlet.
+    install -d -o admiral-apps -g admiral-apps -m 0755 %{_sysconfdir}/containers/systemd/users/${ADMIRAL_APPS_UID}
+    install -d -o root -g root -m 0755 %{_sysconfdir}/containers/systemd/users/${ADMIRAL_APPS_UID}/admiral
     loginctl enable-linger admiral-apps >/dev/null 2>&1 || :
-    mkdir -p /run/user/${ADMIRAL_APPS_UID}/libpod
-    chmod 01700 /run/user/${ADMIRAL_APPS_UID}/libpod
-    chown admiral-apps:admiral-apps /run/user/${ADMIRAL_APPS_UID}
-    chown admiral-apps:admiral-apps /run/user/${ADMIRAL_APPS_UID}/libpod
+    install -d -o admiral-apps -g admiral-apps -m 0700 /run/user/${ADMIRAL_APPS_UID}
     cat > /usr/lib/tmpfiles.d/admiral-apps.conf << TMPFILESEOF
 # Generated by admiral-common - ensure podman runtime directory exists
 # for the rootless admiral-apps user.
 d /run/user/${ADMIRAL_APPS_UID}/libpod 01700 admiral-apps admiral-apps - -
 TMPFILESEOF
+    systemd-tmpfiles --create /usr/lib/tmpfiles.d/admiral-apps.conf >/dev/null 2>&1 || :
 fi
 
 # SELinux contexts
@@ -195,6 +217,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-37
+- Own Admiral setup directories and preserve explicit package permissions
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
 - Rebuild coordinated RC5 candidate with RPM-owned runtime directories
 

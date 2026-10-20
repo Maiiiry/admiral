@@ -25,12 +25,6 @@
     - { key: "max_log_file_action", value: "ROTATE" }
   register: admiral_auditd_configuration
 
-- name: Ensure audit rules directory exists
-  file:
-    path: /etc/audit/rules.d
-    state: directory
-    mode: "0750"
-
 - name: Deploy Admiral audit rules baseline
   copy:
     dest: /etc/audit/rules.d/admiral.rules

@@ -597,6 +597,53 @@ done
         ):
             self.assertNotIn("path: /etc/wireguard/peers.d\n    state: directory", task_file.read_text(encoding="utf-8"))
 
+    def test_setup_directories_are_owned_by_admiral_common_rpm(self) -> None:
+        common_spec = COMMON_SPEC.read_text(encoding="utf-8")
+        ansible_tasks = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in (ROOT / "ansible").rglob("*.yml")
+        )
+        package_specs = {
+            path.name: path.read_text(encoding="utf-8")
+            for path in (ROOT / "packaging" / "rpm").glob("admiral*.spec")
+        }
+
+        self.assertNotIn("state: directory", ansible_tasks)
+        for package_name in (
+            "admirald.spec",
+            "admiral-flagship.spec",
+            "admiral-harbor.spec",
+            "admiralctl.spec",
+        ):
+            self.assertNotRegex(
+                package_specs[package_name],
+                r"(?m)^(?:%dir .*service\.d|%dir .*admiralctl|%dir .*lib/admiral/harbor)",
+            )
+        self.assertNotIn('echo "%%dir %{_prefix}/lib/admiral/flagship"', package_specs["admiral-flagship.spec"])
+        self.assertNotIn('echo "%%dir %{_prefix}/lib/admiral/harbor"', package_specs["admiral-harbor.spec"])
+
+        for directory in (
+            "%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admirald.service.d",
+            "%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-flagship.service.d",
+            "%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-harbor.service.d",
+            "%dir %attr(0750, root, root) %{_sysconfdir}/audit/rules.d",
+            "%dir %attr(0700, root, root) /root/.config/admiralctl",
+            "%dir %attr(0755, root, root) %{_prefix}/lib/admiral/flagship",
+            "%dir %attr(0755, root, root) %{_prefix}/lib/admiral/harbor",
+            "%dir %attr(0750, admiral, admiral) %{_localstatedir}/lib/admiral/harbor",
+            "%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/ssh-delivery",
+        ):
+            self.assertIn(directory, common_spec)
+
+        self.assertNotIn("chown -R admiral:admiral %{_localstatedir}/lib/admiral", common_spec)
+        self.assertNotIn("chmod 0751 %{_localstatedir}/lib/admiral", common_spec)
+        self.assertIn(
+            "install -d -o root -g root -m 0755 %{_sysconfdir}/containers/systemd/users/${ADMIRAL_APPS_UID}/admiral",
+            common_spec,
+        )
+        for package_spec in package_specs.values():
+            self.assertIn("Release: 37%{?dist}", package_spec)
+
     def test_role_preflight_runs_before_package_or_repository_changes(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")
         mutation_offset = installer.index("dnf install -y epel-release")

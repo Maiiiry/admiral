@@ -56,6 +56,12 @@ playbooks y binarios en la misma versión publicada. Esta decisión es
 intencional y prioriza convergencia consistente; como tradeoff, aumenta la
 superficie de software instalada en el nodo admin.
 
+`admiral-common` es dueño de los directorios fijos de configuración y datos,
+incluidos sus propietarios y modos. Por eso se puede instalar ese RPM y
+configurar el host manualmente sin ejecutar Ansible para preparar directorios.
+Los playbooks escriben archivos de configuración y verifican los atributos
+del paquete; no crean ni cambian permisos de directorios.
+
 La postura por defecto es:
 
 - RHEL 10, CentOS Stream 10, Rocky Linux 10 y AlmaLinux 10 son Tier 1

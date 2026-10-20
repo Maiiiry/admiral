@@ -130,12 +130,6 @@
     fail_msg: "ADMIRAL_INTERNAL_TOKEN is empty or undefined. Ensure admiral_internal_token_value or admirald_admin_token is set before deploying admiralctl config."
   no_log: true
 
-- name: Ensure admiralctl config directory exists
-  file:
-    path: /root/.config/admiralctl
-    state: directory
-    mode: "0700"
-
 - name: Deploy admiralctl configuration
   copy:
     dest: /root/.config/admiralctl/config.yaml

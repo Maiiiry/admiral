@@ -14,14 +14,6 @@
 
 - name: Apply Fedora secure resolver policy
   block:
-    - name: Ensure systemd-resolved drop-in directory exists
-      file:
-        path: /etc/systemd/resolved.conf.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0755"
-
     - name: Disable LLMNR on Fedora secure installs
       copy:
         dest: /etc/systemd/resolved.conf.d/90-admiral-security.conf
@@ -309,12 +301,6 @@
 - name: Apply Caddy admin endpoint before dependent services
   meta: flush_handlers
   when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node']
-
-- name: Ensure sshd drop-in directory exists
-  file:
-    path: /etc/ssh/sshd_config.d
-    state: directory
-    mode: "0755"
 
 - name: Deploy Admiral SSH hardening baseline
   copy:
@@ -1286,15 +1272,6 @@
     - /etc/admiral/tls/admirald.pem
     - /etc/admiral/tls/admirald-key.pem
   when: admiral_dev_mode | default(false) | bool
-
-- name: Ensure PostgreSQL runtime directory exists
-  file:
-    path: /run/postgresql
-    state: directory
-    mode: "0755"
-    owner: postgres
-    group: postgres
-  when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
 
 - name: Initialize PostgreSQL database cluster
   command:

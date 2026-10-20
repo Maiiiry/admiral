@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit b076264426732cbc3801cf0153099d0cdaa083c3
+%global commit 7a48887c5ad8da75b74c2f822e0210fcf75ced74
 
 %ifarch x86_64
 %global admiral_goarch amd64
@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release: 36%{?dist}
+Release: 37%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-37
+- Centralize Admiral setup directory ownership in admiral-common
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
 - Rebuild coordinated RC5 candidate with RPM-owned runtime directories
 
