@@ -636,7 +636,7 @@ done
             "%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/ssh-delivery",
             "%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/outbox",
             "%dir %attr(0750, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/backups",
-            "%dir %attr(0750, root, admiral-apps) %{_localstatedir}/lib/admiral/restore",
+            "%dir %attr(0750, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/restore",
             "%dir %attr(0700, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/tmp",
             "%dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral/instances",
             "%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/control-plane-backups",
@@ -649,8 +649,16 @@ done
             "install -d -o root -g root -m 0755 %{_sysconfdir}/containers/systemd/users/${ADMIRAL_APPS_UID}/admiral",
             common_spec,
         )
-        for package_spec in package_specs.values():
-            self.assertIn("Release: 39%{?dist}", package_spec)
+        release_lines = [
+            next(
+                (line for line in package_spec.splitlines() if line.startswith("Release:")),
+                "",
+            )
+            for package_spec in package_specs.values()
+        ]
+        self.assertEqual(len(package_specs), 6)
+        self.assertTrue(all(release_lines))
+        self.assertEqual(len(set(release_lines)), 1)
 
     def test_role_preflight_runs_before_package_or_repository_changes(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")
