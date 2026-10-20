@@ -15,7 +15,7 @@
 
 Name:    admirald
 Version: 0.0.1rc5
-Release: 39%{?dist}
+Release: 40%{?dist}
 Summary: Admiral Control Plane - Core API and orchestration service
 
 License: Apache-2.0
@@ -90,6 +90,9 @@ restorecon -F %{_bindir}/admirald 2>/dev/null || :
 %systemd_postun_with_restart admirald.service
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-40
+- Rebuild the coordinated six-package set with restore staging permission fix
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-39
 - Rebuild coordinated Admiral packages with package-owned data roots
 

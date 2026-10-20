@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 39%{?dist}
+Release: 40%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -136,7 +136,7 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 %dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral
 %dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/outbox
 %dir %attr(0750, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/backups
-%dir %attr(0750, root, admiral-apps) %{_localstatedir}/lib/admiral/restore
+%dir %attr(0750, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/restore
 %dir %attr(0700, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/tmp
 %dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral/instances
 %dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/control-plane-backups
@@ -224,6 +224,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-40
+- Allow the rootless backup helper to create restore staging data
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-39
 - Declare fixed Admiral data roots and permissions in the common RPM
 
