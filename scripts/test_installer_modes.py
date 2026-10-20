@@ -472,7 +472,8 @@ done
 
         self.assertIn("define download_checked", content)
         self.assertIn("sha256sum -c -", content)
-        self.assertEqual(content.count("$(call download_checked,"), 6)
+        self.assertEqual(content.count("$(call download_checked,"), 7)
+        self.assertIn("FLASK_WHEEL_SHA256 := f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c", content)
 
     def test_harbor_database_requires_tls(self) -> None:
         content = HARBOR_TASKS.read_text(encoding="utf-8")

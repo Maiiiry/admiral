@@ -17,35 +17,41 @@ contenedor de sistema no reproduce de forma suficientemente fiel:
 
 ## Recursos
 
-Para una validación single-node:
+Para la matriz Rocky Linux 10 y Fedora Rawhide:
 
 | Recurso | Host de prueba | VM |
 |---|---:|---:|
 | vCPU | 2 o más | 2 |
-| RAM | 4 GiB mínimos | 2 GiB |
-| Swap del host | 4 GiB recomendado con sólo 4 GiB de RAM | no requerido |
-| Disco libre | 30 GiB o más | overlay de 24 GiB |
+| RAM | 8 GiB | 2 GiB por VM |
+| Swap del host | 4 GiB | no requerido |
+| Disco libre | 50 GiB o más | overlay de 24 GiB por VM |
 
 El swap evita que una descarga, actualización de seguridad o construcción de
 imágenes mate el host por OOM. No convierte un host pequeño en una plataforma
 adecuada para pruebas de rendimiento. Durante la validación debe vigilarse
 `MemAvailable`, el uso de swap y el RSS de QEMU.
 
-Para una topología multi-node simultánea se recomiendan 8–12 GiB de RAM y al
-menos 50 GiB libres. Ejecutar tres VMs de 2 GiB sobre un host de 4 GiB produciría
-presión de memoria y resultados de tiempos poco confiables.
+La prueba multi-node usa `--admin-portal-node` y dos VMs `--worker-node`, para
+ejercitar más de un worker dentro del presupuesto del host. En este host se
+ejecutan simultáneamente tres VMs de 2 GiB con 4 GiB de swap; vigila
+`MemAvailable`, el uso de swap y el RSS de QEMU para detectar presión de memoria.
+Single-node usa una VM de 2 GiB.
 
 ## Imagen y aislamiento
 
-La validación de julio de 2026 usa la imagen oficial:
+La validación de Rocky usa una imagen GenericCloud oficial. Fedora Rawhide debe
+usar su imagen cloud oficial vigente. Descarga y verifica el checksum publicado
+por cada proyecto antes de crear overlays; conserva las imágenes base
+inmutables y registra sus hashes en el reporte.
+
+La referencia Rocky usada anteriormente fue:
 
 ```text
 Rocky-10-GenericCloud-Base-10.2-20260525.0.x86_64.qcow2
 ```
 
-Se descarga también su archivo `CHECKSUM` desde el repositorio oficial y se
-ejecuta `sha256sum -c` antes de arrancarla. El disco de prueba es un overlay
-QCOW2; la imagen base permanece inmutable y el overlay puede descartarse.
+El disco de prueba es un overlay QCOW2; la imagen base permanece inmutable y el
+overlay puede descartarse.
 
 QEMU usa user-mode networking:
 
@@ -133,9 +139,9 @@ unidades y Quadlets. No se encontraron AVC de contenedores durante la prueba.
 El mismo enfoque puede validar un clúster completo:
 
 ```text
-admin VM          --admin-node
-portal VM         --portal-node
-worker VM(s)      --worker-node
+admin + Harbor VM --admin-portal-node
+worker 1 VM       --worker-node
+worker 2 VM       --worker-node
 ```
 
 Cada VM necesita una interfaz con NAT para instalar paquetes y una segunda LAN
@@ -165,9 +171,9 @@ La prueba multi-node debe comprobar además:
 - workload WordPress real en un worker rootless;
 - backup, lifecycle, callbacks y auditoría a través de la VPN.
 
-`--admin-portal-node` requiere una topología adicional o una segunda ejecución
-con discos nuevos: no debe inferirse su validez sólo porque `--admin-node` y
-`--portal-node` funcionen por separado.
+El modo `--admin-portal-node` debe instalarse y comprobarse explícitamente en la
+celda multi-node; no se infiere su validez a partir de pruebas separadas de
+`--admin-node` y `--portal-node`.
 
 KVM proporciona una prueba funcional y de seguridad muy cercana a VPS reales,
 pero no sustituye una prueba de capacidad, latencia, proveedor de red o pago

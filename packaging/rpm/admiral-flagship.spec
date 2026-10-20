@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release: 31%{?dist}
+Release: 32%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -18,7 +18,7 @@ Source2: flagship.env
 BuildArch: noarch
 
 BuildRequires: python3
-BuildRequires: python3-flask
+BuildRequires: python3-flask >= 3.1.3
 BuildRequires: python3-werkzeug >= 3.0.6
 BuildRequires: python3-gunicorn
 BuildRequires: python3-pytest
@@ -83,6 +83,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-32
+- Rebuild the coordinated RC5 candidate with refreshed source pins
+
 * Sun Oct 04 2026 Codex <codex@openai.com> - 0.0.1rc5-31
 - Rebuild all six RC5 RPMs using the latest origin/main source pins
 

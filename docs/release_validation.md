@@ -16,14 +16,16 @@ The agent must:
 6. create GitHub issues for reproducible product defects;
 7. produce a release validation report.
 
-The agent must not modify product code, implement bug fixes, advance submodule pins, change package versions, or publish release artifacts.
+The agent must inventory existing GitHub issues, identify which fixes remain
+local, and implement authorized source fixes on `origin/main` before producing
+the candidate. Publishing release artifacts remains outside this runbook.
 
 ## 2. Authoritative references
 
 The agent must read these documents before executing validation:
 
 * `docs/local_kvm_cloud_setup.md`
-* `docs/multi_node_setup.md`
+* `docs/multi_node_setup_v1.md`
 * the current release validation report, when one exists;
 * package specifications and release-reference validation scripts;
 * application definitions under `examples/apps/`.
@@ -34,22 +36,19 @@ This document defines what must be executed and what constitutes PASS, FAIL, BLO
 
 ## 3. Operating principles
 
-### 3.1 Validate, do not repair
+### 3.1 Triage, repair, and validate
 
-The validation agent must not:
+For each open issue, determine whether its fix is still absent locally, already
+present in the selected source, or only awaits a guest validation result. Record
+that disposition and the relevant commit or evidence in the report.
 
-* edit source code;
-* apply product fixes;
-* change tests to make them pass;
-* update submodule commits;
-* increase RPM release numbers;
-* disable security controls;
-* weaken assertions;
-* silently work around product defects.
-
-The agent may make temporary changes only to the validation harness or local VM infrastructure when the failure is proven to be unrelated to Admiral.
-
-Harness changes must be documented in the report.
+When a reproducible product defect is found, record it in the matching GitHub
+issue (or create one if none exists), implement an authorized fix on
+`origin/main`, add or update focused regression coverage, and commit with a
+`Signed-off-by` trailer. Never weaken assertions or disable security controls to
+make a scenario pass. A fix creates a new candidate: rebuild all six Admiral
+RPMs, increment the `Release` of each, and restart the four-cell matrix on clean
+VMs. Record any harness adjustment and its evidence in the report.
 
 ### 3.2 Preserve the candidate
 
@@ -93,15 +92,13 @@ Examples:
 * Virtualization: KVM/QEMU
 * Security mode: SELinux `Enforcing`
 
-### 4.2 Tier 1 operating systems
+### 4.2 Tier 1 operating system
 
 The required Tier 1 matrix is:
 
 | Operating system | Single-node | Multi-node |
 | ---------------- | ----------: | ---------: |
-| CentOS Stream 10 |    Required |   Required |
 | Rocky Linux 10   |    Required |   Required |
-| AlmaLinux 10     |    Required |   Required |
 
 Every operating system must use an official GenericCloud image.
 
@@ -112,13 +109,12 @@ other EL major versions until their dependency, repository, and security-update
 behavior has been explicitly implemented and validated. Fedora Rawhide is a
 Tier 2 compatibility signal for a future EL11; it does not claim EL11 support.
 
-### 4.3 Tier 2 Fedora operating systems
+### 4.3 Tier 2 Fedora operating system
 
-The RC4 Tier 2 matrix is:
+The required Fedora matrix is:
 
 | Operating system | Single-node | Multi-node |
 | ---------------- | ----------: | ---------: |
-| Fedora 44        |    Required |   Required |
 | Fedora Rawhide   |    Required |   Required |
 
 Use each platform's official x86_64 GenericCloud image and verify its checksum.
@@ -129,17 +125,17 @@ preparing each overlay. The unmodified GitHub installer runs its own
 and SELinux state before installing Admiral. Exercise the secure production
 modes; `--dev-node` is not an acceptance substitute.
 
-The RC4 golden candidate is the same six Admiral RPM files, with identical
-SHA-256 values, across all ten Tier 1 and Tier 2 scenarios. If a fix changes
-any RPM payload, rebuild the coordinated six-package candidate and restart
-validation on fresh VMs for all ten scenarios. Fedora-native package builds
-are auxiliary evidence and do not replace the common candidate.
+The golden candidate is the same six Admiral RPMs, with identical SHA-256
+values, across all four required scenarios. If a fix changes any Admiral RPM
+payload, rebuild the coordinated six-package candidate and restart validation
+on fresh VMs for all four scenarios. EL10-only dependency RPMs may differ from
+the Fedora repository contents and must be listed separately in the report.
 
 Fedora uses DNF5. Conditional package-manager steps must preserve the EL10
 behavior while using Fedora's DNF5 plugins and `dnf5-automatic.timer` where
 applicable.
 
-Secure Fedora modes also disable LLMNR through a `systemd-resolved`
+Secure Fedora Rawhide modes also disable LLMNR through a `systemd-resolved`
 configuration drop-in when that service is present. Verify that wildcard
 listeners on TCP/UDP 5355 are absent and that unicast DNS resolution still
 works; keep the declared firewall and exact listener checks enabled. This
@@ -147,7 +143,8 @@ Fedora-specific resolver policy does not alter EL10 behavior.
 
 ### 4.4 Deferred platforms
 
-Architectures or operating systems outside the Tier 1 and Tier 2 matrices must be reported as `NOT TESTED`.
+CentOS Stream, AlmaLinux, Fedora stable releases, and architectures outside the
+matrix must be reported as `NOT TESTED`.
 
 Passing results from x86_64 must not be presented as evidence for aarch64.
 
@@ -193,6 +190,17 @@ Uncommitted source changes invalidate the run unless they are exclusively genera
 ## 7. Candidate RPM build
 
 Build the candidate using the repository-supported RPM build target.
+
+Build and test both target architectures with the same source pins:
+
+```bash
+make rpm RPM_ARCH=x86_64
+make rpm RPM_ARCH=aarch64
+```
+
+The four guest scenarios use the x86_64 candidate. Keep the aarch64 build
+results and NEVRA/SHA-256 values in the report as separate architecture
+evidence.
 
 Record for every Admiral RPM:
 
@@ -281,11 +289,10 @@ Do not describe the result as strict idempotency unless unexpected changes are z
 
 ## 10. Multi-node validation
 
-For each Tier 1 operating system, create:
+For each matrix operating system, create three clean VMs:
 
-* one admin VM;
-* one dedicated portal VM;
-* one worker VM.
+* one admin+Harbor VM;
+* two worker VMs.
 
 Each VM must have:
 
@@ -299,9 +306,8 @@ Each VM must have:
 
 Execute the supported installation for:
 
-* `--admin-node`;
-* `--portal-node`;
-* `--worker-node`.
+* `--admin-portal-node` on the admin VM;
+* `--worker-node` on each worker VM.
 
 Require for every role:
 
@@ -317,12 +323,12 @@ Verify:
 * expected `/32` hub-and-spoke routes;
 * no unintended lateral spoke connectivity;
 * authenticated communication between components;
-* portal registration;
-* worker registration;
+* Harbor service and API configuration on the admin VM;
+* registration of both workers;
 * Harbor-to-admirald communication through the intended private path;
 * final `admiralctl nodes list` output.
 
-The portal and worker must appear as:
+Both workers must appear as:
 
 * active;
 * healthy;
@@ -539,12 +545,11 @@ The validation agent is authorized to:
 * create GitHub issues;
 * comment on existing issues with new evidence;
 * write or update the release validation report.
+* fix product code and tests for tracked defects on `origin/main`;
+* commit and push those fixes directly to `origin/main`;
 
 The agent is not authorized to:
 
-* push source-code changes;
-* modify product code;
-* open bug-fix pull requests;
 * merge pull requests;
 * publish RPMs;
 * create release tags;
@@ -614,8 +619,8 @@ A release candidate may receive `PASS` only when:
 * package build passed;
 * release references are consistent;
 * exact component CI is green;
-* all required Tier 1 single-node scenarios passed;
-* all required Tier 1 multi-node scenarios passed;
+* Rocky Linux 10 single-node and multi-node scenarios passed;
+* Fedora Rawhide single-node and multi-node scenarios passed;
 * the golden lifecycle passed;
 * full database and volume restore passed;
 * no open blocker exists;
@@ -644,7 +649,7 @@ Cleanup failure must be recorded in the report.
 
 ## 21. Final agent response
 
-The agent's final response must contain only:
+The agent's final response must state:
 
 1. overall verdict;
 2. completed validation matrix;

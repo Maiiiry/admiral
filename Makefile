@@ -1,11 +1,11 @@
 SHELL := /bin/bash
 VERSION := 0.0.1rc5
-ADMIRAL_COMMON_COMMIT := 284701e2caa614a390f006dcb151024ca3ddcf05
+ADMIRAL_COMMON_COMMIT := fe1d9c650cfc323e9269d57a5f4f856ad7d0408e
 ADMIRALD_COMMIT := f1f41c3c891e15b541facd79f0e4dedcc74d7082
-FLEET_COMMIT := 2cc434a35ed606c7390a64e7a228d9ca7ba038f6
+FLEET_COMMIT := 6c5ecae07f8aa7a008521d8e860d4b94cc403a0a
 ADMIRALCTL_COMMIT := 68551d9398c32417f2b374ece074c2a1ab6f4d45
 FLAGSHIP_COMMIT := c21c81b7b95d7f44d8c878f6067ff178af065feb
-HARBOR_COMMIT := 38a101443178d5daaaba9b575a2bc05f6a87065d
+HARBOR_COMMIT := 859314359b05c2487a09d92ba5871b3d3069a265
 RPMDIR := $(CURDIR)/packaging/build
 RPMTOPDIR := $(RPMDIR)
 SPECSDIR := $(CURDIR)/packaging/rpm
@@ -14,6 +14,7 @@ SYSTEMDDIR := $(CURDIR)/packaging/systemd
 BINDIR := $(CURDIR)/packaging/bin
 SOURCEDIR := $(RPMTOPDIR)/SOURCES
 BUILDID := $(shell date +%Y%m%d)
+RPM_ARCH ?= $(shell rpm --eval '%{_target_cpu}')
 
 GO_MODULES := admirald admiral-fleet admiralctl
 ALEMBIC_VERSION := 1.18.4
@@ -22,12 +23,14 @@ FLASK_SQLALCHEMY_VERSION := 3.1.1
 FLASK_ALEMBIC_VERSION := 3.1.1
 FLASK_LOGIN_VERSION := 0.6.3
 MISTUNE_VERSION := 3.2.1
+FLASK_VERSION := 3.1.3
 ALEMBIC_SHA256 := 0612dbd5e2165482e895cb5e0f84575826c57be0286e57f167bdb5719d03e41c
 TYPING_EXTENSIONS_SHA256 := 40e4fd945fb070e470976538741ee85add33de5e8ab2f1583e9e264d8386916b
 FLASK_SQLALCHEMY_SHA256 := 1989afdf046a935bd1ab98dbd9a2d68e5ba1c69d0cd3e3646df0876bf8d997d3
 FLASK_ALEMBIC_SHA256 := 3df52c24519d280ea6fb9a9ae85317f23429f5971de673a680c9e11d35697484
 FLASK_LOGIN_SHA256 := 3b2489f46d854b5f1d7a55007271d2eae9f744e0935ca7b88ab584c770a7e4d2
 MISTUNE_SHA256 := 14d23e4803c4181e6bca4b56fe38f5f81af4a5df397a9bed4b99a9e173d13696
+FLASK_WHEEL_SHA256 := f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c
 
 .PHONY: all clean rpm rpm-admiral rpmlint validate-release-refs all-sources \
 	source-superproject source-admiral-flagship source-admiral-harbor \
@@ -37,8 +40,8 @@ MISTUNE_SHA256 := 14d23e4803c4181e6bca4b56fe38f5f81af4a5df397a9bed4b99a9e173d136
 	rpm-admiral-no-test \
 	srpm-admiral-common srpm-admirald srpm-admiral-fleet \
 	srpm-admiralctl srpm-admiral-flagship srpm-admiral-harbor \
-	rpm-python-flask-sqlalchemy rpm-python-flask-alembic rpm-python-flask-login \
-	rpm-python-mistune srpm-python-mistune
+	rpm-python-flask rpm-python-flask-sqlalchemy rpm-python-flask-alembic rpm-python-flask-login \
+	rpm-python-mistune srpm-python-mistune srpm-python-flask
 
 all: rpm
 
@@ -115,11 +118,14 @@ source-python-flask-login: | $(SOURCEDIR)
 source-python-mistune: | $(SOURCEDIR)
 	$(call download_checked,$(SOURCEDIR)/mistune-$(MISTUNE_VERSION).tar.gz,https://github.com/lepture/mistune/archive/refs/tags/v$(MISTUNE_VERSION)/mistune-$(MISTUNE_VERSION).tar.gz,$(MISTUNE_SHA256))
 
+source-python-flask: | $(SOURCEDIR)
+	$(call download_checked,$(SOURCEDIR)/flask-$(FLASK_VERSION)-py3-none-any.whl,https://files.pythonhosted.org/packages/7f/9c/34f6962f9b9e9c71f6e5ed806e0d0ff03c9d1b0b2340088a0cf4bce09b18/flask-$(FLASK_VERSION)-py3-none-any.whl,$(FLASK_WHEEL_SHA256))
+
 all-sources: source-superproject \
 	source-admiral-flagship source-admiral-harbor \
 	source-python-alembic source-python-typing-extensions \
 	source-python-flask-sqlalchemy source-python-flask-alembic \
-	source-python-flask-login source-python-mistune
+	source-python-flask-login source-python-mistune source-python-flask
 
 # -- Copy packaging support files to SOURCES -----------------------------
 
@@ -147,7 +153,8 @@ source-support-files: | $(SOURCEDIR)
 
 # -- RPM build flags -----------------------------------------------------
 
-RPMFLAGS := --define '_topdir $(RPMTOPDIR)' \
+RPMFLAGS := --target $(RPM_ARCH) \
+            --define '_topdir $(RPMTOPDIR)' \
             --define '_sourcedir $(SOURCEDIR)' \
             --define '_specdir $(RPMTOPDIR)/SPECS' \
             --define '_builddir $(RPMTOPDIR)/BUILD' \
@@ -205,6 +212,10 @@ rpm-python-mistune: source-python-mistune
 	cp $(SPECSDIR)/python-mistune.spec $(RPMTOPDIR)/SPECS/
 	rpmbuild -ba $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-mistune.spec
 
+rpm-python-flask: source-python-flask
+	cp $(SPECSDIR)/python-flask.spec $(RPMTOPDIR)/SPECS/
+	rpmbuild -ba $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-flask.spec
+
 # -- SRPM targets --------------------------------------------------------
 
 srpm-admiral-common: source-superproject source-support-files
@@ -255,6 +266,10 @@ srpm-python-mistune: source-python-mistune
 	cp $(SPECSDIR)/python-mistune.spec $(RPMTOPDIR)/SPECS/
 	rpmbuild -bs $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-mistune.spec
 
+srpm-python-flask: source-python-flask
+	cp $(SPECSDIR)/python-flask.spec $(RPMTOPDIR)/SPECS/
+	rpmbuild -bs $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-flask.spec
+
 # -- Build all RPMs in dependency order ----------------------------------
 
 rpm: validate-release-refs all-sources source-support-files
@@ -280,6 +295,8 @@ rpm: validate-release-refs all-sources source-support-files
 	$(MAKE) rpm-python-flask-login
 	@echo "=== Building python-mistune ==="
 	$(MAKE) rpm-python-mistune
+	@echo "=== Building patched python-flask for EL10 ==="
+	$(MAKE) rpm-python-flask
 	@echo "=== Building admiral-harbor ==="
 	$(MAKE) rpm-admiral-harbor
 	@echo "=== All RPMs built ==="
@@ -338,6 +355,8 @@ srpms: all-sources source-support-files
 	$(MAKE) srpm-python-flask-login
 	@echo "=== Building python-mistune SRPM ==="
 	$(MAKE) srpm-python-mistune
+	@echo "=== Building patched python-flask SRPM ==="
+	$(MAKE) srpm-python-flask
 	@echo "=== Building admiral-harbor SRPM ==="
 	$(MAKE) srpm-admiral-harbor
 	@echo "=== All SRPMs built ==="

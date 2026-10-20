@@ -110,6 +110,11 @@ The supported topology for v1 is:
 
 «star topology»
 
+For the current RC acceptance matrix, the admin node also runs Harbor through
+`--admin-portal-node`, with two or more `--worker-node` guests. A dedicated
+`--portal-node` remains an available deployment mode, but it is outside this
+Rocky Linux 10 and Fedora Rawhide 2×2 matrix.
+
 Example:
 
 Internet
@@ -117,27 +122,24 @@ Internet
 cloud.domain.com
     |
 +------------------------------------+
-| control plane (admin-node)         |
-| admirald                           |
-| caddy                              |
-| cockpit                            |
-| PostgreSQL                         |
-| wg0 = 10.99.0.1                    |
+| control plane + portal             |
+| admirald, Harbor, Caddy, PostgreSQL|
+| cockpit, wg0 = 10.99.0.1           |
 +------------------------------------+
           |
     ---------------------------
-    |             |           |
-+----------------+  +----------------+  +----------------+
-| worker node1   |  | worker node2   |  | portal node    |
-| fleet          |  | fleet          |  | admiral-harbor |
-| podman         |  | podman         |  | PostgreSQL     |
-| cockpit-bridge |  | cockpit-bridge |  | cockpit-bridge |
-| wg0 10.99.0.2  |  | wg0 10.99.0.3  |  | wg0 10.99.0.100|
-+----------------+  +----------------+  +----------------+
+    |                         |
++----------------+  +----------------+
+| worker node1   |  | worker node2   |
+| fleet          |  | fleet          |
+| podman         |  | podman         |
+| cockpit-bridge |  | cockpit-bridge |
+| wg0 10.99.0.2  |  | wg0 10.99.0.3  |
++----------------+  +----------------+
 
-Note: Worker and portal roles are mutually exclusive by design.
-A single host cannot run both admiral-fleet and admiral-harbor.
-Each role is deployed on its own node with dedicated resources.
+The `--worker-node` and dedicated `--portal-node` roles are mutually exclusive.
+A single host cannot run both admiral-fleet and admiral-harbor. The combined
+`--admin-portal-node` profile is used by the current RC matrix.
 
 Only these communication paths are required:
 
