@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 37%{?dist}
+Release: 38%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -119,8 +119,8 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 %dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-flagship.service.d
 %dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-harbor.service.d
 %dir %attr(0755, root, root) %{_sysconfdir}/systemd/system/caddy.service.d
-%dir %attr(0755, root, root) %{_sysconfdir}/ssh/sshd_config.d
-%dir %attr(0755, root, root) %{_sysconfdir}/nftables
+%dir %attr(0700, root, root) %{_sysconfdir}/ssh/sshd_config.d
+%dir %attr(0700, root, root) %{_sysconfdir}/nftables
 %dir %attr(0755, root, root) %{_sysconfdir}/fail2ban/jail.d
 %dir %attr(0755, root, root) %{_sysconfdir}/fail2ban/filter.d
 %dir %attr(0750, root, root) %{_sysconfdir}/audit/rules.d
@@ -217,6 +217,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-38
+- Match system-owned SSH and nftables directory modes to avoid RPM transaction conflicts
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-37
 - Own Admiral setup directories and preserve explicit package permissions
 

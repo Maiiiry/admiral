@@ -626,6 +626,8 @@ done
             "%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admirald.service.d",
             "%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-flagship.service.d",
             "%dir %attr(0750, root, admiral) %{_sysconfdir}/systemd/system/admiral-harbor.service.d",
+            "%dir %attr(0700, root, root) %{_sysconfdir}/ssh/sshd_config.d",
+            "%dir %attr(0700, root, root) %{_sysconfdir}/nftables",
             "%dir %attr(0750, root, root) %{_sysconfdir}/audit/rules.d",
             "%dir %attr(0700, root, root) /root/.config/admiralctl",
             "%dir %attr(0755, root, root) %{_prefix}/lib/admiral/flagship",
@@ -642,7 +644,7 @@ done
             common_spec,
         )
         for package_spec in package_specs.values():
-            self.assertIn("Release: 37%{?dist}", package_spec)
+            self.assertIn("Release: 38%{?dist}", package_spec)
 
     def test_role_preflight_runs_before_package_or_repository_changes(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")
