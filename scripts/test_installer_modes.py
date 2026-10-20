@@ -19,6 +19,7 @@ SELINUX_TASKS = ROOT / "ansible" / "roles" / "admiral_selinux" / "tasks" / "main
 HARBOR_TASKS = ROOT / "ansible" / "roles" / "admiral_harbor" / "tasks" / "main.yml"
 AUDIT_TASKS = ROOT / "ansible" / "roles" / "admiral_auditd" / "tasks" / "main.yml"
 COMMON_TASKS = ROOT / "ansible" / "roles" / "admiral_common" / "tasks" / "main.yml"
+COMMON_SPEC = ROOT / "packaging" / "rpm" / "admiral-common.spec"
 FAIL2BAN_TASKS = ROOT / "ansible" / "roles" / "admiral_fail2ban" / "tasks" / "main.yml"
 ADMIRALD_TASKS = ROOT / "ansible" / "roles" / "admirald" / "tasks" / "main.yml"
 FLAGSHIP_TASKS = ROOT / "ansible" / "roles" / "admiral_flagship" / "tasks" / "main.yml"
@@ -535,6 +536,67 @@ done
         self.assertNotIn("admiral_portal_shares_admin_host", content)
         self.assertNotIn("systemctl is-active --quiet", content)
 
+    def test_admiral_config_directory_matches_rpm_service_group(self) -> None:
+        playbook = PLAYBOOK.read_text(encoding="utf-8")
+        common_spec = COMMON_SPEC.read_text(encoding="utf-8")
+        common_tasks = COMMON_TASKS.read_text(encoding="utf-8")
+        config_directory_check = common_tasks.split(
+            "Inspect Admiral configuration directories installed by admiral-common", 1
+        )[1].split("\n- name:", 1)[0]
+        secret_assertion = common_tasks.split(
+            "Enforce bootstrap secret inventory permissions", 1
+        )[1].split("\n- name:", 1)[0]
+        config_assertion = common_tasks.split(
+            "Require the admiral-common RPM directory attributes", 1
+        )[1].split("\n- name:", 1)[0]
+        installer_state = INSTALLER.read_text(encoding="utf-8").split(
+            "# --- 10. persist local installer state for future spoke bootstraps ---", 1
+        )[1].split("# --- 10b.", 1)[0]
+
+        self.assertNotIn(
+            "Ensure Admiral configuration directory exists before role persistence",
+            playbook,
+        )
+        self.assertIn("stat:\n    path: \"{{ item }}\"", config_directory_check)
+        self.assertNotIn("file:", config_directory_check)
+        self.assertNotIn("state: directory", config_directory_check)
+        self.assertIn("item.stat.gr_name == 'admiral'", config_assertion)
+        self.assertIn("item.stat.mode == '0750'", config_assertion)
+        self.assertIn(
+            "%dir %attr(0750, root, admiral) %{_sysconfdir}/admiral\n", common_spec
+        )
+        self.assertIn(
+            "%dir %attr(0750, root, admiral) %{_sysconfdir}/admiral/tls\n", common_spec
+        )
+        self.assertIn(
+            "%dir %attr(0750, root, admiral) %{_sysconfdir}/admiral/ssh\n", common_spec
+        )
+        self.assertIn("/etc/admiral/role", playbook)
+        self.assertIn("Persist Admiral node role after package-managed setup succeeds", playbook)
+        self.assertIn(
+            "%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/ssh-delivery",
+            common_spec,
+        )
+        self.assertIn(
+            "%dir %attr(0700, root, root) %{_sysconfdir}/wireguard/peers.d",
+            common_spec,
+        )
+        self.assertIn("admiral_secrets_permissions.stat.mode == '0600'", secret_assertion)
+        self.assertIn("admiral_secrets_permissions.stat.pw_name == 'root'", secret_assertion)
+        self.assertIn("admiral_secrets_permissions.stat.gr_name == 'root'", secret_assertion)
+        self.assertIn("[[ -d /etc/admiral ]] || die", installer_state)
+        self.assertNotIn("install -d", installer_state)
+        self.assertIn(
+            "The admiral-common RPM did not create /etc/wireguard/peers.d",
+            INSTALLER.read_text(encoding="utf-8"),
+        )
+        for task_file in (
+            ROOT / "ansible" / "roles" / "admiral_wireguard" / "tasks" / "main.yml",
+            ROOT / "ansible" / "roles" / "admiral_fleet" / "tasks" / "main.yml",
+            ROOT / "ansible" / "wireguard-peers.yml",
+        ):
+            self.assertNotIn("path: /etc/wireguard/peers.d\n    state: directory", task_file.read_text(encoding="utf-8"))
+
     def test_role_preflight_runs_before_package_or_repository_changes(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")
         mutation_offset = installer.index("dnf install -y epel-release")
@@ -672,11 +734,9 @@ done
 
     def test_worker_hub_peer_is_installed_before_fleet_heartbeat_gate(self) -> None:
         fleet = FLEET_TASKS.read_text(encoding="utf-8")
+        common_spec = COMMON_SPEC.read_text(encoding="utf-8")
 
         register = fleet.index("- name: Register node with admirald before starting Fleet")
-        ensure_peer_dir = fleet.index(
-            "- name: Ensure the hub's durable WireGuard peer directory exists before Fleet startup"
-        )
         add_peer = fleet.index(
             "- name: Add the registered worker's WireGuard peer on the hub before Fleet startup"
         )
@@ -686,8 +746,9 @@ done
         start_fleet = fleet.index("- name: Enable and start admiral-fleet after worker registration")
         heartbeat_gate = fleet.index("- name: Wait for the registered Fleet worker to report a healthy heartbeat")
 
-        self.assertLess(register, ensure_peer_dir)
-        self.assertLess(ensure_peer_dir, add_peer)
+        self.assertIn("%dir %attr(0700, root, root) %{_sysconfdir}/wireguard/peers.d", common_spec)
+        self.assertNotIn("Ensure the hub's durable WireGuard peer directory exists", fleet)
+        self.assertLess(register, add_peer)
         self.assertLess(add_peer, persist_peer)
         self.assertLess(persist_peer, start_fleet)
         self.assertLess(start_fleet, heartbeat_gate)

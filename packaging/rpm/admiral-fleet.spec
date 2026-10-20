@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release: 35%{?dist}
+Release: 36%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
+- Rebuild coordinated RC5 candidate with RPM-owned runtime directories
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-32
 - Rebuild the coordinated RC5 candidate with refreshed source pins
 

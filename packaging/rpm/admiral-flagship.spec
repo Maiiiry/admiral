@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release: 35%{?dist}
+Release: 36%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -83,6 +83,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
+- Rebuild coordinated RC5 candidate with RPM-owned runtime directories
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-32
 - Rebuild the coordinated RC5 candidate with refreshed source pins
 

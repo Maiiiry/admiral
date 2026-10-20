@@ -1110,7 +1110,7 @@ fi
 
 # --- 10. persist local installer state for future spoke bootstraps ---
 if [[ "$INSTALL_MODE" == "single-node" || "$INSTALL_MODE" == "admin-node" || "$INSTALL_MODE" == "admin-portal-node" ]]; then
-    install -d -m 0750 /etc/admiral
+    [[ -d /etc/admiral ]] || die "The admiral-common RPM did not create /etc/admiral; reinstall the Admiral packages before continuing."
     state_tmp="$(mktemp /etc/admiral/install.env.XXXXXX)"
     chmod 0640 "$state_tmp"
     INSTALL_STATE_PUBLIC_IP="$INSTALL_PUBLIC_IP" python3 - "$state_tmp" <<'PY'
@@ -1168,7 +1168,7 @@ for n in data if isinstance(data, list) else data.get('nodes', []):
         die "Could not resolve wireguard_ip for spoke node '$SPOKE_NODE_ID' from admirald."
     fi
     wg set wg-admiral peer "$SPOKE_KEY" allowed-ips "${SPOKE_WG_IP}/32" persistent-keepalive 25
-    install -d -m 0700 /etc/wireguard/peers.d
+    [[ -d /etc/wireguard/peers.d ]] || die "The admiral-common RPM did not create /etc/wireguard/peers.d; reinstall the Admiral packages before continuing."
     PEER_FRAGMENT_NAME="${SPOKE_NODE_ID//[^A-Za-z0-9_.-]/_}"
     PEER_FRAGMENT_TMP="$(mktemp /etc/wireguard/peers.d/.${PEER_FRAGMENT_NAME}.XXXXXX)"
     chmod 0600 "$PEER_FRAGMENT_TMP"

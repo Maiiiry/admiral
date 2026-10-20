@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 35%{?dist}
+Release: 36%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -69,10 +69,11 @@ install -Dm0755 scripts/admiral_rootless_subids.py %{buildroot}%{_bindir}/admira
 install -Dm0755 scripts/admiral_https_setup.py %{buildroot}%{_bindir}/admiral-https-setup
 install -Dm0755 %{SOURCE2} %{buildroot}%{_libexecdir}/admiral-letsencrypt-deploy-hook
 
-# Configuration directory (owned by root, 755)
+# Configuration and private bootstrap directories are owned by admiral-common.
 mkdir -p %{buildroot}%{_sysconfdir}/admiral
 mkdir -p %{buildroot}%{_sysconfdir}/admiral/tls
 mkdir -p %{buildroot}%{_sysconfdir}/admiral/ssh
+mkdir -p %{buildroot}%{_sysconfdir}/wireguard/peers.d
 
 # Log directory (admiral user needs write)
 mkdir -p %{buildroot}%{_localstatedir}/log/admiral
@@ -82,6 +83,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/containers/systemd/admiral
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/outbox
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/backups
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/instances
+mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/ssh-delivery
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral-apps
 install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 %pre
@@ -95,11 +97,13 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 %dir %attr(0750, root, admiral) %{_sysconfdir}/admiral/ssh
 %dir %attr(0755, root, root) %{_sysconfdir}/containers/systemd/admiral
 %dir %attr(0750, root, admiral) %{_sysconfdir}/admiral/tls
+%dir %attr(0700, root, root) %{_sysconfdir}/wireguard/peers.d
 %dir %attr(0750, admiral, admiral) %{_localstatedir}/log/admiral
 %dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral
 %dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/outbox
 %dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/backups
 %dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/instances
+%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/ssh-delivery
 %dir %attr(0755, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral-apps
 %{_sysusersdir}/%{name}.conf
 
@@ -191,6 +195,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-36
+- Rebuild coordinated RC5 candidate with RPM-owned runtime directories
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-32
 - Rebuild the coordinated RC5 candidate with refreshed source pins
 

@@ -247,16 +247,6 @@
     ADMIRAL_NODE_TOKEN: "{{ fleet_node_token_value }}"
   no_log: true
 
-- name: Ensure the hub's durable WireGuard peer directory exists before Fleet startup
-  file:
-    path: /etc/wireguard/peers.d
-    state: directory
-    owner: root
-    group: root
-    mode: "0700"
-  delegate_to: localhost
-  when: admiral_install_mode == 'worker-node'
-
 - name: Read active hub WireGuard peers before registering the worker
   command:
     argv:

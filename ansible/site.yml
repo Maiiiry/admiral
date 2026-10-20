@@ -98,25 +98,6 @@
           role, or use the documented manual migration for admin-portal.
       when: admiral_node_role_file.stat.exists
 
-    - name: Ensure Admiral configuration directory exists before role persistence
-      file:
-        path: /etc/admiral
-        state: directory
-        owner: root
-        group: root
-        mode: "0750"
-
-    - name: Persist Admiral node role
-      copy:
-        dest: /etc/admiral/role
-        content: "{{ admiral_node_role }}\n"
-        owner: root
-        group: root
-        mode: "0644"
-      when: >-
-        not admiral_node_role_file.stat.exists or
-        (admiral_persisted_node_role == 'dev' and admiral_node_role == 'single')
-
     - name: Determine WireGuard role
       set_fact:
         admiral_wireguard_role: "{{ 'hub' if admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node'] else 'spoke' }}"
@@ -133,19 +114,6 @@
         admiral_control_plane_host: "{{ '127.0.0.1' if admiral_install_mode == 'single-node' else admiral_wireguard_hub_ip }}"
         admiral_control_plane_url: "https://{{ '127.0.0.1' if admiral_install_mode == 'single-node' else admiral_wireguard_hub_ip }}:8080"
 
-    - name: Create Admiral bootstrap directories on remote spokes
-      file:
-        path: "{{ item }}"
-        state: directory
-      loop:
-        - /etc/admiral
-        - /etc/admiral/tls
-        - /etc/wireguard
-        - /var/lib/admiral
-      when:
-        - admiral_install_mode in ['worker-node', 'portal-node']
-        - admiral_bootstrap_from_controller | default(false) | bool
-
     - name: Remove WireGuard from standalone secure single-node
       block:
         - name: Stop standalone WireGuard service
@@ -161,18 +129,6 @@
       when:
         - admiral_install_mode == 'single-node'
         - not (admiral_dev_mode | default(false) | bool)
-
-    - name: Copy admin bootstrap materials to remote spokes
-      copy:
-        src: "{{ item.src }}"
-        dest: "{{ item.dest }}"
-        mode: "{{ item.mode }}"
-      loop:
-        - { src: "/etc/admiral/tls/ca.pem", dest: "/etc/admiral/tls/ca.pem", mode: "0644" }
-        - { src: "/etc/wireguard/admiral.pub", dest: "/etc/wireguard/admiral.pub", mode: "0644" }
-      when:
-        - admiral_install_mode in ['worker-node', 'portal-node']
-        - admiral_bootstrap_from_controller | default(false) | bool
 
   roles:
     - admiral_common
@@ -206,6 +162,17 @@
         - admiral_enable_ssh_tunnel | default(false) | bool
 
   post_tasks:
+    - name: Persist Admiral node role after package-managed setup succeeds
+      copy:
+        dest: /etc/admiral/role
+        content: "{{ admiral_node_role }}\n"
+        owner: root
+        group: root
+        mode: "0644"
+      when: >-
+        not admiral_node_role_file.stat.exists or
+        (admiral_persisted_node_role == 'dev' and admiral_node_role == 'single')
+
     - name: Read single-node registered nodes
       command:
         cmd: /usr/bin/admiralctl nodes list --output json

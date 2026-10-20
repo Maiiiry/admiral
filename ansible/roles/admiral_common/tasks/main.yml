@@ -344,16 +344,39 @@
     state: present
   when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
 
-- name: Ensure Admiral configuration and TLS directories exist
-  file:
+- name: Inspect Admiral configuration directories installed by admiral-common
+  stat:
     path: "{{ item }}"
-    state: directory
-    mode: "0750"
-    owner: root
-    group: admiral
+  register: admiral_common_config_directories
   loop:
     - /etc/admiral
     - /etc/admiral/tls
+    - /etc/admiral/ssh
+
+- name: Require the admiral-common RPM directory attributes
+  assert:
+    that:
+      - item.stat.exists
+      - item.stat.isdir
+      - item.stat.pw_name == 'root'
+      - item.stat.gr_name == 'admiral'
+      - item.stat.mode == '0750'
+    fail_msg: >-
+      The admiral-common RPM must provide {{ item.item }} as root:admiral mode
+      0750 before configuration can continue.
+  loop: "{{ admiral_common_config_directories.results }}"
+
+- name: Copy admin bootstrap materials to remote spokes
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { src: "/etc/admiral/tls/ca.pem", dest: "/etc/admiral/tls/ca.pem", mode: "0644" }
+    - { src: "/etc/wireguard/admiral.pub", dest: "/etc/wireguard/admiral.pub", mode: "0644" }
+  when:
+    - admiral_install_mode in ['worker-node', 'portal-node']
+    - admiral_bootstrap_from_controller | default(false) | bool
 
 - name: Manage secrets inventory on admin profiles
   when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node']
@@ -641,13 +664,22 @@
              | regex_replace('[^A-Za-z0-9_.-]', '_') }}
       when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'worker-node', 'portal-node']
 
-    - name: Create temporary SSH delivery directory on the Admin controller
-      file:
+    - name: Inspect package-owned SSH delivery directory on the Admin controller
+      stat:
         path: /var/lib/admiral/ssh-delivery
-        state: directory
-        owner: root
-        group: root
-        mode: "0700"
+      register: admiral_ssh_delivery_directory
+      delegate_to: localhost
+      when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'worker-node', 'portal-node']
+
+    - name: Require the package-owned SSH delivery directory
+      assert:
+        that:
+          - admiral_ssh_delivery_directory.stat.exists
+          - admiral_ssh_delivery_directory.stat.isdir
+          - admiral_ssh_delivery_directory.stat.pw_name == 'root'
+          - admiral_ssh_delivery_directory.stat.gr_name == 'root'
+          - admiral_ssh_delivery_directory.stat.mode == '0700'
+        fail_msg: "The admiral-common RPM must provide /var/lib/admiral/ssh-delivery as root:root mode 0700."
       delegate_to: localhost
       when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'worker-node', 'portal-node']
 
@@ -815,15 +847,6 @@
         admiral_ssh_delivery_id: >-
           {{ (fleet_node_id | default(harbor_node_id | default(ansible_hostname)))
              | regex_replace('[^A-Za-z0-9_.-]', '_') }}
-
-    - name: Create SSH delivery directory on the Admin controller for spoke
-      file:
-        path: /var/lib/admiral/ssh-delivery
-        state: directory
-        owner: root
-        group: root
-        mode: "0700"
-      delegate_to: localhost
 
     - name: Generate spoke administrative SSH identity on the Admin controller
       command:

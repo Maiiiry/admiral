@@ -72,16 +72,6 @@
     hub_host: "{{ groups['admin'][0] }}"
     node_lookup_key: "{{ hostvars[inventory_hostname].fleet_node_id | default(hostvars[inventory_hostname].admiral_node_name | default(inventory_hostname)) }}"
   tasks:
-    - name: Ensure peer fragment directory exists on hub
-      file:
-        path: /etc/wireguard/peers.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0700"
-      delegate_to: "{{ hub_host }}"
-      run_once: true
-
     - name: Check for an existing per-peer preshared key
       stat:
         path: "/etc/wireguard/peers.d/{{ inventory_hostname | regex_replace('[^A-Za-z0-9_.-]', '_') }}.conf"
@@ -138,14 +128,6 @@
   gather_facts: false
   become: true
   tasks:
-    - name: Ensure peer fragment directory exists on hub
-      file:
-        path: /etc/wireguard/peers.d
-        state: directory
-        owner: root
-        group: root
-        mode: "0700"
-
     - name: Find peer config files on hub
       find:
         paths: /etc/wireguard/peers.d
