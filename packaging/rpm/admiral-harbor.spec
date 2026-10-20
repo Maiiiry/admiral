@@ -1,9 +1,9 @@
 %global debug_package %{nil}
-%global commit 60f541bd9984bf0359413ab9cde0199eb8a9bab1
+%global commit 4e1b88bb82b51fe39354a0fe7b80052db52eb01b
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 41%{?dist}
+Release: 42%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -126,6 +126,9 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-42
+- Handle concurrent Gunicorn workers creating default portal metadata
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-40
 - Rebuild the coordinated six-package set with restore staging permission fix
 

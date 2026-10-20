@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 41%{?dist}
+Release: 42%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -87,6 +87,9 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-42
+- Rebuild coordinated RC5 Release 42 candidate after R41 validation rejection
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-40
 - Rebuild the coordinated six-package set with restore staging permission fix
 
