@@ -4,14 +4,15 @@
 
 This document is the authoritative execution contract for validating an Admiral release candidate.
 
-It is intended to be executed by an autonomous validation agent on a clean EL10 x86_64 host.
+It is intended to be executed by an autonomous validation agent on a clean EL10
+host capable of running x86_64 and aarch64 guests.
 
 The agent must:
 
 1. identify the exact release candidate source commits;
 2. build the release RPMs;
 3. create isolated KVM virtual machines;
-4. execute the required single-node and multi-node validation matrix;
+4. execute the required eight-cell single-node and multi-node validation matrix;
 5. collect objective evidence;
 6. create GitHub issues for reproducible product defects;
 7. produce a release validation report.
@@ -47,8 +48,8 @@ issue (or create one if none exists), implement an authorized fix on
 `origin/main`, add or update focused regression coverage, and commit with a
 `Signed-off-by` trailer. Never weaken assertions or disable security controls to
 make a scenario pass. A fix creates a new candidate: rebuild all six Admiral
-RPMs, increment the `Release` of each, and restart the four-cell matrix on clean
-VMs. Record any harness adjustment and its evidence in the report.
+RPMs, increment the `Release` of each, and restart all eight matrix cells on
+clean VMs. Record any harness adjustment and its evidence in the report.
 
 ### 3.2 Preserve the candidate
 
@@ -85,20 +86,21 @@ Examples:
 
 ## 4. Validation scope
 
-### 4.1 Primary platform
+### 4.1 Validation platform
 
-* Architecture: `x86_64`
-* Operating-system family: EL10
-* Virtualization: KVM/QEMU
+* Architectures: `x86_64` and `aarch64`
+* Operating systems: Rocky Linux 10 and Fedora Rawhide
+* Virtualization: KVM/QEMU; use hardware virtualization where the host supports it
 * Security mode: SELinux `Enforcing`
 
 ### 4.2 Tier 1 operating system
 
-The required Tier 1 matrix is:
+The Tier 1 portion of the required matrix is:
 
-| Operating system | Single-node | Multi-node |
-| ---------------- | ----------: | ---------: |
-| Rocky Linux 10   |    Required |   Required |
+| Operating system | Architecture | Single-node | Multi-node |
+| ---------------- | ------------ | ----------: | ---------: |
+| Rocky Linux 10   | x86_64       |    Required |   Required |
+| Rocky Linux 10   | aarch64      |    Required |   Required |
 
 Every operating system must use an official GenericCloud image.
 
@@ -111,13 +113,18 @@ Tier 2 compatibility signal for a future EL11; it does not claim EL11 support.
 
 ### 4.3 Tier 2 Fedora operating system
 
-The required Fedora matrix is:
+The Tier 2 portion of the required matrix is:
 
-| Operating system | Single-node | Multi-node |
-| ---------------- | ----------: | ---------: |
-| Fedora Rawhide   |    Required |   Required |
+| Operating system | Architecture | Single-node | Multi-node |
+| ---------------- | ------------ | ----------: | ---------: |
+| Fedora Rawhide   | x86_64       |    Required |   Required |
+| Fedora Rawhide   | aarch64      |    Required |   Required |
 
-Use each platform's official x86_64 GenericCloud image and verify its checksum.
+Use each platform's official GenericCloud image for the matching architecture
+and verify its checksum. The full matrix is the cross product of two topologies
+(single-node and multi-node) and four OS/architecture targets (Rocky Linux 10
+x86_64, Rocky Linux 10 aarch64, Fedora Rawhide x86_64, Fedora Rawhide aarch64):
+eight required cells in total.
 For repeated validation, clone its verified immutable seed after that seed has
 completed `dnf update --refresh`; do not run a separate manual update while
 preparing each overlay. The unmodified GitHub installer runs its own
@@ -125,11 +132,13 @@ preparing each overlay. The unmodified GitHub installer runs its own
 and SELinux state before installing Admiral. Exercise the secure production
 modes; `--dev-node` is not an acceptance substitute.
 
-The golden candidate is the same six Admiral RPMs, with identical SHA-256
-values, across all four required scenarios. If a fix changes any Admiral RPM
-payload, rebuild the coordinated six-package candidate and restart validation
-on fresh VMs for all four scenarios. EL10-only dependency RPMs may differ from
-the Fedora repository contents and must be listed separately in the report.
+For each architecture, the golden candidate is the same six Admiral RPMs, with
+identical SHA-256 values across that architecture's four required scenarios.
+Architecture-specific binary RPMs are expected to have different hashes. If a
+fix changes any Admiral RPM payload, rebuild the coordinated six-package
+candidate and restart validation on fresh VMs for all eight scenarios. EL10-only
+dependency RPMs may differ from the Fedora repository contents and must be
+listed separately in the report.
 
 Fedora uses DNF5. Conditional package-manager steps must preserve the EL10
 behavior while using Fedora's DNF5 plugins and `dnf5-automatic.timer` where
@@ -146,7 +155,7 @@ Fedora-specific resolver policy does not alter EL10 behavior.
 CentOS Stream, AlmaLinux, Fedora stable releases, and architectures outside the
 matrix must be reported as `NOT TESTED`.
 
-Passing results from x86_64 must not be presented as evidence for aarch64.
+Passing results on one architecture must not be presented as evidence for the other.
 
 ## 5. Host preflight
 
@@ -172,7 +181,11 @@ Minimum recommended host capacity:
 * 50 GiB free storage;
 * KVM available through `/dev/kvm`.
 
-If the host cannot safely run the required topology, mark validation `BLOCKED` rather than reducing VM resources below the documented minimum without disclosure.
+For aarch64 guests on an x86_64 host, record whether QEMU uses KVM or TCG
+emulation. TCG is valid for functional validation but can make the run much
+slower. If the host cannot safely run the required topology, mark validation
+`BLOCKED` rather than reducing VM resources below the documented minimum
+without disclosure.
 
 ## 6. Source integrity
 
@@ -198,9 +211,8 @@ make rpm RPM_ARCH=x86_64
 make rpm RPM_ARCH=aarch64
 ```
 
-The four guest scenarios use the x86_64 candidate. Keep the aarch64 build
-results and NEVRA/SHA-256 values in the report as separate architecture
-evidence.
+Each of the eight guest scenarios uses the candidate built for its architecture.
+Record NEVRA and SHA-256 values separately for x86_64 and aarch64 artifacts.
 
 Record for every Admiral RPM:
 
@@ -220,7 +232,7 @@ The agent must open an issue when the failure is reproducible from a clean sourc
 
 ## 8. VM lifecycle
 
-For each operating system:
+For each OS/architecture target:
 
 1. download the official GenericCloud image;
 2. download and verify its checksum;
@@ -240,7 +252,8 @@ Temporary private keys must remain on the validation host and must not be copied
 
 ## 9. Single-node validation
 
-Execute the supported single-node installation procedure on each Tier 1 operating system.
+Execute the supported single-node installation procedure on each Tier 1
+operating-system and architecture pair.
 
 ### 9.1 Installation acceptance
 
@@ -289,7 +302,7 @@ Do not describe the result as strict idempotency unless unexpected changes are z
 
 ## 10. Multi-node validation
 
-For each matrix operating system, create three clean VMs:
+For each matrix OS/architecture target, create three clean VMs:
 
 * one admin+Harbor VM;
 * two worker VMs.
@@ -619,8 +632,8 @@ A release candidate may receive `PASS` only when:
 * package build passed;
 * release references are consistent;
 * exact component CI is green;
-* Rocky Linux 10 single-node and multi-node scenarios passed;
-* Fedora Rawhide single-node and multi-node scenarios passed;
+* all four Rocky Linux 10 architecture/topology cells passed;
+* all four Fedora Rawhide architecture/topology cells passed;
 * the golden lifecycle passed;
 * full database and volume restore passed;
 * no open blocker exists;
