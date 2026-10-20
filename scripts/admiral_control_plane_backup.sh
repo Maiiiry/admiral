@@ -59,7 +59,9 @@ IFS=$'\t' read -r endpoint region bucket prefix force_path_style <<<"$s3_config"
 [[ $endpoint == https://* ]] || die "control-plane backups require an HTTPS S3 endpoint"
 [[ -n $region && -n $bucket ]] || die "active S3 backup storage configuration is incomplete"
 
-install -d -m 0700 -o root -g root "$BACKUP_DIR"
+[[ -d $BACKUP_DIR ]] || die "package-managed backup directory is missing; reinstall or repair admiral-common"
+backup_dir_attributes=$(stat -c '%u:%g:%a' "$BACKUP_DIR") || die "inspect package-managed backup directory"
+[[ $backup_dir_attributes == 0:0:700 ]] || die "package-managed backup directory must be owned by root:root with mode 0700"
 work_dir=$(mktemp -d "$BACKUP_DIR/.control-plane-backup.XXXXXX")
 cleanup() {
     rm -rf "$work_dir"

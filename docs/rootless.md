@@ -232,7 +232,8 @@ observado del transporte de `systemd-machined` desde una unidad endurecida.
 
 Los comandos de backup y restore pueden necesitar variables sensibles. Fleet
 crea un env-file temporal en `/var/lib/admiral/tmp`, lo cambia al propietario
-rootless, aplica modo `0600` y lo elimina al terminar.
+rootless, aplica modo `0600` y lo elimina al terminar. `admiral-common` instala
+esa raíz con su ownership y modo; Fleet no la crea ni cambia sus permisos.
 
 No se usa `/tmp`: `PrivateTmp=true` da a Fleet un `/tmp` distinto del que ve el
 user manager, por lo que el transient unit no podría abrir el archivo. Los

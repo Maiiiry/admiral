@@ -33,6 +33,9 @@ def test_backup_encrypts_checksums_and_requires_sse() -> None:
 def test_backup_is_packaged_and_recovery_runbook_is_actionable() -> None:
     assert "ExecStart=/usr/bin/admiral-control-plane-backup" in SERVICE
     assert "ReadWritePaths=/var/lib/admiral/control-plane-backups" in SERVICE
+    assert "StateDirectory=" not in SERVICE
+    assert '[[ -d $BACKUP_DIR ]]' in BACKUP
+    assert 'install -d -m 0700 -o root -g root "$BACKUP_DIR"' not in BACKUP
     assert "OnCalendar=*-*-* 03:00:00 UTC" in TIMER
     assert "pg_restore" in GUIDE
     assert "sha256sum -c" in GUIDE

@@ -57,10 +57,13 @@ intencional y prioriza convergencia consistente; como tradeoff, aumenta la
 superficie de software instalada en el nodo admin.
 
 `admiral-common` es dueño de los directorios fijos de configuración y datos,
-incluidos sus propietarios y modos. Por eso se puede instalar ese RPM y
-configurar el host manualmente sin ejecutar Ansible para preparar directorios.
-Los playbooks escriben archivos de configuración y verifican los atributos
-del paquete; no crean ni cambian permisos de directorios.
+incluidos sus propietarios y modos. Esto cubre también las raíces de datos para
+instancias, backups, restore, temporales, la outbox y los backups cifrados del
+control plane. Por eso se puede instalar ese RPM y configurar el host
+manualmente sin ejecutar Ansible para preparar directorios. Fleet valida esas
+raíces y crea solo contenido dinámico debajo de ellas. Los playbooks escriben
+archivos de configuración y verifican los atributos del paquete; no crean ni
+cambian permisos de directorios.
 
 La postura por defecto es:
 

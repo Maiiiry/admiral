@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 38%{?dist}
+Release: 39%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -92,11 +92,15 @@ mkdir -p %{buildroot}%{_prefix}/lib/admiral/harbor
 # Log directory (admiral user needs write)
 mkdir -p %{buildroot}%{_localstatedir}/log/admiral
 
-# Data directories (fleet runs as root then switches to admiral-apps)
+# Fixed data roots and their permissions are owned by admiral-common. Fleet
+# creates only dynamic per-instance and per-operation paths below these roots.
 mkdir -p %{buildroot}%{_sysconfdir}/containers/systemd/admiral
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/outbox
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/backups
+mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/restore
+mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/tmp
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/instances
+mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/control-plane-backups
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/harbor/uploads
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/ssh-delivery
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral-apps
@@ -130,9 +134,12 @@ install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
 %dir %attr(0755, root, root) %{_prefix}/lib/admiral/harbor
 %dir %attr(0750, admiral, admiral) %{_localstatedir}/log/admiral
 %dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral
-%dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/outbox
-%dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/backups
-%dir %attr(0755, admiral, admiral) %{_localstatedir}/lib/admiral/instances
+%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/outbox
+%dir %attr(0750, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/backups
+%dir %attr(0750, root, admiral-apps) %{_localstatedir}/lib/admiral/restore
+%dir %attr(0700, admiral-apps, admiral-apps) %{_localstatedir}/lib/admiral/tmp
+%dir %attr(0751, admiral, admiral) %{_localstatedir}/lib/admiral/instances
+%dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/control-plane-backups
 %dir %attr(0750, admiral, admiral) %{_localstatedir}/lib/admiral/harbor
 %dir %attr(0750, admiral, admiral) %{_localstatedir}/lib/admiral/harbor/uploads
 %dir %attr(0700, root, root) %{_localstatedir}/lib/admiral/ssh-delivery
@@ -217,6 +224,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-39
+- Declare fixed Admiral data roots and permissions in the common RPM
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-38
 - Match system-owned SSH and nftables directory modes to avoid RPM transaction conflicts
 
