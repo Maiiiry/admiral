@@ -1,7 +1,8 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Status: **NOT VALIDATED — selected real failures passed, many scenarios pending**
+Current Release 45 status: **NOT VALIDATED — no current-candidate failure-injection run has started.**<br>
+The scenario results below are historical Release 42/43 evidence and do not count toward Release 45. Current matrix: 0/8.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.
 

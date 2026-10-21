@@ -1,15 +1,22 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: six Release 43 RPMs built locally; exact component refs, NEVRAs and SHA-256 values are recorded in `evidence/release43-candidate.md`.<br>
-The runtime observations below are from the named Release 42 runs unless stated otherwise. Release 43 has not yet been installed into audit guests, so those runs do not validate the new candidate.<br>
+Current candidate: six Release 45 RPMs built locally; exact component refs, NEVRAs, SHA-256 values and CI are recorded in `evidence/release45-candidate.md`.<br>
+Release 45 has not been installed in any audit guest. **Current-candidate completion is 0/8; all eight cells are NOT TESTED on Release 45.** The historical observations below belong to Release 42/43 and do not validate the current candidate.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
-Cell completion: **0/8 complete; 8/8 remain partial**. Single-Node and Multi-Node are separately **NOT READY** because open findings affect each topology and required scenarios remain untested.
+| Target OS (x86_64) | Single-Node — Release 45 | Multi-Node — Release 45 |
+| --- | --- | --- |
+| Fedora Rawhide | NOT TESTED | NOT TESTED |
+| Rocky Linux 10 | NOT TESTED | NOT TESTED |
+| AlmaLinux 10 | NOT TESTED | NOT TESTED |
+| CentOS Stream 10 | NOT TESTED | NOT TESTED |
+
+Current candidate completion: **0/8**. Both topologies are **NOT VALIDATED** on Release 45; older high-severity findings remain open pending current-candidate retests.
 
 Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
 
-## Platform matrix
+## Historical platform matrix — prior Release 42/43 runs
 
 | Target OS (x86_64) | Single-Node | Multi-Node (hub + 2 workers) | Evidence / limitation |
 | --- | --- | --- | --- |

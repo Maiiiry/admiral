@@ -1,9 +1,9 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Production readiness: **NOT READY — open HIGH findings `ADM-F-003`, `ADM-F-005`, `ADM-F-006`, shared configuration finding `ADM-F-007`, and deprovision cleanup finding `ADM-F-008`**; full audit coverage also remains incomplete.<br>
-Source: root `748b703662eafdaf3919bad28787d0264f06bf16`; candidate component SHAs are in `evidence/source-manifest.txt`.<br>
-Candidate: Release 42 x86_64 RPMs; checksums in `evidence/candidate-rpm-sha256.txt`.
+Current Release 45 status: **NOT VALIDATED — no Release 45 three-guest execution has started.** Current matrix: 0/8.<br>
+Current source/package identity: `evidence/release45-candidate.md` and `evidence/release45-rpm-sha256.txt`.<br>
+Historical Release 42/43 Multi-Node observations below do not validate Release 45. Earlier findings remain open until retested on this candidate.
 
 ## Observed architecture and guarantees
 

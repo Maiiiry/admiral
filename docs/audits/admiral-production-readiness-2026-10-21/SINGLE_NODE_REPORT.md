@@ -1,8 +1,9 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Aggregate status: **NOT READY — open HIGH findings affect Single-Node; required audit scenarios also remain incomplete**<br>
-Source: root commit `748b703662eafdaf3919bad28787d0264f06bf16`; x86_64 candidate `0.0.1rc5-42.el10`.
+Current Release 45 status: **NOT VALIDATED — no Release 45 guest execution has started.** Current matrix: 0/8.<br>
+Current source/package identity: `evidence/release45-candidate.md` and `evidence/release45-rpm-sha256.txt`.<br>
+Historical Release 42/43 Single-Node observations below do not validate Release 45. Earlier findings remain open until retested on this candidate.
 
 ## Environment
 

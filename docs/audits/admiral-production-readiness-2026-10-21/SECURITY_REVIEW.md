@@ -1,7 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Status: **NOT READY — a HIGH production secret-placeholder validation defect is confirmed; live tenant isolation and broader security tests remain open**
+Current Release 45 status: **NOT VALIDATED — no current-candidate guest security tests have run.**<br>
+Prior Release 42/43 security evidence below is historical only. Findings, including any fixes included in Release 45, remain open until retested against that exact package set.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging
@@ -45,4 +46,4 @@ Scope: API/UI authentication and authorization, node trust, workload isolation, 
 
 ## Current security verdict
 
-The executed 401 probes and runtime samples passed their narrow checks, but the HTTP/2 endpoint is reachable from a worker and the candidate Go binaries contain reachable advisories (`ADM-F-003`). The production config parser also accepts shipped placeholder encryption/callback keys (`ADM-F-007`). Harbor emits an unsafe Markdown URL on Rocky and Fedora (`ADM-F-004`); the browser interaction and untrusted-content path remain untested. Same-worker isolation evidence is partial; network denial, secret separation, effective capabilities, worker identity negatives, full external listener exposure, secret canary paths, and comprehensive RPM advisory triage remain open. Single-Node and Multi-Node security are **NOT READY** until the open HIGH findings affecting each topology are corrected and revalidated; remaining security coverage is also incomplete.
+For the historical Release 42 security evidence, the HTTP/2 endpoint was reachable from a worker and the candidate Go binaries contained reachable advisories (`ADM-F-003`); the parser accepted placeholder keys (`ADM-F-007`); and Harbor emitted an unsafe Markdown URL (`ADM-F-004`). Same-worker isolation evidence was partial. Network denial, secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and comprehensive RPM advisory triage remained open. The Release 42 security assessment was **NOT READY**. Current Release 45 security status is **NOT VALIDATED** until the exact package set receives guest security tests and a current dependency scan.

@@ -1,9 +1,9 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Repository commit: `748b703662eafdaf3919bad28787d0264f06bf16` (`main`, equal to `origin/main`)<br>
-Candidate under pre-existing x86_64 end-to-end evidence: `0.0.1rc5-42.el10`<br>
-Status: discovery complete at a first-pass level; implementation and runtime checks continue.
+Current package source root: `0e4e607a124144c0cfa54912c914d74e3139ac0b` (`main` at Release 45 build)<br>
+Current candidate: `0.0.1rc5-45.el10`; no Release 45 guest validation yet.<br>
+Architecture observations below were initially reconstructed from prior pinned component sources; static review of the latest pins and runtime checks continue. Older runtime evidence is candidate-specific and historical.
 
 ## Scope and evidence rules
 
@@ -83,7 +83,7 @@ The source contains no evidence of Redis as a runtime dependency in the producti
 | AR-07 | Resource bounds | Tier-based limits and per-node capacity decisions must align with actual cgroups and storage | Inspect generated Quadlets/cgroups and stress memory/CPU/disk on guest |
 | AR-08 | Web role boundary | Harbor includes admin routes in addition to customer portal workflows | Route-level auth/session/CSRF review and negative tests for customer/admin principals |
 | AR-09 | External integrations | PayPal real payment validation is still an explicit 1.0 item | Outside this infrastructure audit unless a sandbox/integration is explicitly available |
-| AR-10 | Go toolchain and dependency advisories | Release 42 binaries use Go 1.26.7; reachable Go HTTP/2 and x/text advisories exist, with the hub endpoint reachable from a worker | `evidence/go-dependency-scan.md`; HIGH finding `ADM-F-003`; patched rebuild and scan required |
+| AR-10 | Go toolchain and dependency advisories | Release 42 binaries used Go 1.26.7; Release 45 binaries report Go 1.26.10 and x/text v0.41.0, but the current dependency scan and runtime regression have not run | `evidence/go-dependency-scan.md`, `evidence/release45-candidate.md`; HIGH finding `ADM-F-003` remains open pending scan and runtime checks |
 | AR-11 | WireGuard peer boot persistence | Worker onboarding stores peer fragments and adds runtime peers, but the standard hub boot unit reads only the main configuration | Rocky hub power-cycle lost peers; see `evidence/rocky-multi-hub-reboot.md` and HIGH finding `ADM-F-005` |
 
 ## Source references

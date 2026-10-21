@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Status: seven runtime findings are tracked in GitHub issues #207–#211, #227 and #228. The Release 42 source review also has 13 open configuration, installer, packaging and application findings in #212–#222, #224 and #225; #212 has a focused config-parser reproduction, while the rest remain static or functional-source findings pending runtime checks. Release 43 includes candidate changes for provisioning idempotency, Go toolchain/security updates, Harbor Markdown URL handling, effective availability, and Fleet service/deprovision handling. The Release 42 defects remain open until their regressions are rerun against Release 43 in the affected live topologies.
+Current candidate: Release 45, built but not installed; current matrix 0/8. Findings below summarize historical Release 42/43 evidence and source investigations; they remain open until Release 45 regression evidence is collected. Harbor URL-sanitizer code is included in Release 45, but #210 remains open pending target-matrix validation.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -33,6 +33,8 @@ Severity follows the audit criteria. These findings remain open; a source change
 
 ## ADM-F-003 — Reachable Go HTTP/2 denial-of-service advisories in the control plane build ([#209](https://github.com/admiral-project/admiral/issues/209))
 
+**Release 45 status:** all three built Go binaries report Go 1.26.10, and `admirald` reports `golang.org/x/text v0.41.0`; the current `govulncheck` scan and runtime regression have not been run. Keep #209 open pending those checks.
+
 * **Severity:** HIGH.
 * **Component:** `admirald` control-plane HTTP server; the same Go 1.26.7 standard library is present in `admiral-fleet` and `admiralctl` candidate binaries.
 * **Environment:** Multi-Node hub confirmed; Single-Node network reachability is not established by this test.
@@ -45,6 +47,8 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Regression test:** Assert deployed build metadata reports the patched toolchain; run `govulncheck` on all three Go modules and require zero reachable findings; exercise the upstream HTTP/2 regression test against a disposable candidate hub and verify the service stays available. Re-run placement, outage/rejoin and authorization tests after the RPM rebuild.
 
 ## ADM-F-004 — Harbor Markdown renderer preserves percent-encoded JavaScript URLs ([#210](https://github.com/admiral-project/admiral/issues/210))
+
+**Release 45 status:** sanitizer fix is included and Harbor's 347-test package check passes; #210 remains open pending installed-RPM verification across the target matrix.
 
 * **Severity:** MEDIUM.
 * **Component:** `admiral-harbor` app detail template and RPM-provided Mistune dependency.
