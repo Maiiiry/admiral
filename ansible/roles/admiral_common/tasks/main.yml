@@ -95,9 +95,7 @@
   loop:
     - /etc/yum.repos.d/_copr:copr.fedorainfracloud.org:admiral-project:admiral.repo
   register: admiral_copr_gpgcheck
-  failed_when:
-    - admiral_copr_gpgcheck.rc != 0
-    - admiral_install_mode != 'dev-node'
+  failed_when: admiral_copr_gpgcheck.rc != 0
   changed_when: false
 
 - name: Refresh package metadata after enabling repositories
@@ -359,7 +357,7 @@
     mode: "{{ item.mode }}"
   loop:
     - { src: "/etc/admiral/tls/ca.pem", dest: "/etc/admiral/tls/ca.pem", mode: "0644" }
-    - { src: "/etc/wireguard/admiral.pub", dest: "/etc/wireguard/admiral.pub", mode: "0644" }
+    - { src: "/etc/wireguard/admiral.pub", dest: "/etc/wireguard/hub.pub", mode: "0644" }
   when:
     - admiral_install_mode in ['worker-node', 'portal-node']
     - admiral_bootstrap_from_controller | default(false) | bool
@@ -1026,6 +1024,30 @@
   register: admiral_tls_leaf_certificate
   when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
 
+- name: Verify an existing admirald leaf against the configured CA
+  command:
+    argv:
+      - openssl
+      - verify
+      - -CAfile
+      - /etc/admiral/tls/ca.pem
+      - /etc/admiral/tls/admirald.pem
+  register: admiral_tls_leaf_trust_check
+  changed_when: false
+  failed_when: false
+  when:
+    - admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
+    - admiral_tls_leaf_certificate.stat.exists
+    - not (admiral_dev_mode | default(false) | bool)
+
+- name: Determine whether the existing leaf must be replaced with a CA-signed certificate
+  set_fact:
+    admiral_tls_leaf_needs_reissue: >-
+      {{ admiral_tls_leaf_certificate.stat.exists and
+         not (admiral_dev_mode | default(false) | bool) and
+         (admiral_tls_leaf_trust_check is not defined or admiral_tls_leaf_trust_check.rc != 0) }}
+  when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
+
 - name: Generate admirald server key
   command:
     cmd: >
@@ -1040,10 +1062,9 @@
       -out /etc/admiral/tls/admirald.csr
       -subj "/CN=localhost"
       -addext "subjectAltName={{ admiral_tls_san }}"
-    creates: /etc/admiral/tls/admirald.csr
   when:
     - admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Write openssl extensions file for SAN
   copy:
@@ -1060,7 +1081,7 @@
     group: admiral
   when:
     - admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'portal-node']
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Sign admirald certificate with CA on hub nodes
   command:
@@ -1070,9 +1091,28 @@
       -CA /etc/admiral/tls/ca.pem
       -CAkey /etc/admiral/tls/ca-key.pem
       -CAcreateserial
-      -out /etc/admiral/tls/admirald.pem
+      -out /etc/admiral/tls/admirald.pending.pem
       -extfile /etc/admiral/tls/admirald-ext.cnf
-    creates: /etc/admiral/tls/admirald.pem
+  when:
+    - admiral_wireguard_role == 'hub'
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
+
+- name: Deploy CA-signed admirald server certificate atomically
+  copy:
+    src: /etc/admiral/tls/admirald.pending.pem
+    dest: /etc/admiral/tls/admirald.pem
+    remote_src: true
+    mode: "0640"
+    owner: root
+    group: admiral
+  when:
+    - admiral_wireguard_role == 'hub'
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
+
+- name: Remove pending admirald server certificate
+  file:
+    path: /etc/admiral/tls/admirald.pending.pem
+    state: absent
   when: admiral_wireguard_role == 'hub'
 
 - name: Read portal-node CSR for controller-side signing
@@ -1082,7 +1122,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Create temporary CSR file on controller for portal-node
   tempfile:
@@ -1094,7 +1134,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Create temporary extensions file on controller for portal-node
   tempfile:
@@ -1106,7 +1146,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Create temporary certificate file on controller for portal-node
   tempfile:
@@ -1118,7 +1158,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Write portal-node CSR to controller temporary file
   copy:
@@ -1129,7 +1169,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Write portal-node SAN extensions to controller temporary file
   copy:
@@ -1146,7 +1186,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Sign portal-node certificate on controller
   command:
@@ -1162,7 +1202,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Read signed portal-node certificate from controller
   slurp:
@@ -1172,7 +1212,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Deploy signed portal-node certificate
   copy:
@@ -1184,7 +1224,7 @@
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
 
 - name: Remove temporary openssl extensions file
   file:
@@ -1211,14 +1251,15 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ admiral_portal_tls_csr_tmp.path }}"
-    - "{{ admiral_portal_tls_ext_tmp.path }}"
-    - "{{ admiral_portal_tls_cert_tmp.path }}"
+    - "{{ admiral_portal_tls_csr_tmp.path | default('') }}"
+    - "{{ admiral_portal_tls_ext_tmp.path | default('') }}"
+    - "{{ admiral_portal_tls_cert_tmp.path | default('') }}"
   delegate_to: localhost
   when:
     - admiral_install_mode == 'portal-node'
     - admiral_wireguard_role == 'spoke'
-    - not admiral_tls_leaf_certificate.stat.exists
+    - (not admiral_tls_leaf_certificate.stat.exists) or (admiral_tls_leaf_needs_reissue | default(false) | bool)
+    - item | length > 0
 
 - name: Set TLS cert permissions
   file:

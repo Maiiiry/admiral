@@ -32,12 +32,12 @@
   changed_when: false
   no_log: true
 
-- name: Store WireGuard public key for peer exchange (hub only)
+- name: Store this node's WireGuard public key for peer exchange
   copy:
     content: "{{ admiral_wg_public_key.stdout }}\n"
     dest: /etc/wireguard/admiral.pub
     mode: "0644"
-  when: admiral_wireguard_role == 'hub'
+  when: admiral_wireguard_role in ['hub', 'spoke']
 
 - name: Set WireGuard listen port
   set_fact:
@@ -173,7 +173,7 @@
 
 - name: Read hub WireGuard public key from file for spoke nodes
   slurp:
-    src: /etc/wireguard/admiral.pub
+    src: /etc/wireguard/hub.pub
   register: admiral_wireguard_hub_pub_slurp
   when:
     - admiral_wireguard_role == 'spoke'
@@ -202,6 +202,17 @@
     enabled: true
     state: started
     daemon_reload: true
+
+- name: Re-assert disabled IP forwarding after WireGuard starts
+  sysctl:
+    name: "{{ item }}"
+    value: '0'
+    sysctl_set: true
+    state: present
+    reload: false
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
 
 - name: Query permanent firewalld zones
   command:
@@ -268,7 +279,7 @@
       - --permanent
       - --zone=admiral
       - >-
-        --add-rich-rule=rule family="ipv4" source address="10.99.0.1"
+        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_hub_ip | default('10.99.0.1') }}"
         port port="{{ item }}" protocol="tcp" accept
   loop:
     - 9099
@@ -284,7 +295,7 @@
       - --permanent
       - --zone=admiral
       - >-
-        --add-rich-rule=rule family="ipv4" source address="10.99.0.1"
+        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_hub_ip | default('10.99.0.1') }}"
         port port="5001" protocol="tcp" accept
   when: admiral_effective_host_profile == 'portal'
   register: firewall_admiral_portal_rule

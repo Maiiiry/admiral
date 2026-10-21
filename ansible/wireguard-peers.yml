@@ -122,6 +122,7 @@
         group: root
         mode: "0600"
       delegate_to: "{{ hub_host }}"
+      no_log: true
 
 - name: Build and deploy hub WireGuard configuration
   hosts: admin
@@ -140,6 +141,7 @@
         src: "{{ item }}"
       loop: "{{ hub_peer_file_paths.files | map(attribute='path') | list }}"
       register: peer_files
+      no_log: true
 
     - name: Initialize peer list for template
       set_fact:
@@ -149,6 +151,7 @@
       set_fact:
         admiral_wireguard_peers: "{{ admiral_wireguard_peers + [{'public_key': (item.content | b64decode | regex_findall('(?m)^PublicKey\\s*=\\s*(.+)$') | first | trim), 'allowed_ips': (item.content | b64decode | regex_findall('(?m)^AllowedIPs\\s*=\\s*(.+)$') | first | trim), 'preshared_key': (item.content | b64decode | regex_findall('(?m)^PresharedKey\\s*=\\s*(.+)$') | first | default('') | trim)}] }}"
       loop: "{{ peer_files.results }}"
+      no_log: true
 
     - name: Debug peer list
       debug:

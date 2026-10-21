@@ -2,6 +2,8 @@
 Address = {{ admiral_wireguard_ip }}/{{ admiral_wireguard_subnet.split('/')[-1] }}
 PrivateKey = {{ admiral_wg_private_key.stdout }}
 ListenPort = {{ admiral_wireguard_port }}
+PostUp = /usr/sbin/sysctl -w net.ipv4.ip_forward=0
+PostUp = /usr/sbin/sysctl -w net.ipv6.conf.all.forwarding=0
 
 {% if admiral_wireguard_role == 'hub' %}
 {% set peer_state = namespace(keys=[]) %}

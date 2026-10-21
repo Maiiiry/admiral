@@ -279,8 +279,11 @@ al cliente autenticado sin exponer el listado global completo.
 
 Crea una instancia y encola `provision_app`.
 
-Requiere el encabezado `X-Admiral-Customer-ID`. Debe coincidir con el
-`customer_id` del cuerpo; de otro modo responde `403 Forbidden`.
+Requiere los encabezados `X-Admiral-Customer-ID` e `Idempotency-Key`.
+`X-Admiral-Customer-ID` debe coincidir con el `customer_id` del cuerpo; de
+otro modo responde `403 Forbidden`. La clave de idempotencia debe mantenerse
+igual al reintentar la misma intención de provision y debe cambiarse para una
+nueva instancia intencional.
 
 Request:
 
@@ -291,6 +294,19 @@ Request:
   "customer_id": "cust_001"
 }
 ```
+
+`Idempotency-Key` es un valor opaco de 1 a 255 bytes. Admiral guarda un
+hash de la clave, el hash de la solicitud, los IDs de instancia/operación/tarea
+y la respuesta estable. La reserva de capacidad, la instancia y la operación
+se crean en una transacción junto con la clave. Repetir la misma clave con el
+mismo contenido devuelve la misma instancia y operación sin crear otra
+reserva ni encolar otra tarea; reutilizarla con contenido diferente responde
+`409 Conflict`. Las claves se conservan para evitar duplicados tardíos.
+
+Si la primera solicitud aún está procesándose, el replay devuelve `202` con
+los mismos `instance_id` y `operation_id` y `status: "processing"`. La
+respuesta del replay no vuelve a exponer credenciales: se pueden consultar por
+el endpoint autenticado de credenciales de la instancia.
 
 Respuesta `202 Accepted`:
 

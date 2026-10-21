@@ -13,6 +13,13 @@
   command: setenforce 1
   when: selinux_status.stdout == "Permissive"
 
+- name: Persist SELinux enforcing mode across reboots
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: SELINUX=enforcing
+    backup: true
+
 - name: Read SELinux permission for reverse proxy connections
   command:
     argv:

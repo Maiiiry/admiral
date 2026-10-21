@@ -7,6 +7,13 @@
       -N ""
     creates: /etc/admiral/ssh/id_ed25519
 
+- name: Make SSH tunnel key readable by the service account only
+  file:
+    path: /etc/admiral/ssh/id_ed25519
+    owner: root
+    group: admiral
+    mode: "0640"
+
 - name: Install SSH tunnel systemd service
   template:
     src: admiral-tunnel@.service.j2
