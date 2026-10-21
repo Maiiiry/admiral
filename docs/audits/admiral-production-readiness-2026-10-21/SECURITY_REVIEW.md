@@ -1,8 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 45 status: **NOT VALIDATED — no current-candidate guest security tests have run.**<br>
-Prior Release 42/43 security evidence below is historical only. Findings, including any fixes included in Release 45, remain open until retested against that exact package set.
+Current Release 46 status: **NOT TESTED — package build and fresh guest security checks are pending.** Matrix: 0/8.<br>
+Release 45 included limited Rawhide and Rocky authentication probes, and Fedora same-host isolation/secret-separation/resource-limit checks. Release 45 was invalidated by #229; none of those observations validate Release 46. Findings, including source fixes, remain open until retested against the exact package set.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging
@@ -46,4 +46,4 @@ Scope: API/UI authentication and authorization, node trust, workload isolation, 
 
 ## Current security verdict
 
-For the historical Release 42 security evidence, the HTTP/2 endpoint was reachable from a worker and the candidate Go binaries contained reachable advisories (`ADM-F-003`); the parser accepted placeholder keys (`ADM-F-007`); and Harbor emitted an unsafe Markdown URL (`ADM-F-004`). Same-worker isolation evidence was partial. Network denial, secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and comprehensive RPM advisory triage remained open. The Release 42 security assessment was **NOT READY**. Current Release 45 security status is **NOT VALIDATED** until the exact package set receives guest security tests and a current dependency scan.
+For the historical Release 42 security evidence, the HTTP/2 endpoint was reachable from a worker and the candidate Go binaries contained reachable advisories (`ADM-F-003`); the parser accepted placeholder keys (`ADM-F-007`); and Harbor emitted an unsafe Markdown URL (`ADM-F-004`). Same-worker isolation evidence was partial. Network denial, secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and comprehensive RPM advisory triage remained open. The Release 42 security assessment was **NOT READY**. Release 45 included limited guest security probes but was invalidated by #229; those results do not apply to Release 46. Current Release 46 security status is **NOT TESTED** until the exact package set receives fresh guest security tests and a current dependency scan.

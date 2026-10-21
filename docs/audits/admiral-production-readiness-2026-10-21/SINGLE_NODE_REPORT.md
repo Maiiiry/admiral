@@ -1,9 +1,22 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 45 status: **NOT VALIDATED — no Release 45 guest execution has started.** Current matrix: 0/8.<br>
-Current source/package identity: `evidence/release45-candidate.md` and `evidence/release45-rpm-sha256.txt`.<br>
-Historical Release 42/43 Single-Node observations below do not validate Release 45. Earlier findings remain open until retested on this candidate.
+Current Release 46 status: **NOT VALIDATED — coordinated RPM build and fresh guest executions are pending.** Current matrix: 0/8.<br>
+Current source root: `7223561646b60d3c24e8bfb257d544a5eb6dea04`; component fix: `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`.<br>
+Release 45 had scoped Fedora Rawhide and Rocky Linux 10 Single-Node executions but was invalidated by stale task replay after a reboot (`ADM-F-009` / #229). Those results are exact-candidate history only; no Release 45 result validates Release 46. See `evidence/fedora-r45-stale-task-replay.md`.
+
+## Release 45 execution record — invalidated, not a cell pass
+
+| Test | Environment | Observed | Result on Release 45 | Evidence |
+| --- | --- | --- | --- | --- |
+| Clean install and packaged service start | Fedora Rawhide 46, Rocky Linux 10.2 x86_64 | Six exact Release 45 packages installed; installer completed without failed Ansible tasks; core services and CLI health checks passed | PASS (installation subset only; invalidated candidate) | `packaging/build/validation/rc5-r45/*install*` |
+| Provision request idempotency | Fedora Rawhide and Rocky Linux 10 Single-Node | Concurrent duplicate submissions and a sequential replay returned the same operation, instance and task IDs | PASS (targeted #207 regression only; invalidated candidate) | `packaging/build/validation/rc5-r45/fedora-r45-single-idempotency-repeat.txt`, `rocky-r45-single-idempotency-repeat.txt` |
+| Required DB service failure | Fedora Rawhide and Rocky Linux 10 Single-Node | `/bin/false` fixture reached failed/unhealthy state; cleanup removed generated runtime resources | PASS (targeted #227 regression only; invalidated candidate) | `packaging/build/validation/rc5-r45/fedora-r45-single-failing-db-*`, `rocky-r45-single-failing-db-*` |
+| Deprovision after Podman deletion errors | Fedora Rawhide Single-Node | Operation failed with details while resources remained; restoring Podman and retrying removed them | PASS (targeted #228 regression only; invalidated candidate) | `packaging/build/validation/rc5-r45/fedora-r45-single-podman-*` |
+| Local database backup and restore | Fedora Rawhide Single-Node | Checksum-verified restore recovered the SQL marker; backup and instance were removed | PASS (local backend subset; object storage not tested; invalidated candidate) | `packaging/build/validation/rc5-r45/fedora-r45-single-backup-*` |
+| Failed provision, successful deprovision, then host reboot | Fedora Rawhide Single-Node | Same failed provision task was reclaimed after restart and recreated Quadlets and partial workload resources although the operation was failed and deprovision had succeeded | **FAIL — HIGH `ADM-F-009` / #229** | `evidence/fedora-r45-stale-task-replay.md` |
+
+The Release 45 rows are evidence that these named probes ran. They do not form a complete cell and are all excluded from Release 46 completion under the candidate invalidation rule.
 
 ## Environment
 

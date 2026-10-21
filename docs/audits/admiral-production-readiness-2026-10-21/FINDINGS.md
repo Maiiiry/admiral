@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: Release 45, built but not installed; current matrix 0/8. Findings below summarize historical Release 42/43 evidence and source investigations; they remain open until Release 45 regression evidence is collected. Harbor URL-sanitizer code is included in Release 45, but #210 remains open pending target-matrix validation.
+Current candidate: Release 46 package refs are pushed, but the six-RPM build and fresh guest runs are pending; current matrix 0/8. Release 45 received scoped Fedora and Rocky Single-Node execution and exposed HIGH finding `ADM-F-009` / #229. Release 45 is invalidated, and its evidence does not count toward Release 46. The task-dispatch fix is pushed in `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`; #229 remains open until fresh Single-Node and Multi-Node regression evidence is collected. Release 45 targeted checks for #207, #227 and #228 passed on named probes but do not close those tracker issues or validate a matrix cell.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -33,7 +33,7 @@ Severity follows the audit criteria. These findings remain open; a source change
 
 ## ADM-F-003 — Reachable Go HTTP/2 denial-of-service advisories in the control plane build ([#209](https://github.com/admiral-project/admiral/issues/209))
 
-**Release 45 status:** all three built Go binaries report Go 1.26.10, and `admirald` reports `golang.org/x/text v0.41.0`; the current `govulncheck` scan and runtime regression have not been run. Keep #209 open pending those checks.
+**Release 45 historical status:** all three built Go binaries reported Go 1.26.10, and `admirald` reported `golang.org/x/text v0.41.0`; the current `govulncheck` scan and runtime regression were not run. Release 45 was invalidated by #229. Release 46 package inspection, a current scan and runtime regression remain pending; keep #209 open.
 
 * **Severity:** HIGH.
 * **Component:** `admirald` control-plane HTTP server; the same Go 1.26.7 standard library is present in `admiral-fleet` and `admiralctl` candidate binaries.
@@ -48,7 +48,7 @@ Severity follows the audit criteria. These findings remain open; a source change
 
 ## ADM-F-004 — Harbor Markdown renderer preserves percent-encoded JavaScript URLs ([#210](https://github.com/admiral-project/admiral/issues/210))
 
-**Release 45 status:** sanitizer fix is included and Harbor's 347-test package check passes; #210 remains open pending installed-RPM verification across the target matrix.
+**Release 45 historical status:** sanitizer fix was included and Harbor's 347-test package check passed; #210 remains open pending installed-RPM verification. Release 45 was invalidated by #229. Recheck the exact Release 46 RPMs before changing the issue status.
 
 * **Severity:** MEDIUM.
 * **Component:** `admiral-harbor` app detail template and RPM-provided Mistune dependency.
@@ -112,6 +112,19 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Root cause:** Confirmed in `admiral-fleet/internal/executor/executor_deprovision.go`: errors from systemd stop/disable and Podman pod/container/volume removal are logged and ignored. After removing Quadlet files and instance data, the executor unconditionally sets `result.Success = true`.
 * **Recommendation:** Aggregate managed-resource cleanup failures into the task result and preserve operation and instance metadata for retries. Only mark an instance deprovisioned after the worker confirms its managed Podman resources are absent.
 * **Regression test:** Inject each systemd, pod, container, volume and secret removal failure independently. Require a non-success result while any resource remains; restore the dependency, retry cleanup, then verify zero resources and an instance state of `deprovisioned`. Run in Single-Node and Multi-Node.
+
+## ADM-F-009 — Terminal provision task can replay after deprovision and reboot ([#229](https://github.com/admiral-project/admiral/issues/229))
+
+* **Severity:** HIGH.
+* **Component:** `admirald` task-claim/callback handlers and the durable Fleet queue.
+* **Environment:** Confirmed on Fedora Rawhide 46 x86_64, Single-Node, exact Release 45 candidate. The task queue and handlers are shared by both topologies; Multi-Node runtime reproduction remains required.
+* **Reproduction:** Provision `fixtures/e2e-failing-db.yaml` with its DB command set to `/bin/false`. After its provision operation becomes failed, deprovision the instance and verify that containers, pod, volume, Quadlets and instance data are absent. Reboot the guest and inspect Fleet's claim log, generated files and durable queue row.
+* **Expected:** A failed, cancelled, succeeded, missing, or superseded operation task is settled before dispatch. A successfully deprovisioned instance remains absent after worker/host recovery.
+* **Observed:** Failed operation `op_4128a116f0708f74` / task `task_23ff82be44eb6dc4` was deprovisioned successfully by `op_32c6c26865d7a4fd`. After reboot Fleet reclaimed the same task, re-rendered Quadlets and recreated partial rootless workload resources. At 22:17:59Z the queue row remained leased at attempt 5/5 despite the terminal operation records. The fixture failure cleaned the partial resources on that attempt; raw evidence was preserved before lab-only queue containment.
+* **Evidence:** `evidence/fedora-r45-stale-task-replay.md`; raw event, state, operation and queue snapshots are retained mode 0600 under ignored `packaging/build/validation/rc5-r45/` and hashed in the evidence record. No credential values are committed.
+* **Root cause:** Confirmed in Release 45 source: `HandleTaskClaim` returned a claimed queue payload without checking operation terminal state, operation/task identity or node assignment. The terminal callback branch returned HTTP success without settling the queue row. A lease retry could therefore execute stale work after an operation had already failed or been deprovisioned.
+* **Recommendation:** Validate operation status and identity before returning any task to Fleet; cancel stale queue commands, and settle late callbacks without mutating terminal operation state. This minimum source fix is pushed in `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`; target-guest evidence is still required.
+* **Regression test:** On a fresh Release 46 Fedora Rawhide guest, force provision failure, deprovision to zero resources, restart Fleet or the host, and prove the stale task is cancelled before dispatch and remains terminal. Add API tests for failed, cancelled, succeeded, missing-operation and replaced-task claims; then exercise the same queue path in a three-guest Multi-Node environment.
 
 ## Additional open source-review findings
 

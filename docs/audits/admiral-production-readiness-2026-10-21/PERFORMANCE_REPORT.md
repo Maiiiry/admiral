@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 45 status: **NOT TESTED — no Release 45 workload performance samples have been collected.** Historical per-operation timings below do not apply to this candidate and are not a controlled baseline.
+Current Release 46 status: **NOT TESTED — coordinated package build and controlled workload samples are pending.** Matrix: 0/8. Release 45 operation timings were functional checks only, and that candidate was invalidated by #229; they provide no Release 46 performance evidence.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 

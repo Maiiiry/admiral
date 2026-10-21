@@ -1,20 +1,24 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: six Release 45 RPMs built locally; exact component refs, NEVRAs, SHA-256 values and CI are recorded in `evidence/release45-candidate.md`.<br>
-Release 45 has not been installed in any audit guest. **Current-candidate completion is 0/8; all eight cells are NOT TESTED on Release 45.** The historical observations below belong to Release 42/43 and do not validate the current candidate.<br>
+Current candidate: Release 46 refs and six Release fields are committed on `main` at `7223561646b60d3c24e8bfb257d544a5eb6dea04`; the coordinated RPM build and guest installation are pending.<br>
+**Current-candidate completion is 0/8; all eight cells are NOT TESTED on Release 46.** Release 45 had limited Fedora and Rocky Single-Node execution but was invalidated by HIGH finding `ADM-F-009` / #229 after a stale provision task replayed following reboot and deprovision. No Release 45 evidence validates Release 46.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
-| Target OS (x86_64) | Single-Node — Release 45 | Multi-Node — Release 45 |
+| Target OS (x86_64) | Single-Node — Release 46 | Multi-Node — Release 46 |
 | --- | --- | --- |
 | Fedora Rawhide | NOT TESTED | NOT TESTED |
 | Rocky Linux 10 | NOT TESTED | NOT TESTED |
 | AlmaLinux 10 | NOT TESTED | NOT TESTED |
 | CentOS Stream 10 | NOT TESTED | NOT TESTED |
 
-Current candidate completion: **0/8**. Both topologies are **NOT VALIDATED** on Release 45; older high-severity findings remain open pending current-candidate retests.
+Current candidate completion: **0/8**. Both topologies are **NOT VALIDATED** on Release 46; all earlier findings remain open until runtime regression evidence exists for this exact package set.
 
 Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
+
+## Release 45 limited Single-Node execution — invalidated
+
+Release 45 was installed on fresh Fedora Rawhide 46 and Rocky Linux 10.2 x86_64 guests. Targeted tests exercised installation, service readiness, idempotent request replay, failed-service handling, authentication, and selected workload lifecycle behavior. Fedora additionally exercised local backup/restore, same-host isolation negatives, cgroup limits, Podman cleanup-error injection, and host reboot. The reboot exposed a terminal-task replay that recreated resources after a failed provision had been successfully deprovisioned. Finding `ADM-F-009` / #229 invalidates this candidate's matrix evidence; these are kept only as exact-candidate history. Details and restricted raw-log hashes: `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Historical platform matrix — prior Release 42/43 runs
 
