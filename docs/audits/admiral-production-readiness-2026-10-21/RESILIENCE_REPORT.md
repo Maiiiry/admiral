@@ -1,7 +1,7 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT VALIDATED — the stale-task reboot regression passed on a fresh Fedora Single-Node guest; other resilience scenarios and Multi-Node queue recovery remain untested.** Current matrix: 0/8.<br>
+Current Release 46 status: **NOT VALIDATED — the stale-task reboot regression passed on a fresh Fedora Single-Node guest; other resilience scenarios and Multi-Node queue recovery remain untested.** Current matrix: 0/6.<br>
 Release 45 had a real Fedora Rawhide host reboot/failure-injection run that reproduced stale provision-task replay after failed operation and successful deprovision (`ADM-F-009` / #229). Release 45 is invalidated; that FAIL is historical evidence and does not validate Release 46.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.

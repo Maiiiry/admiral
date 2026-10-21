@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`<br>
 Candidate: six coordinated Release 46 RPMs from root package-preparation commit `7223561646b60d3c24e8bfb257d544a5eb6dea04`; source pins and package hashes are recorded in `release46-candidate.md` and `release46-rpm-sha256.txt`. The queue fix is `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`.<br>
-Scope: two targeted Single-Node scenarios on fresh x86_64 guests. These results do not complete either OS cell. Matrix remains **0/8**.
+Scope: targeted Single-Node scenarios on fresh x86_64 guests. The Fedora result remains in scope. The Rocky probe below is preserved but no longer counts: Rocky Linux 10 was removed from the matrix by user direction after EPEL dependency resolution failed on Rocky 10.2. The current matrix is 0/6.
 
 ## FEDORA-R46-SN-RES-013 — stale task after deprovision and reboot
 
@@ -16,9 +16,9 @@ Scope: two targeted Single-Node scenarios on fresh x86_64 guests. These results 
 
 This reproduces the Release 45 failure trigger against Release 46 and shows the stale queue command is cancelled before restart and stays settled after restart. It is a real guest fault/recovery test, not a unit-test inference. It also exercises the #227 failed-service result on Fedora Single-Node. Both findings remain open until their affected Multi-Node paths receive fresh three-guest regressions.
 
-## ROCKY-R46-SN-E2E-001 — install, provision, serve, deprovision
+## Excluded probe — Rocky Linux 10 (not a matrix result)
 
-**Result: PASS for this targeted Rocky Linux 10 Single-Node lifecycle probe.** This is not a full Single-Node matrix pass.
+**Result: PASS for the named targeted lifecycle probe before scope exclusion.** This is not a current matrix result or a full Single-Node pass.
 
 - Guest: `adm-r46-rocky-single`, Rocky Linux 10.2 x86_64, 2 vCPU / 2 GiB, fresh overlay from the verified 2026-10-20 updated seed. All six exact Release 46 RPMs were installed. Secure installer completed at `2026-10-21T22:58:41Z`, with recap `ok=229 changed=97 failed=0 unreachable=0`; Harbor API probe succeeded. `admiralctl status` reported the API online and control plane healthy.
 - Applied `examples/apps/e2e-whoami.yaml` and provisioned `e2e-whoami` / tier `small` for customer `audit_rc46_rocky_single_20261021`, with idempotency key `audit-r46-rocky-single-whoami-20261021`.
@@ -27,6 +27,6 @@ This reproduces the Release 45 failure trigger against Release 46 and shows the 
 
 ## Limits and raw evidence
 
-These probes do not cover the other required lifecycle scenarios, repeated or concurrent operations, persistence across workload reboot, backups, isolation negatives, resource exhaustion, Podman/systemd fault injection, performance sampling, or any Multi-Node scenario. No full Release 46 matrix cell has passed; current completion remains **0/8**.
+The in-scope probes do not cover the other required lifecycle scenarios, repeated or concurrent operations, persistence across workload reboot, backups, isolation negatives, resource exhaustion, Podman/systemd fault injection, performance sampling, or any Multi-Node scenario. No full Release 46 matrix cell has passed; current completion remains **0/6**. The excluded Rocky result is retained as historical evidence only.
 
 Unsanitized install and guest-state logs remain in the ignored local directory `packaging/build/validation/rc5-r46/`, mode `0600`. Their SHA-256 digests are listed in `release46-single-probe-log-sha256.txt`. No credentials or raw logs are committed.

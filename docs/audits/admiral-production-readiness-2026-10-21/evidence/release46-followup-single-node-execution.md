@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`<br>
 Candidate: six exact `0.0.1rc5-46.el10` RPMs, root package-preparation commit `7223561646b60d3c24e8bfb257d544a5eb6dea04`; component pins and RPM digests are in `release46-candidate.md` and `release46-rpm-sha256.txt`.<br>
-Scope: fresh Single-Node install and one `e2e-whoami` provision/replay/HTTP/deprovision probe on AlmaLinux 10, CentOS Stream 10 and Fedora Rawhide. This is targeted evidence only. The matrix remains **0/8**.
+Scope: fresh Single-Node install and one `e2e-whoami` provision/replay/HTTP/deprovision probe on AlmaLinux 10, CentOS Stream 10 and Fedora Rawhide. This is targeted evidence only. The current three-OS matrix remains **0/6**.
 
 ## Test record
 
@@ -37,6 +37,6 @@ The AlmaLinux and CentOS Stream probes used cold PostgreSQL images. Their initia
 
 The first CentOS Stream installer attempt stopped before installing Admiral packages because EPEL mirror access failed (TLS issuer, timeout and checksum errors). The first failed log is preserved. A targeted EPEL metadata refresh succeeded and the fresh install was retried as a separate run; that retry passed. This external repository failure is not counted as a product failure.
 
-The probes do not exercise concurrent requests, same-customer races, app updates, persistence across reboot, backup/restore, tenant isolation, resource exhaustion, Podman/systemd fault injection, public DNS/TLS routing, or performance percentiles. They do not complete any Single-Node cell. Release 46 Multi-Node remains untested, so matrix completion remains **0/8**.
+The probes do not exercise concurrent requests, same-customer races, app updates, persistence across reboot, backup/restore, tenant isolation, resource exhaustion, Podman/systemd fault injection, public DNS/TLS routing, or performance percentiles. They do not complete any Single-Node cell. In-scope Release 46 Multi-Node remains untested, so matrix completion remains **0/6**.
 
 Unsanitized logs and baselines are ignored local artifacts under `packaging/build/validation/rc5-r46/`, all mode `0600`. Their SHA-256 values are recorded in `release46-followup-single-probe-log-sha256.txt`; no secrets or raw logs are committed.

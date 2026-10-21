@@ -1,18 +1,17 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: six Release 46 RPMs built from refs committed on `main` at `7223561646b60d3c24e8bfb257d544a5eb6dea04`; fresh Single-Node installs and targeted workload probes completed on all four target distributions.<br>
-**Current-candidate completion is 0/8; all eight full cells remain NOT TESTED on Release 46.** Targeted queue-replay and workload lifecycle scenarios passed for the named tests only; no full Single-Node or Multi-Node scenario set is complete. Release 45 was invalidated by HIGH finding `ADM-F-009` / #229 after a stale provision task replayed following reboot and deprovision; its evidence does not validate Release 46.<br>
-Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
+Current candidate: six Release 46 RPMs built from refs committed on `main` at `7223561646b60d3c24e8bfb257d544a5eb6dea04`; fresh Single-Node installs and targeted workload probes completed on the three in-scope distributions.<br>
+**Current-candidate completion is 0/6; all six full cells remain incomplete on Release 46.** Targeted queue-replay and workload lifecycle scenarios passed for the named tests only; no full Single-Node or Multi-Node scenario set is complete. Rocky Linux 10 was removed from scope by user direction after EPEL dependency resolution failed on Rocky 10.2; this is excluded, not counted as a matrix result. Release 45 was invalidated by HIGH finding `ADM-F-009` / #229 after a stale provision task replayed following reboot and deprovision; its evidence does not validate Release 46.<br>
+Target matrix: Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (6 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
 | Target OS (x86_64) | Single-Node — Release 46 | Multi-Node — Release 46 |
 | --- | --- | --- |
 | Fedora Rawhide | NOT TESTED — targeted probes only | NOT TESTED |
-| Rocky Linux 10 | NOT TESTED — targeted probes only | NOT TESTED |
 | AlmaLinux 10 | NOT TESTED — targeted probes only | NOT TESTED |
 | CentOS Stream 10 | NOT TESTED — targeted probes only | NOT TESTED |
 
-Current candidate completion: **0/8**. Both topologies remain **NOT VALIDATED** on Release 46. Fedora Single-Node evidence includes targeted regressions for failed-service reporting and terminal-task replay, but #227 and #229 stay open pending the affected Multi-Node checks; other findings still need their exact-candidate regressions.
+Current candidate completion: **0/6**. Both topologies remain **NOT VALIDATED** on Release 46. Fedora Single-Node evidence includes targeted regressions for failed-service reporting and terminal-task replay, but #227 and #229 stay open pending the affected Multi-Node checks; other findings still need their exact-candidate regressions.
 
 Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
 
@@ -21,18 +20,17 @@ Status vocabulary: **PASS** means the exact scenario was run and evidence exists
 | Test ID | Exact scenario | Environment | Result | Evidence / remaining scope |
 | --- | --- | --- | --- | --- |
 | FEDORA-R46-SN-RES-013 | Failed provision, successful deprovision, host reboot, delayed queue/resource check | Fedora Rawhide 46 x86_64, fresh Release 46 Single-Node guest | PASS (targeted #229 regression) | `evidence/release46-initial-single-node-execution.md`; #229 still requires Multi-Node runtime evidence. |
-| ROCKY-R46-SN-E2E-001 | Install, provision whoami + PostgreSQL, HTTP request, deprovision and cleanup | Rocky Linux 10.2 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe) | `evidence/release46-initial-single-node-execution.md`; concurrency, persistence, backup, isolation and fault scenarios remain NOT TESTED. |
 | ALMA-R46-SN-E2E-001 | Fresh install, provision whoami + PostgreSQL, idempotent replay, HTTP request, deprovision and cleanup | AlmaLinux 10.2 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe; cold DB startup observed) | `evidence/release46-followup-single-node-execution.md`; full-cell scenarios remain NOT TESTED. |
 | CENTOS-R46-SN-E2E-001 | Fresh install, provision whoami + PostgreSQL, idempotent replay, HTTP request, deprovision and cleanup | CentOS Stream 10 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe; cold DB startup observed) | `evidence/release46-followup-single-node-execution.md`; full-cell scenarios remain NOT TESTED. |
 | FEDORA-R46-SN-E2E-002 | Post-reboot install check, provision whoami + PostgreSQL, idempotent replay, effective host-port HTTP request, deprovision and cleanup | Fedora Rawhide 46 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe) | `evidence/release46-followup-single-node-execution.md`; port was read from Podman (`127.0.0.1:40001`). |
 
-None of these scenarios satisfies all Single-Node requirements for its OS cell. The full matrix remains **0/8**.
+The Rocky Release 46 probe remains archived in `evidence/release46-initial-single-node-execution.md` but is excluded from this matrix. None of the in-scope scenarios satisfies all Single-Node requirements for its OS cell. The full matrix remains **0/6**.
 
 ## Release 45 limited Single-Node execution — invalidated
 
 Release 45 was installed on fresh Fedora Rawhide 46 and Rocky Linux 10.2 x86_64 guests. Targeted tests exercised installation, service readiness, idempotent request replay, failed-service handling, authentication, and selected workload lifecycle behavior. Fedora additionally exercised local backup/restore, same-host isolation negatives, cgroup limits, Podman cleanup-error injection, and host reboot. The reboot exposed a terminal-task replay that recreated resources after a failed provision had been successfully deprovisioned. Finding `ADM-F-009` / #229 invalidates this candidate's matrix evidence; these are kept only as exact-candidate history. Details and restricted raw-log hashes: `evidence/fedora-r45-stale-task-replay.md`.
 
-## Historical platform matrix — prior Release 42/43 runs
+## Historical platform matrix — prior Release 42/43 runs (not the current scope)
 
 | Target OS (x86_64) | Single-Node | Multi-Node (hub + 2 workers) | Evidence / limitation |
 | --- | --- | --- | --- |

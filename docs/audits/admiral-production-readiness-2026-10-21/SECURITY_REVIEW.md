@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT TESTED — the candidate is built and installed on fresh Single-Node guests, but no Release 46 security checks have run.** Matrix: 0/8.<br>
+Current Release 46 status: **NOT TESTED — the candidate is built and installed on fresh Single-Node guests, but no Release 46 security checks have run.** Matrix: 0/6.<br>
 Release 45 included limited Rawhide and Rocky authentication probes, and Fedora same-host isolation/secret-separation/resource-limit checks. Release 45 was invalidated by #229; none of those observations validate Release 46. Findings, including source fixes, remain open until retested against the exact package set.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 

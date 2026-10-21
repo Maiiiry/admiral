@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`<br>
 Candidate: Admiral RC5 Release 46, x86_64 host RPM build; payload architectures are x86_64 and noarch.<br>
-Build result: **six coordinated Admiral RPMs built successfully and published to the isolated local candidate repository. Fresh Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 Single-Node installations and targeted runtime probes completed. No full matrix cell has passed; matrix remains 0/8.**<br>
+Build result: **six coordinated Admiral RPMs built successfully and published to the isolated local candidate repository. Fresh Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 Single-Node installations and targeted runtime probes completed. No full matrix cell has passed; the current matrix remains 0/6. Rocky Linux 10 is excluded after an external EPEL dependency-resolution blocker; see `release46-rocky-excluded-dependency-block.md`.**<br>
 Build time recorded by host: 2026-10-21 UTC.<br>
 
 ## Source and CI identity
@@ -46,4 +46,4 @@ Machine-readable hashes are in `release46-rpm-sha256.txt`. `rpm -qp` confirmed e
 
 ## Validation status
 
-Release 46 was installed on fresh Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 Single-Node guests. Fedora passed named failed-provision/deprovision/reboot and whoami lifecycle probes; Rocky, AlmaLinux and CentOS Stream completed targeted whoami lifecycle and cleanup probes. Exact results and restricted raw-log hashes are in the [initial Single-Node evidence](release46-initial-single-node-execution.md) and [follow-up evidence](release46-followup-single-node-execution.md). These probes do not complete any full OS cell. No Release 46 Multi-Node scenario has run. The matrix remains **0/8** until a whole cell's required scenarios complete on the exact candidate. Release 45 remains invalidated by the reboot replay in [its Fedora evidence](fedora-r45-stale-task-replay.md); issue [#229](https://github.com/admiral-project/admiral/issues/229) stays open pending the fresh Multi-Node regression.
+Release 46 was installed on fresh Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 Single-Node guests. Fedora passed named failed-provision/deprovision/reboot and whoami lifecycle probes; AlmaLinux and CentOS Stream completed targeted whoami lifecycle and cleanup probes. These probes do not complete any full OS cell. No in-scope Release 46 Multi-Node scenario has run. The current matrix is **0/6** until a whole cell's required scenarios complete on the exact candidate. The Rocky probe is archived but excluded: normal EPEL dependency resolution could not satisfy the certbot dependency chain on Rocky 10.2; the workaround was not accepted as a matrix run. Release 45 remains invalidated by the reboot replay in [its Fedora evidence](fedora-r45-stale-task-replay.md); issue [#229](https://github.com/admiral-project/admiral/issues/229) stays open pending the fresh Multi-Node regression.
