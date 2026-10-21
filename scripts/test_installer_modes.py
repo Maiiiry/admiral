@@ -806,6 +806,12 @@ done
         persist_peer = fleet.index(
             "- name: Persist the registered worker's WireGuard peer before Fleet startup"
         )
+        check_boot_peer = fleet.index(
+            "- name: Check whether the worker peer is in the hub's boot configuration"
+        )
+        persist_boot_peer = fleet.index(
+            "- name: Persist the registered worker's WireGuard peer in the hub boot configuration"
+        )
         start_fleet = fleet.index("- name: Enable and start admiral-fleet after worker registration")
         heartbeat_gate = fleet.index("- name: Wait for the registered Fleet worker to report a healthy heartbeat")
 
@@ -814,10 +820,21 @@ done
         self.assertLess(register, add_peer)
         self.assertLess(add_peer, persist_peer)
         self.assertLess(persist_peer, start_fleet)
+        self.assertLess(persist_peer, check_boot_peer)
+        self.assertLess(check_boot_peer, persist_boot_peer)
+        self.assertLess(persist_boot_peer, start_fleet)
         self.assertLess(start_fleet, heartbeat_gate)
         self.assertIn("- allowed-ips\n      - \"{{ admiral_wireguard_ip }}/32\"", fleet[add_peer:persist_peer])
         self.assertIn("delegate_to: localhost", fleet[add_peer:persist_peer])
         self.assertIn("/etc/wireguard/peers.d/", fleet[persist_peer:start_fleet])
+        self.assertIn("blockinfile:", fleet[persist_boot_peer:start_fleet])
+        self.assertIn("/etc/wireguard/wg-admiral.conf", fleet[check_boot_peer:start_fleet])
+
+        installer = INSTALLER.read_text(encoding="utf-8")
+        peer_registration = installer[installer.index('wg set wg-admiral peer "$SPOKE_KEY"'):]
+        self.assertIn("/etc/wireguard/wg-admiral.conf", peer_registration)
+        self.assertIn("flock -x 9", peer_registration)
+        self.assertIn("[Peer]", peer_registration)
 
     def test_rootless_runtime_is_prepared_and_verified(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")

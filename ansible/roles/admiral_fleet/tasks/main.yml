@@ -307,6 +307,38 @@
   no_log: true
   when: admiral_install_mode == 'worker-node'
 
+- name: Check whether the worker peer is in the hub's boot configuration
+  command:
+    argv:
+      - grep
+      - -Fq
+      - "PublicKey = {{ admiral_wg_public_key.stdout | trim }}"
+      - /etc/wireguard/wg-admiral.conf
+  delegate_to: localhost
+  register: admiral_hub_peer_config_check
+  changed_when: false
+  failed_when: admiral_hub_peer_config_check.rc not in [0, 1]
+  no_log: true
+  when: admiral_install_mode == 'worker-node'
+
+- name: Persist the registered worker's WireGuard peer in the hub boot configuration
+  blockinfile:
+    path: /etc/wireguard/wg-admiral.conf
+    marker: "# {mark} ADMIRAL WORKER PEER {{ (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname))) | regex_replace('[^A-Za-z0-9_.-]', '_') }}"
+    block: |
+      [Peer]
+      PublicKey = {{ admiral_wg_public_key.stdout | trim }}
+      AllowedIPs = {{ admiral_wireguard_ip }}/32
+    owner: root
+    group: root
+    mode: "0600"
+  delegate_to: localhost
+  throttle: 1
+  no_log: true
+  when:
+    - admiral_install_mode == 'worker-node'
+    - admiral_hub_peer_config_check.rc == 1
+
 - name: Enable and start admiral-fleet after worker registration
   systemd:
     name: admiral-fleet

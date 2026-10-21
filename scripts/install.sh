@@ -1175,6 +1175,26 @@ for n in data if isinstance(data, list) else data.get('nodes', []):
     printf '[Peer]\nPublicKey = %s\nAllowedIPs = %s/32\n' \
         "$SPOKE_KEY" "$SPOKE_WG_IP" > "$PEER_FRAGMENT_TMP"
     mv -f "$PEER_FRAGMENT_TMP" "/etc/wireguard/peers.d/${PEER_FRAGMENT_NAME}.conf"
+    [[ -f /etc/wireguard/wg-admiral.conf ]] || die "The hub WireGuard boot configuration is missing; reinstall the admin-node packages before registering workers."
+    exec 9>/run/lock/admiral-wireguard-peer-add.lock
+    flock -x 9 || die "Could not lock the hub WireGuard peer configuration."
+    if ! grep -Fq "PublicKey = ${SPOKE_KEY}" /etc/wireguard/wg-admiral.conf; then
+        PEER_CONFIG_TMP="$(mktemp /etc/wireguard/.wg-admiral.conf.XXXXXX)" || die "Could not create a temporary hub WireGuard configuration."
+        if ! cat /etc/wireguard/wg-admiral.conf > "$PEER_CONFIG_TMP"; then
+            rm -f "$PEER_CONFIG_TMP"
+            die "Could not read the hub WireGuard boot configuration."
+        fi
+        printf '\n# ADMIRAL WORKER PEER %s\n[Peer]\nPublicKey = %s\nAllowedIPs = %s/32\n' \
+            "$PEER_FRAGMENT_NAME" "$SPOKE_KEY" "$SPOKE_WG_IP" >> "$PEER_CONFIG_TMP"
+        chmod 0600 "$PEER_CONFIG_TMP" || {
+            rm -f "$PEER_CONFIG_TMP"
+            die "Could not set secure permissions on the hub WireGuard boot configuration."
+        }
+        mv -f "$PEER_CONFIG_TMP" /etc/wireguard/wg-admiral.conf || {
+            rm -f "$PEER_CONFIG_TMP"
+            die "Could not persist the worker peer in the hub WireGuard boot configuration."
+        }
+    fi
     info "WireGuard peer added for spoke node ($SPOKE_WG_IP) on hub."
     handshake_ok=false
     for attempt in {1..30}; do
