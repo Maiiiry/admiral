@@ -84,18 +84,20 @@ When contributing to this repository, prioritize:
 
 ## Distribution Support Tiers
 
-| Tier | Distribution | Role |
-|------|-------------|------|
-| **Tier 1** | EL10 (RHEL 10 / CentOS Stream 10) | Target primario. Mandatorio. |
-| **Tier 2** | Fedora 44 y Fedora Rawhide | Soporte de producción en los modos seguros. Rawhide es la señal de compatibilidad upstream para EL11. `--dev-node` no sustituye las pruebas seguras. |
-| **Tier 3** | Amazon Linux 2023 | Best effort. **No instalable**: AL2023 no incluye Podman (solo Docker/containerd). Admiral requiere Podman para contenedores rootless. |
+| Tier | Platform | Role |
+|------|----------|------|
+| **Tier 1 release gate** | Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64 | EL10 production targets. Single-Node and Multi-Node are mandatory for the active release matrix. |
+| **Tier 2 release gate** | Fedora Rawhide on x86_64 | Production support in secure modes and upstream compatibility signal for EL11. It is included in the active eight-cell release matrix. `--dev-node` does not replace secure-mode tests. |
+| **Tier 2 non-blocking architecture** | aarch64/ARM64 RPM builds and runtime | Track compatibility separately. Missing or failing ARM64 validation does not block an x86_64 release and must not be represented as x86_64 evidence. |
+| **Tier 3** | Amazon Linux 2023 | Best effort. **Not installable**: AL2023 does not include Podman. Admiral requires Podman for rootless containers. |
 
 Policy:
-- Los defectos que impidan la matriz de release Tier 2 deben corregirse antes de declarar validado ese objetivo.
-- Tier 3 continúa siendo best effort.
-- Los spec files y parches no deben sacrificar claridad en EL10 por compatibilidad con tiers inferiores.
-- Fedora 44 y Rawhide son plataformas Tier 2 para single-node y multi-node; Rawhide es upstream para detectar incompatibilidades que puedan anticipar EL11.
-- Todos los RPM deben compilarse para **aarch64** y **x86_64**.
+- The release-blocking runtime matrix is the four named x86_64 operating systems in Single-Node and Multi-Node (eight cells).
+- Fedora Rawhide defects that block its secure x86_64 cells must be fixed before the active matrix can pass.
+- ARM64 is Tier 2 and non-blocking for x86_64 release decisions; report its build/test status separately.
+- Tier 3 remains best effort.
+- RPM specs and patches must preserve clear EL10 behavior without compromising the x86_64 release gate for lower tiers.
+- Fedora Rawhide is the upstream compatibility signal for EL11; Fedora stable releases are outside the active matrix unless separately selected.
 
 ## Repository Role
 

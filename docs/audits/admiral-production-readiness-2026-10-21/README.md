@@ -1,6 +1,8 @@
 # Admiral production-readiness audit
 
-Audit ID: `ADM-AUDIT-2026-10-21`. This directory holds the nine requested reports, non-secret lab procedures and reproducible evidence. The target scope is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each in Single-Node and Multi-Node (eight cells). AlmaLinux has scoped runtime evidence in both modes; CentOS Stream has scoped Single-Node evidence and a three-guest Multi-Node install/placement/cleanup subset. Both topologies remain incomplete; the CentOS Stream Multi-Node run also observed health reported before PostgreSQL readiness.
+Audit ID: `ADM-AUDIT-2026-10-21`. This directory holds the nine requested reports, non-secret lab procedures and reproducible evidence. The target scope is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each in Single-Node and Multi-Node (eight cells). AlmaLinux has scoped runtime evidence in both modes; CentOS Stream has scoped Single-Node evidence and a three-guest Multi-Node execution covering install, workload placement/cleanup, local database backup/restore, hub restart, failed service, concurrency, and worker outage/recovery. Both topologies remain incomplete; CentOS Stream Multi-Node reproduced stale healthy instance status during worker loss and premature health reporting before PostgreSQL readiness.
+
+ARM64/aarch64 is a separate Tier 2 compatibility track and is not a blocker for the x86_64 release matrix. ARM64 results are not evidence for any x86_64 cell.
 
 ## Reports
 
