@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Status: six runtime findings are tracked in GitHub issues #207–#211 and #227. The Release 42 source review also has 13 open configuration, installer, packaging and application findings in #212–#222, #224 and #225; #212 has a focused config-parser reproduction, while the rest remain static or functional-source findings pending runtime checks.
+Status: seven runtime findings are tracked in GitHub issues #207–#211, #227 and #228. The Release 42 source review also has 13 open configuration, installer, packaging and application findings in #212–#222, #224 and #225; #212 has a focused config-parser reproduction, while the rest remain static or functional-source findings pending runtime checks.
 
 Severity follows the audit criteria. These findings are open; no product correction has been applied. Each has a proposed regression check and remains open until a fix is revalidated in both topologies.
 
@@ -96,6 +96,19 @@ Severity follows the audit criteria. These findings are open; no product correct
 * **Recommendation:** Reject empty and placeholder values for every production secret, including the encryption and callback keys; validate key format/length where the consumer has requirements.
 * **Regression test:** Use a table-driven production config test that injects `__REQUIRED__` into each secret-bearing field and expects failure; also verify the shipped default INI cannot start `admirald` until every mandatory secret is replaced.
 
+## ADM-F-008 — Deprovision can report success while Podman resources remain ([#228](https://github.com/admiral-project/admiral/issues/228))
+
+* **Severity:** HIGH.
+* **Component:** `admiral-fleet` systemd/Podman deprovision executor and control-plane instance state.
+* **Environment:** Reproduced on AlmaLinux 10.2 x86_64, Release 42, in a disposable Multi-Node worker. No production or customer data was involved.
+* **Reproduction:** Provision `fixtures/e2e-backup.yaml` on a worker. Temporarily wrap Podman so only `rm`, `pod rm` and `volume rm` calls containing that instance ID return an injected error; delegate every other command to the original binary. Run deprovision and compare the operation result, instance API, rootless Podman inventory, Quadlet files and instance data directory. Reproduction helpers are in `scripts/inject-podman-removal-failure.sh` and `scripts/restore-podman-after-injection.sh`.
+* **Expected:** Deprovision returns failure or retryable partial status while any managed pod, container or volume remains; cleanup metadata remains available until the operation can converge.
+* **Observed:** Operation `op_92cd8fd2cccfebf4` returned `succeeded` for `inst_a82c243d5af4164b` after nine targeted Podman deletion errors. The infra container, exited pod and PostgreSQL volume remained; Quadlet files and the instance data directory had already been removed. The API showed the instance `stopped`, not `deprovisioned`. Manual Podman cleanup removed the remaining resources; afterward inventories were empty. Existing worker2 workloads remained `Up` and the original Podman binary SHA-256 was restored unchanged.
+* **Evidence:** `evidence/alma-multi-execution.md`, test `ALMA-MN-009`; fixture `fixtures/e2e-backup.yaml`; restricted mode-0600 raw log SHA-256 `a2ab920d928769d91639e2ab736175b751b7dfbd2c7644894a8a19dee973a2b3`.
+* **Root cause:** Confirmed in `admiral-fleet/internal/executor/executor_deprovision.go`: errors from systemd stop/disable and Podman pod/container/volume removal are logged and ignored. After removing Quadlet files and instance data, the executor unconditionally sets `result.Success = true`.
+* **Recommendation:** Aggregate managed-resource cleanup failures into the task result and preserve operation and instance metadata for retries. Only mark an instance deprovisioned after the worker confirms its managed Podman resources are absent.
+* **Regression test:** Inject each systemd, pod, container, volume and secret removal failure independently. Require a non-success result while any resource remains; restore the dependency, retry cleanup, then verify zero resources and an instance state of `deprovisioned`. Run in Single-Node and Multi-Node.
+
 ## Additional open source-review findings
 
 The following issues were opened against the same Release 42 source and are part of the production-readiness tracker. Their GitHub descriptions contain the full source locations, exact reproduction steps and acceptance tests. Only #212 has the focused parser execution recorded here; do not treat the remaining static observations as runtime validation.
@@ -115,19 +128,6 @@ The following issues were opened against the same Release 42 source and are part
 | [#222](https://github.com/admiral-project/admiral/issues/222) — LOW | Harbor-to-Admiral customer-scoped client and admin backup contract | Internal request helpers should require customer scope and the backup detail query contract should be documented. `_headers` and `_request` permit omitted `customer_id`; the backup route requires `instance_id` but its README contract is absent. Static evidence: `admiral_client.py`, `admin.py`, README search; no cross-customer request was run. | Require customer scope in helpers and document `?instance_id=`; add a test that internal calls cannot omit scope and a route-contract regression. |
 | [#224](https://github.com/admiral-project/admiral/issues/224) — MEDIUM | Multi-Node using a customized WireGuard subnet | Hub firewall rules should match the configured hub address. Two worker/portal rich rules use literal `10.99.0.1`, so a custom subnet can block expected traffic. Static evidence: `ansible/roles/admiral_wireguard/tasks/main.yml`; no custom-subnet cluster was built. | Use the derived hub IP variable and run a custom-subnet handshake plus Fleet/workload/portal traffic test; verify a second Ansible run is unchanged. |
 | [#225](https://github.com/admiral-project/admiral/issues/225) — MEDIUM (functional scope) | Harbor customer support conversation after the bidirectional-support decision in #195 | Staff replies intended for customers should be visible while internal notes remain private. The client builds every conversation entry with `is_internal=False` from customer replies only; staff replies remain in internal notes. Static evidence: `admiral-harbor/app/client.py`, `app/admin.py` and templates; no staff-to-customer portal flow was run. | Add a distinct staff reply path, preserving tenant ownership, escaping, CSRF and internal-note privacy; cover each with integration tests. |
-
-## AUD-RISK-001 — Deprovision may report success after Podman/systemd cleanup errors (unconfirmed)
-
-* **Severity:** provisional MEDIUM; raise if fault injection demonstrates a successful terminal operation while a managed resource remains.
-* **Component:** `admiral-fleet` executor.
-* **Environment:** Potentially Single-Node and Multi-Node workers.
-* **Reproduction:** On a disposable guest, inject a controlled systemd stop or Podman pod/container/volume removal error during deprovision; then compare task result with actual containers, volumes, Quadlet files and data paths.
-* **Expected:** The operation must not report success while cleanup failed or a managed resource remains; it should preserve actionable partial-failure state for retry.
-* **Observed:** Static review of `admiral-fleet/internal/executor/executor_deprovision.go` shows selected removal errors are logged and execution continues. A real injected-error reproduction has not run. Normal successful deprovision succeeded in the AlmaLinux Single-Node test.
-* **Evidence:** Static source review only; no runtime failure evidence.
-* **Root cause:** Hypothesis: cleanup-result aggregation may omit failed stop/remove actions.
-* **Recommendation:** Preserve each failed resource action in the operation result and make cleanup retryable.
-* **Regression test:** Inject each removal failure independently and assert the task reports partial/failure until a subsequent retry removes all resources.
 
 ## Documentation / contract discrepancy
 
