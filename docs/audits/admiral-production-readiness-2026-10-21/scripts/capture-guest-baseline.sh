@@ -21,6 +21,7 @@ firewall-cmd --list-all 2>&1 || true
 id admiral-apps 2>&1 || true
 loginctl show-user admiral-apps -p Linger -p State 2>&1 || true
 if id admiral-apps >/dev/null 2>&1; then
+  cd /
   apps_uid=$(id -u admiral-apps)
   runuser -u admiral-apps -- env XDG_RUNTIME_DIR="/run/user/$apps_uid" \
     DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$apps_uid/bus" \
