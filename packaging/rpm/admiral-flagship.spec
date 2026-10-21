@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release: 44%{?dist}
+Release: 45%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -81,6 +81,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-45
+- Rebuild with safe Harbor links and idempotent Fleet cleanup
+
 * Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-44
 - Rebuild the coordinated candidate with idempotent missing-unit cleanup
 

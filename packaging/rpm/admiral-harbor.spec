@@ -1,9 +1,9 @@
 %global debug_package %{nil}
-%global commit 3223c07246fd1b76ba8b311afa62cdf1be46839e
+%global commit 4dfce69a13a632f6e49e5168fae99233e0f94314
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 44%{?dist}
+Release: 45%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -126,6 +126,9 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-45
+- Rebuild with safe Harbor links and idempotent Fleet cleanup
+
 * Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-44
 - Rebuild the coordinated candidate with idempotent missing-unit cleanup
 
