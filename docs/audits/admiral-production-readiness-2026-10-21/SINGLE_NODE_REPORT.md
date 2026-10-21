@@ -1,9 +1,18 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT VALIDATED — coordinated RPM build and fresh guest executions are pending.** Current matrix: 0/8.<br>
+Current Release 46 status: **NOT VALIDATED — fresh Fedora Rawhide and Rocky Linux 10 guests completed installation and targeted probes, but required Single-Node coverage is incomplete.** Current matrix: 0/8.<br>
 Current source root: `7223561646b60d3c24e8bfb257d544a5eb6dea04`; component fix: `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`.<br>
 Release 45 had scoped Fedora Rawhide and Rocky Linux 10 Single-Node executions but was invalidated by stale task replay after a reboot (`ADM-F-009` / #229). Those results are exact-candidate history only; no Release 45 result validates Release 46. See `evidence/fedora-r45-stale-task-replay.md`.
+
+## Release 46 targeted execution — not full cell passes
+
+| Test | Environment | Observed | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Failed provision, deprovision and reboot replay regression | Fedora Rawhide 46 x86_64, fresh Release 46 guest | Provision operation failed on the deliberately broken DB service; deprovision succeeded; the queue task was cancelled at attempt 2/5; after host reboot and a 2m46s delayed check, the task remained cancelled and no resources returned | PASS (targeted #229 scenario only; Multi-Node check remains open) | `evidence/release46-initial-single-node-execution.md` |
+| Basic workload lifecycle | Rocky Linux 10.2 x86_64, fresh Release 46 guest | Installer completed; whoami + PostgreSQL reached running; loopback HTTP returned 200; deprovision succeeded and Podman/systemd resources were absent | PASS (targeted lifecycle only) | `evidence/release46-initial-single-node-execution.md` |
+
+Neither probe covers the complete Single-Node scenario catalog; neither OS cell is counted as passed. AlmaLinux and CentOS Stream Release 46 fresh installs are in progress.
 
 ## Release 45 execution record — invalidated, not a cell pass
 

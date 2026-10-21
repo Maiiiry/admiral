@@ -1,9 +1,9 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT VALIDATED — coordinated RPM build and fresh three-guest executions are pending.** Current matrix: 0/8.<br>
+Current Release 46 status: **NOT VALIDATED — the coordinated RPM build is complete, but no fresh three-guest Release 46 execution has started.** Current matrix: 0/8.<br>
 Current source root: `7223561646b60d3c24e8bfb257d544a5eb6dea04`; component fix: `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`.<br>
-No Release 45 Multi-Node execution was started. Historical Release 42/43 and Release 45 Single-Node observations do not validate a Release 46 Multi-Node cell. All findings remain open pending exact-candidate three-guest regression runs.
+No Release 45 Multi-Node execution was started. Historical Release 42/43 and Release 45 Single-Node observations do not validate a Release 46 Multi-Node cell. The Release 46 Fedora Single-Node stale-task regression passed, but the same queue path remains untested in a fresh three-guest topology. Other findings remain open pending exact-candidate Multi-Node regression runs.
 
 ## Observed architecture and guarantees
 

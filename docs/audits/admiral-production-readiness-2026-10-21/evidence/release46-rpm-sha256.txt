@@ -1,0 +1,7 @@
+# Release 46 Admiral RPM SHA-256 (x86_64/noarch)
+66730035e1de020dfb57b9030d65ef18687d64889d424d8c73ae7e94bbb03019  packaging/build/RPMS/noarch/admiral-common-0.0.1rc5-46.el10.noarch.rpm
+3ab7ce20564f0923e520298e0aa01b158b23777020ea1bc4fcc1f79a3ac6762f  packaging/build/RPMS/x86_64/admirald-0.0.1rc5-46.el10.x86_64.rpm
+e64f0bdf9c0077cb8db86690f3b479bcbba22194baa6b03489fb96ef412163f0  packaging/build/RPMS/x86_64/admiral-fleet-0.0.1rc5-46.el10.x86_64.rpm
+58440f5a25d7ed100055dc33bac4d354e2937ffb06c8d1064e6de9b45ef517b6  packaging/build/RPMS/x86_64/admiralctl-0.0.1rc5-46.el10.x86_64.rpm
+8fc217e66168c37cc358772ccbf6654010b75868c8fda9b78d66dd7f441f3317  packaging/build/RPMS/noarch/admiral-flagship-0.0.1rc5-46.el10.noarch.rpm
+c82ec54b299e034a781ce269ace575d101a155ea646d4d32dd89b367c5ab8f34  packaging/build/RPMS/noarch/admiral-harbor-0.0.1rc5-46.el10.noarch.rpm

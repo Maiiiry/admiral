@@ -2,7 +2,7 @@
 
 Audit started: 2026-10-21 UTC<br>
 Current source root: `7223561646b60d3c24e8bfb257d544a5eb6dea04` (`main`), with `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`<br>
-Current candidate: Release 46 packaging refs are pushed; six-RPM build and guest installation are pending. Matrix remains 0/8.<br>
+Current candidate: six Release 46 RPMs are built and installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests; targeted probes passed, but no matrix cell is complete. Matrix remains 0/8.<br>
 Release 45 received limited Fedora Rawhide and Rocky Linux 10 Single-Node execution. A HIGH stale-task replay after reboot invalidated that candidate; its scenario evidence is historical and cannot validate Release 46. See `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Scope and evidence rules
@@ -85,7 +85,7 @@ The source contains no evidence of Redis as a runtime dependency in the producti
 | AR-09 | External integrations | PayPal real payment validation is still an explicit 1.0 item | Outside this infrastructure audit unless a sandbox/integration is explicitly available |
 | AR-10 | Go toolchain and dependency advisories | Release 42 binaries used Go 1.26.7; Release 45 binaries report Go 1.26.10 and x/text v0.41.0, but the current dependency scan and runtime regression have not run | `evidence/go-dependency-scan.md`, `evidence/release45-candidate.md`; HIGH finding `ADM-F-003` remains open pending scan and runtime checks |
 | AR-11 | WireGuard peer boot persistence | Worker onboarding stores peer fragments and adds runtime peers, but the standard hub boot unit reads only the main configuration | Rocky hub power-cycle lost peers; see `evidence/rocky-multi-hub-reboot.md` and HIGH finding `ADM-F-005` |
-| AR-12 | Stale task replay | Durable lease recovery can re-dispatch a task after its operation is terminal unless claim and callback paths settle stale queue rows | Real Fedora Rawhide Release 45 reboot replay recreated Quadlets/resources after failed provision and successful deprovision; HIGH finding `ADM-F-009` / #229. Release 46 adds pre-dispatch state validation; real guest regression remains required. |
+| AR-12 | Stale task replay | Durable lease recovery can re-dispatch a task after its operation is terminal unless claim and callback paths settle stale queue rows | Release 45 Fedora reboot replay recreated Quadlets/resources after failed provision and successful deprovision. Release 46 Fedora Single-Node regression now confirms the task is cancelled and stays absent through reboot; HIGH finding `ADM-F-009` / #229 remains open for Multi-Node runtime evidence. |
 
 ## Source references
 

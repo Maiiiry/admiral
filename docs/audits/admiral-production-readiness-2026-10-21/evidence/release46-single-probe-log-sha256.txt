@@ -1,0 +1,14 @@
+# SHA-256 of restricted raw Release 46 single-node probe logs
+# Local path: packaging/build/validation/rc5-r46/ (files mode 0600; not committed)
+0cbd73cc3d37bed69c1345b819d0d61e974af15e03fbda27dfe6feff06669cac  fedora-single-install.log
+d8408f48eefb66a4422bb488ae670f0bee65e08112ba0982de19900a8e3dceac  fedora-single-baseline.txt
+50eb4d28009e7038e55c4e83c399a98e7ebae2e829e53e07bb4034c9664261a1  fedora-stale-provision.log
+ef6c5a83d47b8cb4283474c2b40bbadf30d556a8ec962f6c4fc75f9634986bf7  fedora-stale-deprovision.log
+ee756ccc862c4198d9b58f5df1f2fdf4c9ad69ad8a6d0d2826e5460da61d14f5  fedora-stale-pre-reboot-state.log
+07110cf21080e754c593deed66fd982df984d2d40893c1ea029ce8aec9ba9e6c  fedora-stale-reboot-command.log
+5d46eb8112efaeb87ef76d21a6cf9cb5270143956a0b368d305eb20f795eaa90  fedora-stale-post-reboot-state-initial.log
+50aee0c553d3f5b5698b0a79083927ac986d368564a3fac7ccf28dd169df51c5  fedora-stale-post-reboot-state-delayed.log
+1358defad01242b87b151f469df7a185ac0794e06d3aad5f38eabe704acfcfc8  rocky-single-install.log
+8b8055fb590837b7ea4c1d41638626d52e72616b7b27663bab202934daac3296  rocky-single-baseline.txt
+637d7f1f9bec5230151b46b492e1d2aafb5afd74b632b3fff5bc4f2354626246  rocky-whoami-provision.log
+4af82f03985e18bb9d2351a72aba0e360d1fc94bc6dee552d2e1ee7757a7e575  rocky-whoami-e2e.log
