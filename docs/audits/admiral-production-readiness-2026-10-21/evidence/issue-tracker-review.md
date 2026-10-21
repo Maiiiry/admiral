@@ -50,3 +50,12 @@ Independent review found fixes or regression tests in the current source for the
 ## Audit interpretation
 
 No issue was closed solely because a source review said “fixed in tree.” The ten closures are limited to issue-level acceptance with regression/CI evidence, current-candidate observations, or a resolved product decision; each closure comment states its boundary. The 40 remaining issues continue to gate release behavior or audit evidence. Single-Node and Multi-Node remain **NOT READY**, and the eight-cell audit remains incomplete.
+
+## Runtime evidence added after the issue sweep
+
+The linked issue count and closure decisions are unchanged: 50 linked sub-issues, 10 closed, 40 open. The AlmaLinux Multi-Node probes add independent Release 42 runtime evidence to two open findings; neither is ready to close:
+
+* **#211 / `ADM-F-005`:** after a hub power-cycle, AlmaLinux 10.2 x86_64 came up with zero configured/runtime WireGuard peers despite two persisted peer fragments. Both workers were offline while their existing workloads remained locally `Up`. Manual reconstruction restored handshakes and node health. See `evidence/alma-multi-execution.md` and raw-log hashes recorded there.
+* **#227 / `ADM-F-006`:** on AlmaLinux 10.2 x86_64 Multi-Node, the `/bin/false` required DB service failed five times and had no container, yet provision returned success and the instance remained `running/healthy` for more than three minutes. Deprovision completed and test resources were removed. See test `ALMA-MN-008` in `evidence/alma-multi-execution.md`.
+
+The findings remain open pending product fixes and regression validation. Current root candidate remains Release 42; the audit decision remains **NOT READY** for both topologies.
