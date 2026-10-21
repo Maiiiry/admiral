@@ -1,9 +1,9 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Status: seven runtime findings are tracked in GitHub issues #207–#211, #227 and #228. The Release 42 source review also has 13 open configuration, installer, packaging and application findings in #212–#222, #224 and #225; #212 has a focused config-parser reproduction, while the rest remain static or functional-source findings pending runtime checks.
+Status: seven runtime findings are tracked in GitHub issues #207–#211, #227 and #228. The Release 42 source review also has 13 open configuration, installer, packaging and application findings in #212–#222, #224 and #225; #212 has a focused config-parser reproduction, while the rest remain static or functional-source findings pending runtime checks. Release 43 includes candidate changes for provisioning idempotency, Go toolchain/security updates, Harbor Markdown URL handling, effective availability, and Fleet service/deprovision handling. The Release 42 defects remain open until their regressions are rerun against Release 43 in the affected live topologies.
 
-Severity follows the audit criteria. These findings are open; no product correction has been applied. Each has a proposed regression check and remains open until a fix is revalidated in both topologies.
+Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
 ## ADM-F-001 — Repeating provision can create an unintended second instance ([#207](https://github.com/admiral-project/admiral/issues/207))
 
