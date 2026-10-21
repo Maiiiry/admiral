@@ -4,6 +4,8 @@ Audit ID: `ADM-AUDIT-2026-10-21`. This directory holds the nine requested report
 
 The audit scope is x86_64 only: four distributions across Single-Node and Multi-Node, for eight cells.
 
+Release 43 is built locally and available from the isolated validation repository. Its source refs and package checksums are recorded in [the Release 43 candidate manifest](evidence/release43-candidate.md). Existing runtime logs remain scoped to their recorded Release 42 candidate; Release 43 guest validation is pending.
+
 ## Reports
 
 * [Architecture review](ARCHITECTURE_REVIEW.md)

@@ -9,7 +9,7 @@ set -euo pipefail
 ssh_key=$1 known_hosts=$2 target=$3 node_ip=$4 node_id=$5 output=$6
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ $node_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid guest IPv4" >&2; exit 2; }
-repo_file=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)/packaging/build/validation/rc5-r42/admiral-local-el10.repo
+repo_file=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)/packaging/build/validation/rc5-r43/admiral-local-el10.repo
 [[ -r $repo_file ]] || { echo "local candidate repository config not found: $repo_file" >&2; exit 1; }
 [[ -r $ssh_key && -r $known_hosts ]] || { echo "SSH identity or known-hosts file not readable" >&2; exit 1; }
 mkdir -p "$(dirname "$output")"
@@ -28,6 +28,12 @@ dnf config-manager --set-enabled crb
 dnf copr enable -y admiral-project/admiral
 dnf clean all
 dnf install -y admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship
+for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
+  actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' "$package")
+  [[ $actual == 0.0.1rc5-43.el10 ]] || { echo "$package has unexpected NEVRA: $actual" >&2; exit 1; }
+done
+actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' python3-mistune)
+[[ $actual == 3.4.0-1.el10 ]] || { echo "python3-mistune has unexpected NEVRA: $actual" >&2; exit 1; }
 REMOTE
   ssh "${ssh_args[@]}" "$target" sudo admiral-install --single-node \
     --public-ip "$node_ip" --ssh-public-key /home/validator/validator.pub \

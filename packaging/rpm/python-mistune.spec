@@ -4,8 +4,8 @@
 %global debug_package %{nil}
 
 Name:           python3-mistune
-Version:        3.2.1
-Release:        7%{?dist}
+Version:        3.4.0
+Release:        1%{?dist}
 Summary:        A sane Markdown parser with useful plugins and rules
 
 License:        BSD-3-Clause
@@ -48,9 +48,14 @@ CFG
 %pyproject_save_files mistune
 
 %files -f %{pyproject_files}
+%{_bindir}/mistune
 %license LICENSE
 
 %changelog
+* Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.4.0-1
+- Update to Mistune 3.4.0, including the URL scheme safety fix
+- Package the upstream mistune command-line entry point
+
 * Sun Jul 05 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.2.1-7
 - Rebuild for admiral 0.0.1beta14
 

@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit c21c81b7b95d7f44d8c878f6067ff178af065feb
+%global commit 3911eb784aef732f0bbe4662d1dbc6a5947eb659
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release: 42%{?dist}
+Release: 43%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -81,6 +81,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-43
+- Preserve provisioning idempotency keys across client retries
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-42
 - Rebuild coordinated RC5 Release 42 candidate after R41 validation rejection
 

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit f1f41c3c891e15b541facd79f0e4dedcc74d7082
+%global commit 12b5612873cbdb2dd9c3fabd1bb882ef55c30584
 
 %ifarch x86_64
 %global admiral_goarch amd64
@@ -15,7 +15,7 @@
 
 Name:    admirald
 Version: 0.0.1rc5
-Release: 42%{?dist}
+Release: 43%{?dist}
 Summary: Admiral Control Plane - Core API and orchestration service
 
 License: Apache-2.0
@@ -25,7 +25,7 @@ Source0: https://github.com/admiral-project/admirald/archive/%{commit}.tar.gz
 Source1: admirald.service
 Source2: admirald.ini
 
-BuildRequires: golang >= 1.26.5
+BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
 BuildRequires: systemd
 BuildRequires: git
@@ -90,6 +90,9 @@ restorecon -F %{_bindir}/admirald 2>/dev/null || :
 %systemd_postun_with_restart admirald.service
 
 %changelog
+* Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-43
+- Include durable idempotent provisioning and dispatch failure handling
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-42
 - Rebuild coordinated RC5 Release 42 candidate after R41 validation rejection
 

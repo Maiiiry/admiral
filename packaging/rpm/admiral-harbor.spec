@@ -1,9 +1,9 @@
 %global debug_package %{nil}
-%global commit 4e1b88bb82b51fe39354a0fe7b80052db52eb01b
+%global commit 3223c07246fd1b76ba8b311afa62cdf1be46839e
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 42%{?dist}
+Release: 43%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -30,7 +30,7 @@ BuildRequires: python3-flask-alembic
 BuildRequires: python3-flask-login
 BuildRequires: python3-flask-sqlalchemy
 BuildRequires: python3-gunicorn
-BuildRequires: python3-mistune
+BuildRequires: python3-mistune >= 3.3.0
 BuildRequires: python3-pytest
 BuildRequires: python3-pyyaml
 BuildRequires: python3-requests
@@ -47,7 +47,7 @@ Requires: python3-requests
 Requires: python3-pyyaml
 Requires: python3-argon2-cffi
 Requires: python3-cryptography
-Requires: python3-mistune
+Requires: python3-mistune >= 3.3.0
 Requires: python3-psycopg2
 Requires: systemd
 Recommends: cockpit-bridge
@@ -126,6 +126,9 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-43
+- Use safe Mistune URLs and preserve idempotency across customer operations
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-42
 - Handle concurrent Gunicorn workers creating default portal metadata
 

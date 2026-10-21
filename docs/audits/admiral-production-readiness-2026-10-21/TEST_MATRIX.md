@@ -1,8 +1,8 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current source: root `748b703662eafdaf3919bad28787d0264f06bf16`; submodule SHAs recorded in `evidence/source-manifest.txt`.<br>
-Candidate: Release 42 x86_64 RPMs; SHA-256 values in `evidence/candidate-rpm-sha256.txt`.<br>
+Current candidate: six Release 43 RPMs built locally; exact component refs, NEVRAs and SHA-256 values are recorded in `evidence/release43-candidate.md`.<br>
+The runtime observations below are from the named Release 42 runs unless stated otherwise. Release 43 has not yet been installed into audit guests, so those runs do not validate the new candidate.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
 Cell completion: **0/8 complete; 8/8 remain partial**. Single-Node and Multi-Node are separately **NOT READY** because open findings affect each topology and required scenarios remain untested.

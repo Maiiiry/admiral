@@ -2,8 +2,8 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Source under review: `748b703662eafdaf3919bad28787d0264f06bf16` and submodule SHAs in `evidence/source-manifest.txt`.<br>
-Candidate artifacts: six x86_64/`noarch` Admiral RPMs at `0.0.1rc5-42.el10`; hashes in `evidence/candidate-rpm-sha256.txt`.
+Latest candidate: six Release 43 RPMs were built locally; exact source pins, NEVRAs and hashes are in `evidence/release43-candidate.md`.<br>
+The runtime findings and matrix rows below document Release 42 executions. Release 43 has not yet been installed into audit guests and is **NOT VALIDATED** at runtime.
 
 ## Decision by topology
 
@@ -15,6 +15,8 @@ Candidate artifacts: six x86_64/`noarch` Admiral RPMs at `0.0.1rc5-42.el10`; has
 These are audit evidence statuses, not claims that the previous RC validation failed. Both topologies are NOT READY because open HIGH findings affect their evaluated control-plane/worker paths, including shared config handling and workload health. Both topologies have incomplete matrix coverage; Multi-Node still lacks several CentOS Stream fault/security scenarios. No production system was touched.
 
 ## Candidate identity and host
+
+The Release 43 candidate is locally built and served for fresh guest validation. Its build and package checks do not change the Release 42 runtime evidence or close findings; the affected scenarios must be re-run against Release 43 before changing their status.
 
 Root commit and five component submodule commits are recorded in `evidence/source-manifest.txt`. `python3 scripts/validate-release-refs.py` passed, and all five submodule SHAs matched their remote `origin/main` heads at audit start. The lab host is Rocky Linux 10.2 x86_64, 4 vCPU, 8 GiB RAM, 4 GiB swap and KVM/QEMU 10.1/libvirt 11.10. Guest tests are isolated libvirt VMs. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64 in both topologies (eight cells). CentOS Stream now has scoped Single-Node evidence and scoped three-node Multi-Node evidence for placement, worker outage/recovery and local PostgreSQL backup/restore; its Multi-Node cell remains incomplete and has open findings.
 
