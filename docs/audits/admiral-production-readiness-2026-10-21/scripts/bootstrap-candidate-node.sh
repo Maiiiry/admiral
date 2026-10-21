@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0
-# Install the exact local Admiral RPM set and required EL10 repositories.
+# Upgrade an existing audit guest to the exact local Admiral RPM candidate.
 set -euo pipefail
 [[ $# -eq 4 ]] || { echo "usage: $0 {el10|fedora} SSH_KEY KNOWN_HOSTS USER@GUEST" >&2; exit 2; }
 distro=$1 ssh_key=$2 known_hosts=$3 target=$4
@@ -30,8 +30,14 @@ if [[ $distribution == el10 ]]; then
     dnf config-manager --set-enabled crb
 fi
 dnf copr enable -y admiral-project/admiral
-dnf clean all
-dnf install -y "${install_args[@]}" admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship
+packages=()
+for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
+    packages+=("${package}-0.0.1rc5-${expected_release}.el10")
+done
+# Keep this diagnostic upgrade pinned to the isolated candidate repository.
+# A broad `dnf clean all` refreshes unrelated public mirrors and can block the
+# audit before the candidate transaction starts.
+dnf -y --disablerepo='*' --enablerepo=admiral-local "${install_args[@]}" install "${packages[@]}"
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
     rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' "$package" | grep -Fx "$package-0.0.1rc5-${expected_release}.el10.$(rpm -q --qf '%{ARCH}' "$package")"
 done

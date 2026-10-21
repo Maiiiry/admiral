@@ -30,7 +30,7 @@ if id admiral-apps >/dev/null 2>&1; then
     DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$apps_uid/bus" \
     podman ps -a --format '{{.ID}} {{.Names}} {{.Status}}' 2>&1 || true
 fi
-find /etc/containers/systemd -maxdepth 4 -type f -printf '%m %u:%g %p\n' 2>&1 | sort
+find /etc/containers/systemd -maxdepth 4 -type f -printf '%m %u:%g %p\n' 2>&1 | sort || true
 find /var/lib/admiral -maxdepth 3 -type d -printf '%m %u:%g %p\n' 2>&1 | sort || true
 REMOTE
 chmod 0600 "$output"

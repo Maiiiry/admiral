@@ -41,8 +41,11 @@ if [[ $distribution == el10 ]]; then
   dnf config-manager --set-enabled crb
 fi
 dnf copr enable -y admiral-project/admiral
-dnf clean all
-dnf install -y "${install_args[@]}" admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship
+  packages=()
+  for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
+    packages+=("${package}-0.0.1rc5-${expected_release}.el10")
+  done
+  dnf install -y "${install_args[@]}" "${packages[@]}"
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
   actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' "$package")
   [[ $actual == "0.0.1rc5-${expected_release}.el10" ]] || { echo "$package has unexpected NEVRA: $actual" >&2; exit 1; }
