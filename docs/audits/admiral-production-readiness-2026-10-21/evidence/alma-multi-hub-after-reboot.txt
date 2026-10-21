@@ -1,0 +1,44 @@
+timestamp_utc=2026-10-21T12:57:36Z
+boot_id=6148c3f7-ea99-49b1-97c0-58cf2a1ee533
+6.12.0-211.67.1.el10_2.x86_64
+active
+active
+active
+active
+active
+active
+wg-admiral       UNKNOWN        10.99.0.1/24
+Admiral PaaS Status:
+  API connection:   online
+  Control Plane:    healthy
+[
+  {
+    "available_for_provisioning": true,
+    "committed_disk_bytes": 0,
+    "committed_ram_bytes": 0,
+    "disk_commit_limit_bytes": 0,
+    "disk_total_bytes": 0,
+    "disk_used_bytes": 0,
+    "fleet_version": "",
+    "health_status": "healthy",
+    "hostname": "adm-audit-alma-hub",
+    "id": "adm-audit-alma-hub-portal",
+    "ip": "10.99.0.1",
+    "last_heartbeat": "2026-10-21T12:56:26.024422Z",
+    "last_metrics_at": "2026-10-21T12:56:26.024422Z",
+    "manual_disabled": false,
+    "node_role": "portal",
+    "os": "AlmaLinux 10.2",
+    "podman_version": "4.9.0",
+    "pods_active": 0,
+    "pods_failed": 0,
+    "pods_paused": 0,
+    "public_ip": "192.168.122.150",
+    "ram_commit_limit_bytes": 0,
+    "ram_total_bytes": 0,
+    "ram_used_bytes": 0,
+    "status": "active",
+    "storage_state": "",
+    "wireguard_ip": "10.99.0.1"
+  }
+]

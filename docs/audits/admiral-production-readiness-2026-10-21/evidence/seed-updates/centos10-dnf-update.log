@@ -1,0 +1,65 @@
+CentOS Stream 10 - BaseOS                       3.2 MB/s | 3.2 MB     00:01
+CentOS Stream 10 - AppStream                    4.3 MB/s | 2.4 MB     00:00
+CentOS Stream 10 - Extras packages               31 kB/s |  11 kB     00:00
+Last metadata expiration check: 0:00:01 ago on Wed Oct 21 11:56:27 2026.
+Dependencies resolved.
+================================================================================
+ Package             Architecture   Version                Repository      Size
+================================================================================
+Upgrading:
+ kdump-utils         x86_64         1.0.61-2.el10          baseos         111 k
+
+Transaction Summary
+================================================================================
+Upgrade  1 Package
+
+Total download size: 111 k
+Downloading Packages:
+kdump-utils-1.0.61-2.el10.x86_64.rpm            481 kB/s | 111 kB     00:00
+--------------------------------------------------------------------------------
+Total                                           291 kB/s | 111 kB     00:00
+CentOS Stream 10 - BaseOS                       889 kB/s | 1.6 kB     00:00
+Importing GPG key 0x8483C65D:
+ Userid     : "CentOS (CentOS Official Signing Key) <security@centos.org>"
+ Fingerprint: 99DB 70FA E1D7 CE22 7FB6 4882 05B5 55B3 8483 C65D
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial-SHA256
+Key imported successfully
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1
+  Upgrading        : kdump-utils-1.0.61-2.el10.x86_64                       1/2
+  Running scriptlet: kdump-utils-1.0.61-2.el10.x86_64                       1/2
+  Running scriptlet: kdump-utils-1.0.61-1.el10.x86_64                       2/2
+  Cleanup          : kdump-utils-1.0.61-1.el10.x86_64                       2/2
+  Running scriptlet: kdump-utils-1.0.61-1.el10.x86_64                       2/2
+  Running scriptlet: kdump-utils-1.0.61-2.el10.x86_64                       2/2
+  Running scriptlet: kdump-utils-1.0.61-1.el10.x86_64                       2/2
+
+Upgraded:
+  kdump-utils-1.0.61-2.el10.x86_64
+
+Complete!
+14 files removed
+NAME="CentOS Stream"
+VERSION="10 (Coughlan)"
+RELEASE_TYPE=stable
+ID="centos"
+ID_LIKE="rhel fedora"
+VERSION_ID="10"
+PLATFORM_ID="platform:el10"
+PRETTY_NAME="CentOS Stream 10 (Coughlan)"
+ANSI_COLOR="0;31"
+LOGO="fedora-logo-icon"
+CPE_NAME="cpe:/o:centos:centos:10"
+HOME_URL="https://centos.org/"
+VENDOR_NAME="CentOS"
+VENDOR_URL="https://centos.org/"
+BUG_REPORT_URL="https://issues.redhat.com/"
+REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux 10"
+REDHAT_SUPPORT_PRODUCT_VERSION="CentOS Stream"
+kernel-core-6.12.0-277.el10.x86_64
+6.12.0-277.el10.x86_64
+validator:validator 644 /home/validator/validator.pub

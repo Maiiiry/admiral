@@ -1,0 +1,11 @@
+Candidate: Admiral 0.0.1rc5-42.el10 x86_64/noarch RPMs
+Artifacts are the local RC42 build already used in the Rocky/Fedora x86_64 prior E2E runs.
+
+7fb16e17193f93982d56567f57bbbd0fee2e7abe6d54d7c4bd32c8e7393ae199  admiral-common-0.0.1rc5-42.el10.noarch.rpm
+24f878b4e49e4bdef0728d4f653472bd0b4dabce44c9d5ffc18f2c3d94132643  admiral-flagship-0.0.1rc5-42.el10.noarch.rpm
+9ea82506455ee8dc57e44318ff6dd5c9526a1053f197f88fd603268aae22ac24  admiral-harbor-0.0.1rc5-42.el10.noarch.rpm
+6e5b3c909137b665e8dd77d3425f106d25bc584bdb9bfdc2225218d00c248deb  admiral-fleet-0.0.1rc5-42.el10.x86_64.rpm
+12b071c0292685810012a7d0e7e8840c113d86bcdc720fc67d7d787e6b8b0194  admiralctl-0.0.1rc5-42.el10.x86_64.rpm
+5a2004f44ce3f978745a48854c9ba48cba246a7fad3ecdfe5ce731ca0fb52769  admirald-0.0.1rc5-42.el10.x86_64.rpm
+
+Validation scope note: the package repo used for local guest tests has gpgcheck disabled; artifacts are pinned by these SHA-256 values and were built locally. This verifies exact candidate bytes and runtime functionality, not production repository signing/distribution integrity.

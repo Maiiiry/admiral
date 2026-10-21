@@ -1,0 +1,117 @@
+timestamp_utc=2026-10-21T12:33:07Z
+NAME="AlmaLinux"
+VERSION="10.2 (Lavender Lion)"
+RELEASE_TYPE=stable
+ID="almalinux"
+ID_LIKE="rhel centos fedora"
+VERSION_ID="10.2"
+PLATFORM_ID="platform:el10"
+PRETTY_NAME="AlmaLinux 10.2 (Lavender Lion)"
+ANSI_COLOR="0;34"
+LOGO="fedora-logo-icon"
+CPE_NAME="cpe:/o:almalinux:almalinux:10.2"
+HOME_URL="https://almalinux.org/"
+DOCUMENTATION_URL="https://wiki.almalinux.org/"
+VENDOR_NAME="AlmaLinux"
+VENDOR_URL="https://almalinux.org/"
+BUG_REPORT_URL="https://bugs.almalinux.org/"
+
+ALMALINUX_MANTISBT_PROJECT="AlmaLinux-10"
+ALMALINUX_MANTISBT_PROJECT_VERSION="10.2"
+REDHAT_SUPPORT_PRODUCT="AlmaLinux"
+REDHAT_SUPPORT_PRODUCT_VERSION="10.2"
+SUPPORT_END=2035-06-01
+6.12.0-211.67.1.el10_2.x86_64
+Enforcing
+admiral-common-0.0.1rc5-42.el10.noarch
+admirald-0.0.1rc5-42.el10.x86_64
+admiral-fleet-0.0.1rc5-42.el10.x86_64
+admiralctl-0.0.1rc5-42.el10.x86_64
+admiral-flagship-0.0.1rc5-42.el10.noarch
+admiral-harbor-0.0.1rc5-42.el10.noarch
+UNIT                              LOAD   ACTIVE SUB     DESCRIPTION
+admiral-egress.service            loaded active exited  Admiral egress firewall rules
+admiral-flagship.service          loaded active running Admiral Administrative Web Console
+admiral-fleet.service             loaded active running Admiral Fleet Worker Agent
+admiral-harbor.service            loaded active running Admiral Customer Portal
+admirald.service                  loaded active running Admiral Control Plane
+caddy.service                     loaded active running Caddy web server
+postgresql.service                loaded active running PostgreSQL database server
+admiral-harbor-catalog-sync.timer loaded active waiting Admiral Harbor Catalog Synchronization Timer
+admiral-harbor-worker.timer       loaded active waiting Admiral Harbor reconciliation timer (every 3 hours)
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+9 loaded units listed. Pass --all to see loaded but inactive units, too.
+To show all installed unit files use 'systemctl list-unit-files'.
+Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:PortProcess
+udp   UNCONN 0      0          127.0.0.1:323        0.0.0.0:*    users:(("chronyd",pid=763,fd=4))
+udp   UNCONN 0      0              [::1]:323           [::]:*    users:(("chronyd",pid=763,fd=5))
+udp   UNCONN 0      0                  *:443              *:*    users:(("caddy",pid=952,fd=9))
+tcp   LISTEN 0      128        127.0.0.1:8080       0.0.0.0:*    users:(("admirald",pid=1226,fd=7))
+tcp   LISTEN 0      2048       127.0.0.1:5001       0.0.0.0:*    users:(("gunicorn",pid=1647,fd=5),("gunicorn",pid=1646,fd=5),("gunicorn",pid=1638,fd=5))
+tcp   LISTEN 0      2048       127.0.0.1:5000       0.0.0.0:*    users:(("gunicorn",pid=1280,fd=5),("gunicorn",pid=1278,fd=5),("gunicorn",pid=1227,fd=5))
+tcp   LISTEN 0      4096       127.0.0.1:9099       0.0.0.0:*    users:(("admiral-fleet",pid=1182,fd=12))
+tcp   LISTEN 0      4096       127.0.0.1:2019       0.0.0.0:*    users:(("caddy",pid=952,fd=7))
+tcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*    users:(("sshd",pid=1187,fd=7))
+tcp   LISTEN 0      200        127.0.0.1:5432       0.0.0.0:*    users:(("postgres",pid=1192,fd=7))
+tcp   LISTEN 0      128        127.0.0.1:40000      0.0.0.0:*    users:(("pasta.avx2",pid=1480,fd=6))
+tcp   LISTEN 0      128        127.0.0.1:40002      0.0.0.0:*    users:(("pasta.avx2",pid=1484,fd=6))
+tcp   LISTEN 0      4096               *:443              *:*    users:(("caddy",pid=952,fd=8))
+tcp   LISTEN 0      4096               *:80               *:*    users:(("caddy",pid=952,fd=3))
+tcp   LISTEN 0      128             [::]:22            [::]:*    users:(("sshd",pid=1187,fd=8))
+public (default)
+  interfaces: eth0
+public (default, active)
+  target: default
+  ingress-priority: 0
+  egress-priority: 0
+  icmp-block-inversion: no
+  interfaces: eth0
+  sources:
+  services: http https ssh
+  ports:
+  protocols:
+  forward: yes
+  masquerade: no
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+uid=993(admiral-apps) gid=993(admiral-apps) groups=993(admiral-apps)
+State=lingering
+Linger=yes
+true
+7d6bb2844111 admiral-inst_3a5bbe72f06e7e7d-infra Up 12 seconds
+3145105e071b admiral-inst_21abe98c367042d0-infra Up 12 seconds
+2b1b676b5c47 admiral-inst_21abe98c367042d0-app Up 11 seconds
+6375e6d20fb9 admiral-inst_21abe98c367042d0-db Up 11 seconds
+1bc66a56b791 admiral-inst_3a5bbe72f06e7e7d-app Up 11 seconds
+602226220c7a admiral-inst_3a5bbe72f06e7e7d-db Up 11 seconds
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_21abe98c367042d0-app.container
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_21abe98c367042d0-db.container
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_21abe98c367042d0-db.volume
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_21abe98c367042d0.pod
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_3a5bbe72f06e7e7d-app.container
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_3a5bbe72f06e7e7d-db.container
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_3a5bbe72f06e7e7d-db.volume
+644 root:root /etc/containers/systemd/users/993/admiral/admiral-inst_3a5bbe72f06e7e7d.pod
+700 admiral-apps:admiral-apps /var/lib/admiral/backups/inst_21abe98c367042d0
+700 admiral-apps:admiral-apps /var/lib/admiral/tmp
+700 root:root /var/lib/admiral/control-plane-backups
+700 root:root /var/lib/admiral/outbox
+700 root:root /var/lib/admiral/ssh-delivery
+750 admiral-apps:admiral-apps /var/lib/admiral/backups
+750 admiral-apps:admiral-apps /var/lib/admiral/instances/inst_21abe98c367042d0/data
+750 admiral-apps:admiral-apps /var/lib/admiral/instances/inst_3a5bbe72f06e7e7d/data
+750 admiral-apps:admiral-apps /var/lib/admiral/restore
+750 admiral:admiral /var/lib/admiral/harbor
+750 admiral:admiral /var/lib/admiral/harbor/uploads
+751 admiral:admiral /var/lib/admiral
+751 admiral:admiral /var/lib/admiral/instances
+751 root:root /var/lib/admiral/instances/inst_21abe98c367042d0
+751 root:root /var/lib/admiral/instances/inst_21abe98c367042d0/env
+751 root:root /var/lib/admiral/instances/inst_3a5bbe72f06e7e7d
+751 root:root /var/lib/admiral/instances/inst_3a5bbe72f06e7e7d/env

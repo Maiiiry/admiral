@@ -1,0 +1,2 @@
+a0c64ac71051fdc4c6cef86aa11c81fc2f8a67cf887f8e829106d5785a303efe  /var/lib/libvirt/images/admiral-validation/seeds/AlmaLinux-10.2-updated-20261021.x86_64.qcow2
+d40d3fadbb300fe81d2f21f93b519b91a31330ccf6e8388b8a410dc425d46f5f  /var/lib/libvirt/images/admiral-validation/seeds/CentOS-Stream-10-updated-20261021.x86_64.qcow2

@@ -1,0 +1,7 @@
+status: done
+cloud-init=status: done
+systemd=running
+os=almalinux 10.2
+selinux=Enforcing
+kernel=6.12.0-211.66.1.el10_2.x86_64
+pubkey=validator:validator 644

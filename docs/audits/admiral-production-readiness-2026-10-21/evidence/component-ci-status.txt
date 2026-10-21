@@ -1,0 +1,11 @@
+Read from GitHub Actions via `gh run list` on 2026-10-21 UTC. This records the latest workflow run returned for each exact checked-out SHA, not all historical runs.
+
+Repository                 SHA                                        Workflow / run UTC                Status
+admiral-project/admiral    748b703662eafdaf3919bad28787d0264f06bf16 Main Regression Tests 2026-10-20 23:50:49Z success
+admiral-project/admirald   f1f41c3c891e15b541facd79f0e4dedcc74d7082 ci 2026-10-04 03:40:43Z success
+admiral-project/admiral-fleet bcd11025b9b223a487e9e1629aba0227b764d098 ci 2026-10-20 19:28:11Z success
+admiral-project/admiralctl 68551d9398c32417f2b374ece074c2a1ab6f4d45 ci 2026-10-04 03:40:43Z success
+admiral-project/admiral-flagship c21c81b7b95d7f44d8c878f6067ff178af065feb ci 2026-09-22 20:05:54Z success
+admiral-project/admiral-harbor 4e1b88bb82b51fe39354a0fe7b80052db52eb01b ci 2026-10-20 23:48:28Z success
+
+These runs predate the audit-document commit; the root repository must run CI again after the report is committed/pushed. GitHub issue #200 now tracks the agreed four-distribution/eight-cell scope; findings #207–#211 link back to that matrix.

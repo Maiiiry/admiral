@@ -1,0 +1,17 @@
+Audit ID: ADM-AUDIT-2026-10-21
+Captured: 2026-10-21 UTC
+Root branch: main
+Root commit: 748b703662eafdaf3919bad28787d0264f06bf16
+Root worktree at capture: clean before audit report/scripts were added
+
+Submodule                    Checked out SHA                              origin/main SHA
+admiral-flagship             c21c81b7b95d7f44d8c878f6067ff178af065feb  c21c81b7b95d7f44d8c878f6067ff178af065feb
+admiral-fleet                bcd11025b9b223a487e9e1629aba0227b764d098  bcd11025b9b223a487e9e1629aba0227b764d098
+admiral-harbor                4e1b88bb82b51fe39354a0fe7b80052db52eb01b  4e1b88bb82b51fe39354a0fe7b80052db52eb01b
+admiralctl                   68551d9398c32417f2b374ece074c2a1ab6f4d45  68551d9398c32417f2b374ece074c2a1ab6f4d45
+admirald                     f1f41c3c891e15b541facd79f0e4dedcc74d7082  f1f41c3c891e15b541facd79f0e4dedcc74d7082
+
+Release refs: python3 scripts/validate-release-refs.py
+Result: PASS — RPM source references match checked-out component commits.
+The release-ref check ran before audit documentation/scripts were added.
+No source or submodule commits changed during this audit capture.

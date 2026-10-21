@@ -1,0 +1,171 @@
+AlmaLinux 10 - AppStream                         11 MB/s | 2.8 MB     00:00
+AlmaLinux 10 - BaseOS                            62 MB/s |  48 MB     00:00
+AlmaLinux 10 - CRB                              3.1 MB/s | 651 kB     00:00
+AlmaLinux 10 - Extras                           107 kB/s |  13 kB     00:00
+Dependencies resolved.
+================================================================================
+ Package                 Arch       Version                    Repository  Size
+================================================================================
+Installing:
+ kernel                  x86_64     6.12.0-211.66.1.el10_2     baseos     1.7 M
+ kernel-core             x86_64     6.12.0-211.66.1.el10_2     baseos      19 M
+ kernel-modules          x86_64     6.12.0-211.66.1.el10_2     baseos      43 M
+ kernel-modules-core     x86_64     6.12.0-211.66.1.el10_2     baseos      31 M
+Upgrading:
+ curl                    x86_64     8.12.1-4.el10_2.7          baseos     218 k
+ glibc                   x86_64     2.39-145.el10_2.alma.1     baseos     2.1 M
+ glibc-common            x86_64     2.39-145.el10_2.alma.1     baseos     316 k
+ glibc-gconv-extra       x86_64     2.39-145.el10_2.alma.1     baseos     1.6 M
+ glibc-langpack-en       x86_64     2.39-145.el10_2.alma.1     baseos     649 k
+ kernel-tools            x86_64     6.12.0-211.66.1.el10_2     baseos     2.3 M
+ kernel-tools-libs       x86_64     6.12.0-211.66.1.el10_2     baseos     1.7 M
+ libcurl                 x86_64     8.12.1-4.el10_2.7          baseos     370 k
+ openssh                 x86_64     9.9p1-29.el10_2.alma.1     baseos     353 k
+ openssh-clients         x86_64     9.9p1-29.el10_2.alma.1     baseos     752 k
+ openssh-server          x86_64     9.9p1-29.el10_2.alma.1     baseos     531 k
+ pcre2                   x86_64     10.44-1.5.el10_2           baseos     244 k
+ pcre2-syntax            noarch     10.44-1.5.el10_2           baseos     153 k
+ rpcbind                 x86_64     1.2.7-3.el10_2.1           baseos      56 k
+
+Transaction Summary
+================================================================================
+Install   4 Packages
+Upgrade  14 Packages
+
+Total download size: 105 M
+Downloading Packages:
+(1/18): kernel-6.12.0-211.66.1.el10_2.x86_64.rp 7.1 MB/s | 1.7 MB     00:00
+(2/18): kernel-core-6.12.0-211.66.1.el10_2.x86_  26 MB/s |  19 MB     00:00
+(3/18): curl-8.12.1-4.el10_2.7.x86_64.rpm       4.9 MB/s | 218 kB     00:00
+(4/18): kernel-modules-core-6.12.0-211.66.1.el1  37 MB/s |  31 MB     00:00
+(5/18): glibc-2.39-145.el10_2.alma.1.x86_64.rpm 6.3 MB/s | 2.1 MB     00:00
+(6/18): kernel-modules-6.12.0-211.66.1.el10_2.x  29 MB/s |  43 MB     00:01
+(7/18): glibc-common-2.39-145.el10_2.alma.1.x86 798 kB/s | 316 kB     00:00
+(8/18): glibc-gconv-extra-2.39-145.el10_2.alma. 4.1 MB/s | 1.6 MB     00:00
+(9/18): glibc-langpack-en-2.39-145.el10_2.alma.  11 MB/s | 649 kB     00:00
+(10/18): libcurl-8.12.1-4.el10_2.7.x86_64.rpm   9.0 MB/s | 370 kB     00:00
+(11/18): kernel-tools-6.12.0-211.66.1.el10_2.x8  22 MB/s | 2.3 MB     00:00
+(12/18): kernel-tools-libs-6.12.0-211.66.1.el10  17 MB/s | 1.7 MB     00:00
+(13/18): openssh-9.9p1-29.el10_2.alma.1.x86_64. 5.4 MB/s | 353 kB     00:00
+(14/18): openssh-server-9.9p1-29.el10_2.alma.1.  11 MB/s | 531 kB     00:00
+(15/18): pcre2-10.44-1.5.el10_2.x86_64.rpm      5.0 MB/s | 244 kB     00:00
+(16/18): openssh-clients-9.9p1-29.el10_2.alma.1 9.4 MB/s | 752 kB     00:00
+(17/18): pcre2-syntax-10.44-1.5.el10_2.noarch.r 3.2 MB/s | 153 kB     00:00
+(18/18): rpcbind-1.2.7-3.el10_2.1.x86_64.rpm    1.2 MB/s |  56 kB     00:00
+--------------------------------------------------------------------------------
+Total                                            60 MB/s | 105 MB     00:01
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1
+  Upgrading        : glibc-common-2.39-145.el10_2.alma.1.x86_64            1/32
+  Upgrading        : glibc-gconv-extra-2.39-145.el10_2.alma.1.x86_64       2/32
+  Running scriptlet: glibc-gconv-extra-2.39-145.el10_2.alma.1.x86_64       2/32
+  Upgrading        : glibc-langpack-en-2.39-145.el10_2.alma.1.x86_64       3/32
+  Running scriptlet: glibc-2.39-145.el10_2.alma.1.x86_64                   4/32
+  Upgrading        : glibc-2.39-145.el10_2.alma.1.x86_64                   4/32
+  Running scriptlet: glibc-2.39-145.el10_2.alma.1.x86_64                   4/32
+  Installing       : kernel-modules-core-6.12.0-211.66.1.el10_2.x86_64     5/32
+  Installing       : kernel-core-6.12.0-211.66.1.el10_2.x86_64             6/32
+  Running scriptlet: kernel-core-6.12.0-211.66.1.el10_2.x86_64             6/32
+  Upgrading        : openssh-9.9p1-29.el10_2.alma.1.x86_64                 7/32
+  Installing       : kernel-modules-6.12.0-211.66.1.el10_2.x86_64          8/32
+  Running scriptlet: kernel-modules-6.12.0-211.66.1.el10_2.x86_64          8/32
+  Upgrading        : kernel-tools-libs-6.12.0-211.66.1.el10_2.x86_64       9/32
+  Running scriptlet: kernel-tools-libs-6.12.0-211.66.1.el10_2.x86_64       9/32
+  Upgrading        : libcurl-8.12.1-4.el10_2.7.x86_64                     10/32
+  Upgrading        : pcre2-syntax-10.44-1.5.el10_2.noarch                 11/32
+  Upgrading        : pcre2-10.44-1.5.el10_2.x86_64                        12/32
+  Running scriptlet: pcre2-10.44-1.5.el10_2.x86_64                        12/32
+  Upgrading        : curl-8.12.1-4.el10_2.7.x86_64                        13/32
+  Upgrading        : kernel-tools-6.12.0-211.66.1.el10_2.x86_64           14/32
+  Installing       : kernel-6.12.0-211.66.1.el10_2.x86_64                 15/32
+  Upgrading        : openssh-clients-9.9p1-29.el10_2.alma.1.x86_64        16/32
+  Running scriptlet: openssh-clients-9.9p1-29.el10_2.alma.1.x86_64        16/32
+  Running scriptlet: openssh-server-9.9p1-29.el10_2.alma.1.x86_64         17/32
+  Upgrading        : openssh-server-9.9p1-29.el10_2.alma.1.x86_64         17/32
+  Running scriptlet: openssh-server-9.9p1-29.el10_2.alma.1.x86_64         17/32
+  Running scriptlet: rpcbind-1.2.7-3.el10_2.1.x86_64                      18/32
+  Upgrading        : rpcbind-1.2.7-3.el10_2.1.x86_64                      18/32
+  Running scriptlet: rpcbind-1.2.7-3.el10_2.1.x86_64                      18/32
+  Cleanup          : kernel-tools-6.12.0-211.64.1.el10_2.x86_64           19/32
+  Running scriptlet: openssh-server-9.9p1-28.el10_2.alma.1.x86_64         20/32
+  Cleanup          : openssh-server-9.9p1-28.el10_2.alma.1.x86_64         20/32
+  Running scriptlet: openssh-server-9.9p1-28.el10_2.alma.1.x86_64         20/32
+  Running scriptlet: openssh-clients-9.9p1-28.el10_2.alma.1.x86_64        21/32
+  Cleanup          : openssh-clients-9.9p1-28.el10_2.alma.1.x86_64        21/32
+  Cleanup          : openssh-9.9p1-28.el10_2.alma.1.x86_64                22/32
+  Cleanup          : curl-8.12.1-4.el10_2.6.x86_64                        23/32
+  Cleanup          : libcurl-8.12.1-4.el10_2.6.x86_64                     24/32
+  Running scriptlet: rpcbind-1.2.7-3.el10.x86_64                          25/32
+  Cleanup          : rpcbind-1.2.7-3.el10.x86_64                          25/32
+  Running scriptlet: rpcbind-1.2.7-3.el10.x86_64                          25/32
+  Cleanup          : pcre2-10.44-1.el10.3.x86_64                          26/32
+  Cleanup          : kernel-tools-libs-6.12.0-211.64.1.el10_2.x86_64      27/32
+  Running scriptlet: kernel-tools-libs-6.12.0-211.64.1.el10_2.x86_64      27/32
+  Cleanup          : pcre2-syntax-10.44-1.el10.3.noarch                   28/32
+  Cleanup          : glibc-2.39-142.el10_2.alma.1.x86_64                  29/32
+  Cleanup          : glibc-langpack-en-2.39-142.el10_2.alma.1.x86_64      30/32
+  Cleanup          : glibc-gconv-extra-2.39-142.el10_2.alma.1.x86_64      31/32
+  Running scriptlet: glibc-gconv-extra-2.39-142.el10_2.alma.1.x86_64      31/32
+  Cleanup          : glibc-common-2.39-142.el10_2.alma.1.x86_64           32/32
+  Running scriptlet: kernel-modules-core-6.12.0-211.66.1.el10_2.x86_64    32/32
+  Running scriptlet: kernel-core-6.12.0-211.66.1.el10_2.x86_64            32/32
+Generating grub configuration file ...
+Adding boot menu entry for UEFI Firmware Settings ...
+done
+
+  Running scriptlet: kernel-modules-6.12.0-211.66.1.el10_2.x86_64         32/32
+  Running scriptlet: glibc-common-2.39-142.el10_2.alma.1.x86_64           32/32
+
+Upgraded:
+  curl-8.12.1-4.el10_2.7.x86_64
+  glibc-2.39-145.el10_2.alma.1.x86_64
+  glibc-common-2.39-145.el10_2.alma.1.x86_64
+  glibc-gconv-extra-2.39-145.el10_2.alma.1.x86_64
+  glibc-langpack-en-2.39-145.el10_2.alma.1.x86_64
+  kernel-tools-6.12.0-211.66.1.el10_2.x86_64
+  kernel-tools-libs-6.12.0-211.66.1.el10_2.x86_64
+  libcurl-8.12.1-4.el10_2.7.x86_64
+  openssh-9.9p1-29.el10_2.alma.1.x86_64
+  openssh-clients-9.9p1-29.el10_2.alma.1.x86_64
+  openssh-server-9.9p1-29.el10_2.alma.1.x86_64
+  pcre2-10.44-1.5.el10_2.x86_64
+  pcre2-syntax-10.44-1.5.el10_2.noarch
+  rpcbind-1.2.7-3.el10_2.1.x86_64
+Installed:
+  kernel-6.12.0-211.66.1.el10_2.x86_64
+  kernel-core-6.12.0-211.66.1.el10_2.x86_64
+  kernel-modules-6.12.0-211.66.1.el10_2.x86_64
+  kernel-modules-core-6.12.0-211.66.1.el10_2.x86_64
+
+Complete!
+26 files removed
+NAME="AlmaLinux"
+VERSION="10.2 (Lavender Lion)"
+RELEASE_TYPE=stable
+ID="almalinux"
+ID_LIKE="rhel centos fedora"
+VERSION_ID="10.2"
+PLATFORM_ID="platform:el10"
+PRETTY_NAME="AlmaLinux 10.2 (Lavender Lion)"
+ANSI_COLOR="0;34"
+LOGO="fedora-logo-icon"
+CPE_NAME="cpe:/o:almalinux:almalinux:10.2"
+HOME_URL="https://almalinux.org/"
+DOCUMENTATION_URL="https://wiki.almalinux.org/"
+VENDOR_NAME="AlmaLinux"
+VENDOR_URL="https://almalinux.org/"
+BUG_REPORT_URL="https://bugs.almalinux.org/"
+
+ALMALINUX_MANTISBT_PROJECT="AlmaLinux-10"
+ALMALINUX_MANTISBT_PROJECT_VERSION="10.2"
+REDHAT_SUPPORT_PRODUCT="AlmaLinux"
+REDHAT_SUPPORT_PRODUCT_VERSION="10.2"
+SUPPORT_END=2035-06-01
+kernel-core-6.12.0-211.64.1.el10_2.x86_64
+kernel-core-6.12.0-211.66.1.el10_2.x86_64
+6.12.0-211.64.1.el10_2.x86_64
+validator:validator 644 /home/validator/validator.pub

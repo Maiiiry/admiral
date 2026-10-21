@@ -1,0 +1,2 @@
+ebf7a16fb0cdbfbe27d8958d8b4ab0420b29451b2c257b07ec4ef63f447c01a8  docs/audits/admiral-production-readiness-2026-10-21/evidence/seed-updates/alma10-dnf-update.log
+fd295d3a57e9216e0e8a80502871ec5637fc56a7fe9379b8e7af30fef84c138e  docs/audits/admiral-production-readiness-2026-10-21/evidence/seed-updates/centos10-dnf-update.log

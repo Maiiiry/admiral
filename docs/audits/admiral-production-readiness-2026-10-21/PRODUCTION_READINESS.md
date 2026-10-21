@@ -1,0 +1,27 @@
+# Production readiness decision
+
+Audit ID: `ADM-AUDIT-2026-10-21`<br>
+Audit began: 2026-10-21 UTC<br>
+Source under review: `748b703662eafdaf3919bad28787d0264f06bf16` and submodule SHAs in `evidence/source-manifest.txt`.<br>
+Candidate artifacts: six x86_64/`noarch` Admiral RPMs at `0.0.1rc5-42.el10`; hashes in `evidence/candidate-rpm-sha256.txt`.
+
+## Decision by topology
+
+| Topology | Decision | Basis |
+| --- | --- | --- |
+| Single-Node | **NOT READY** | Scoped install/lifecycle evidence exists on all four OS targets, but full coverage is incomplete. Two open HIGH findings affect this mode: production config accepts shipped `__REQUIRED__` values for the secrets encryption and Fleet callback keys (`ADM-F-007` / #212), and a failed declared workload service can still produce `succeeded` provisioning and `healthy` instance state (`ADM-F-006` / #227). Repeated provisioning created distinct instances on all four distributions (`ADM-F-001`). Harbor rendered an unsafe percent-encoded script URL on Rocky and Fedora (`ADM-F-004`, MEDIUM). Concurrent update/delete, isolation negatives, stress/fault coverage, controlled performance and full matrix remain outstanding. HTTP/2 network exposure in this mode was not established. |
+| Multi-Node | **NOT READY** | AlmaLinux three-node bootstrap and outage recovery worked; Rocky and Fedora Multi-Node placed workloads on both workers and preserved SQL markers across worker reboots. CentOS Stream now has a scoped three-guest install, placement on both workers and cleanup; on both placements API health preceded PostgreSQL readiness. Four open HIGH findings block readiness: reachable Go HTTP/2 advisories (`ADM-F-003`), hub peer-recovery defect (`ADM-F-005`), placeholder secret acceptance (`ADM-F-007` / #212), and false successful/healthy state with a failed or not-yet-ready declared service (`ADM-F-006`). A real Rocky worker packet partition also left its instance reporting stale `running/healthy` (`ADM-F-002`). Database outage, latency injection, task replay/concurrency, full security negatives, performance and complete distribution coverage remain open. |
+
+These are audit evidence statuses, not claims that the previous RC validation failed. Both topologies are NOT READY because open HIGH findings affect their evaluated control-plane/worker paths, including shared config handling and workload health. Both topologies have incomplete matrix coverage; Multi-Node still lacks several CentOS Stream fault/security scenarios. No production system was touched.
+
+## Candidate identity and host
+
+Root commit and five component submodule commits are recorded in `evidence/source-manifest.txt`. `python3 scripts/validate-release-refs.py` passed, and all five submodule SHAs matched their remote `origin/main` heads at audit start. The lab host is Rocky Linux 10.2 x86_64, 4 vCPU, 8 GiB RAM, 4 GiB swap and KVM/QEMU 10.1/libvirt 11.10. Guest tests are isolated libvirt VMs. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64 in both topologies (eight cells). CentOS Stream now has scoped Single-Node evidence and scoped three-node Multi-Node placement/cleanup evidence; the latter also recorded health reported before PostgreSQL readiness. Its full Multi-Node cell remains incomplete.
+
+## What would change this decision
+
+The requested matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64 in both topologies (eight cells). Prior RC subsets and scoped Single-Node executions do not complete the audit; CentOS Stream Multi-Node now has real runtime evidence for install, placement and cleanup, but still needs the remaining lifecycle, recovery, security, concurrency and performance scenarios. Multi-Node cannot become READY until `ADM-F-003`, `ADM-F-005`, `ADM-F-006` and `ADM-F-007` are fixed and revalidated. Before either topology can be READY, `ADM-F-001` and `ADM-F-002` must also be fixed or accepted with bounded safe behavior, and high-impact isolation, integrity, recovery and false-completion scenarios need reproducible evidence. Performance measurements must include sample counts and percentiles, without inventing SLOs. Any candidate code correction requires a new six-RPM Release increment, a new immutable candidate, and revalidation of affected cells (all six Release fields increment for any RPM rebuild).
+
+## Current answer to the audit question
+
+Available evidence shows real Single-Node lifecycle and three-node hub-and-spoke operation, including worker loss/rejoin, reboot and a controlled packet partition. Findings include three MEDIUM and four HIGH issues from the runtime probes and source/config audit: replay can create another instance; instance health remains last-known healthy while its worker is offline; Harbor emits an unsafe Markdown URL on Rocky and Fedora; the Go 1.26.7 HTTP/2 listener is vulnerable and reachable; Rocky and Fedora hubs lose runtime WireGuard peers on startup until manual reconstruction; production config accepts shipped placeholder values for the secrets and callback keys; and a CentOS Stream probe reported successful/healthy state with a failed required database service. The config-parser behavior was executed as a focused test; full process exploitation was not attempted. Single-Node and Multi-Node are **NOT READY** until the HIGH findings affecting each topology are fixed and revalidated. Concurrent behavior, other security negatives, resource exhaustion, latency, database recovery, performance and full matrix evidence remain open.

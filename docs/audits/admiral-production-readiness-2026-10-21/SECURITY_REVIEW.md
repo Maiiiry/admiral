@@ -1,0 +1,47 @@
+# Security review
+
+Audit ID: `ADM-AUDIT-2026-10-21`<br>
+Status: **NOT READY — a HIGH production secret-placeholder validation defect is confirmed; live tenant isolation and broader security tests remain open**
+Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
+
+## Controls observed in source and packaging
+
+* Production `admirald` configuration requires selected authentication material and TLS identity; its default listen address is loopback. A focused config-loader execution confirmed that the shipped `__REQUIRED__` placeholder still passes for `secrets_key` and `fleet_callback_key`, which initialize secret encryption and Fleet callback HMAC. This is HIGH finding `ADM-F-007` / issue #212. Admin, Harbor, and worker endpoints are wrapped in distinct middleware and worker identity is role checked.
+* Node/Fleet requests use bearer credentials stored as hashes/peppered secrets in the control plane's model. Task claims and callbacks use HMAC; tasks carry Ed25519 signatures. Optional payload encryption uses AES-GCM. Fleet validates TLS against its configured CA.
+* The callback handler compares authenticated node, operation node and task IDs and acknowledges duplicate terminal callbacks without repeating the operation transition.
+* `admiral-fleet` runs as root because it needs to manage rootless Podman and systemd, with a bounded capability set and filesystem restrictions in the service unit. Workloads run under `admiral-apps`; generated Quadlet units set `NoNewPrivileges=true` and are executed through the user systemd/Podman interface.
+* Harbor/Flagship systemd services run as the `admiral` account, have no capabilities, use loopback listeners, and apply systemd filesystem/kernel restrictions. Web source includes session, CSRF, rate-limit and (Flagship) MFA modules. Package specs own persistent directory modes; runtime files should be checked separately.
+* Local audit artifacts may contain credentials or fingerprints. This report and tracked evidence exclude secret values; raw prior logs remain mode 0600 in an ignored lab directory pending redaction review.
+
+## Runtime checks completed
+
+* On the AlmaLinux Single-Node guest, `GET /api/v1/status` without a credential and with a deliberately invalid bearer token both returned HTTP 401. The documented development bootstrap pair `admin` / `secret` was rejected with HTTP 401 at the admin login route. Response bodies were discarded; this checks those specific probes only.
+* On both AlmaLinux Multi-Node workers, rootless Podman ran the app, DB and infra containers. A read-only `podman inspect` sample showed app `Privileged=false`, private PID namespace and `no-new-privileges`; the app Quadlet declared `Restart=always`.
+* Two Fedora Rawhide workloads on the same worker had different network namespace inodes and distinct per-instance DB volume names/paths. Their app containers were non-privileged with private PID namespaces and `no-new-privileges`; the DB containers had no Podman socket paths. The DB service was accepting connections inside its own container. Rootless Podman returned no DB container IPs, so the cross-workload TCP denial could not be tested. Secret separation and effective capability sets remain unproven. See `evidence/fedora-multi-isolation.md`.
+* Per-instance Quadlet files were `0644 root:root` and exposed `Secret=` references only. Generated secret values were not printed, copied or added to tracked evidence. This does not prove secrets are inaccessible to another workload.
+* The bootstrap SSH public key was revoked by the worker install path; direct authentication with that bootstrap key was rejected. Administrator-managed delivery keys authenticated as `admiral-ssh`. These keys remained outside Git and mode `0600`.
+* From an enrolled worker, `curl --http2` to the hub's WireGuard-bound `admirald` endpoint negotiated HTTP/2 and received HTTP 401. This confirms an unauthenticated cluster peer reaches the Go HTTP/2 parser before application auth; it does not reproduce a CVE payload.
+* A focused production config-load test with otherwise valid required fields and temporary readable TLS files accepted literal `__REQUIRED__` values for `secrets_key` and `fleet_callback_key`; the temporary test source was removed after execution. The reproduction and scope limits are in `evidence/config-placeholder-probe.md`.
+* `govulncheck v1.9.0` source/symbol scans found 11 reachable advisories in `admirald` and 10 standard-library advisories in each of `admiral-fleet` and `admiralctl`. Installed Go binaries report Go `1.26.7`; current scanner advisories include fixes in Go `1.26.9`/`1.26.10`, and `admirald` uses `golang.org/x/text@v0.40.0` with a reachable advisory fixed in v0.41.0. See `evidence/go-dependency-scan.md` and `ADM-F-003`.
+* The AlmaLinux RPM-provided Python package versions were screened against OSV; 57 advisory records across six package names are provisional version matches. A direct test of the installed Harbor Markdown helper on both Rocky 10 and Fedora Rawhide emitted a percent-encoded `javascript:` link from `app.description_md` input (`ADM-F-004`). The edit route is admin-protected; no browser execution was performed. See `evidence/python-dependency-scan.md`.
+
+## Important unverified controls
+
+1. Wrong worker tokens, a worker claiming another node's task, callback replay/task substitution, and customer cross-tenant access have not yet run against live guests. The two basic HTTP 401 checks above are not a complete authorization test.
+2. The Fedora same-worker probe confirmed distinct workload namespaces and DB volume paths and found no Podman sockets inside the DB containers. Negative reads of another workload's storage/secrets, direct cross-workload network access, rootless user bus access, and same-worker behavior on the other distributions remain untested. Source configuration alone is not proof of isolation.
+3. Container capabilities, seccomp, SELinux labels, CPU/memory limits, port binds, host socket mounts, and process namespaces need systematic checks. The single runtime inspect is only a sample; it found no explicit `CapDrop` entry, so the effective rootless capability set still needs direct kernel/runtime verification.
+4. Admin/control-plane listeners and PostgreSQL/Caddy admin ports must be checked from both guest-local and peer/public networks; firewall configuration is not assumed to match runtime listeners.
+5. Secret values must be canaried through config, task payload, logs, process arguments, Podman inspect, backup files and web error responses. Only the Quadlet reference and file-permission checks have run; no end-to-end canary scan has run.
+6. Go source scans found reachable findings. Python OSV screening and one runtime Markdown probe ran, but the RPM source backports, full Fedora dependency set, and remaining Python call paths have not been triaged. CI status does not substitute for a dated dependency database scan.
+7. The open source-review issues #214, #215, #216, #217, #218, #219 and #220 identify untested WireGuard PSK log redaction, spoke key identity, persistent SELinux mode, forwarding state, optional SSH tunnel key ownership, COPR signature enforcement during dev-to-secure reconvergence, and the workload service account shell. They remain unvalidated by live security probes in this audit; their exact evidence and regression criteria are linked from `FINDINGS.md`.
+
+## Static risk notes (not yet findings)
+
+* A missing persistent session HMAC key causes admin sessions to be invalidated on `admirald` restart. This is an availability/usability trade-off, not an auth bypass; production policy should be explicit.
+* Fleet's duplicate-task memory is process-local and time-limited. Queue lease retry and resource-specific idempotency are the actual safety mechanisms; crash-window tests are needed.
+* The Fleet root service has powerful capabilities. The current bound set and protected filesystems reduce exposure, but an exploitable privileged path or control socket would still have high impact.
+* Harbor contains administrative routes/views as well as customer workflows. Verify the principal/role boundary for every such route and align project contracts/documentation.
+
+## Current security verdict
+
+The executed 401 probes and runtime samples passed their narrow checks, but the HTTP/2 endpoint is reachable from a worker and the candidate Go binaries contain reachable advisories (`ADM-F-003`). The production config parser also accepts shipped placeholder encryption/callback keys (`ADM-F-007`). Harbor emits an unsafe Markdown URL on Rocky and Fedora (`ADM-F-004`); the browser interaction and untrusted-content path remain untested. Same-worker isolation evidence is partial; network denial, secret separation, effective capabilities, worker identity negatives, full external listener exposure, secret canary paths, and comprehensive RPM advisory triage remain open. Single-Node and Multi-Node security are **NOT READY** until the open HIGH findings affecting each topology are corrected and revalidated; remaining security coverage is also incomplete.
