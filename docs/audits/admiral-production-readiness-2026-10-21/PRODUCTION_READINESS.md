@@ -2,14 +2,14 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest candidate: six coordinated Release 46 RPMs were built from root package-preparation commit `7223561646b60d3c24e8bfb257d544a5eb6dea04` and installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests.<br>
-Targeted probes passed for Fedora stale-task recovery and Rocky whoami lifecycle; no full cell has passed and current matrix status remains **0/8**. Release 45 remains invalidated by HIGH finding `ADM-F-009` / #229. Historical Release 42/43/45 results do not count for this candidate.
+Latest candidate: six coordinated Release 46 RPMs were built from root package-preparation commit `7223561646b60d3c24e8bfb257d544a5eb6dea04` and installed on fresh Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 Single-Node guests.<br>
+Named targeted probes passed on all four Single-Node guests; no full cell has passed and current matrix status remains **0/8**. Release 45 remains invalidated by HIGH finding `ADM-F-009` / #229. Historical Release 42/43/45 results do not count for this candidate.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | Release 46 was installed on Fedora Rawhide and Rocky Linux 10; named targeted probes passed, but installation, workload, persistence, isolation, concurrency, backup, failure and performance coverage is incomplete across all four OS cells. |
+| Single-Node | **NOT VALIDATED** | Release 46 was installed on all four target distributions and named install/lifecycle probes passed. Persistence, isolation, concurrency, backup/restore, broad failure and performance coverage is incomplete across all four OS cells. |
 | Multi-Node | **NOT VALIDATED** | No Release 46 three-guest scenario has run. The shared control-plane queue fix still needs a fresh Multi-Node regression, followed by the complete four-OS scenario set. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
@@ -25,9 +25,9 @@ The NOT READY statuses in this historical table applied to Release 42 runtime ev
 
 ## Candidate identity and host
 
-Release 46 source pins and all six RPM Release fields are prepared on `main` at package-preparation commit `7223561646b60d3c24e8bfb257d544a5eb6dea04`. The component fix is `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`; component CI passed at [run 39685965525](https://github.com/admiral-project/admirald/actions/runs/39685965525), and root CI passed at [run 39686130018](https://github.com/admiral-project/admiral/actions/runs/39686130018). No Release 46 RPM has been built or installed.
+Release 46 source pins and all six RPM Release fields are prepared on `main` at package-preparation commit `7223561646b60d3c24e8bfb257d544a5eb6dea04`. The component fix is `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`; component CI passed at [run 39685965525](https://github.com/admiral-project/admirald/actions/runs/39685965525), and root build/package CI passed at [run 39686130018](https://github.com/admiral-project/admiral/actions/runs/39686130018). The six Release 46 RPMs were built, published to the isolated local repository, and installed on fresh Single-Node guests for all four target distributions.
 
-Before the Release 46 build, `python3 scripts/validate-release-refs.py` passed after fetching all five component submodules and confirming their pins equal `origin/main`. The six exact Release 46 NEVRAs and SHA-256 values are recorded in `evidence/release46-candidate.md` and `evidence/release46-rpm-sha256.txt`. Fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests have installed the candidate and completed targeted probes; AlmaLinux 10 and CentOS Stream 10 install runs are underway. The lab host is Rocky Linux 10.2 x86_64, 4 vCPU, 8 GiB RAM, 4 GiB swap and KVM/QEMU 10.1/libvirt 11.10. Guest tests use isolated libvirt VMs. The target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 x86_64 in Single-Node and Multi-Node (eight cells).
+Before the Release 46 build, `python3 scripts/validate-release-refs.py` passed after fetching all five component submodules and confirming their pins equal `origin/main`. The six exact Release 46 NEVRAs and SHA-256 values are recorded in `evidence/release46-candidate.md` and `evidence/release46-rpm-sha256.txt`. Fresh Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 Single-Node guests have installed the candidate and completed named targeted probes. No Release 46 Multi-Node scenario has run. The lab host is Rocky Linux 10.2 x86_64, 4 vCPU, 8 GiB RAM, 4 GiB swap and KVM/QEMU 10.1/libvirt 11.10. Guest tests use isolated libvirt VMs. The target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 x86_64 in Single-Node and Multi-Node (eight cells).
 
 ## What would change this decision
 
@@ -35,4 +35,4 @@ The target matrix remains Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentO
 
 ## Current answer to the audit question
 
-The Release 46 production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. The exact candidate has been installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests. Fedora passed targeted failed-service and stale-task-after-reboot regressions; Rocky passed a targeted whoami provision/HTTP/deprovision lifecycle. Neither result completes an OS cell. AlmaLinux and CentOS Stream installations are in progress, and no Release 46 Multi-Node scenario has run. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.
+The Release 46 production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. Fresh Release 46 Single-Node guests for all four target distributions passed named installation and workload lifecycle probes, including provision, effective-port HTTP, explicit-key replay, deprovision and cleanup where recorded. Fedora also passed targeted failed-service and stale-task-after-reboot regressions. These are scenario-level results, not full-cell passes. No Release 46 Multi-Node scenario has run. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.
