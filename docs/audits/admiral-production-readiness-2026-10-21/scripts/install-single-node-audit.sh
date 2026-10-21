@@ -45,8 +45,7 @@ for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor a
   actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' "$package")
   [[ $actual == 0.0.1rc5-43.el10 ]] || { echo "$package has unexpected NEVRA: $actual" >&2; exit 1; }
 done
-actual_nevra=$(rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' python3-mistune)
-[[ $actual_nevra == "$expected_mistune_nevra" ]] || { echo "python3-mistune has unexpected NEVRA: $actual_nevra" >&2; exit 1; }
+rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' python3-mistune | grep -Fx "$expected_mistune_nevra"
 REMOTE
   ssh "${ssh_args[@]}" "$target" sudo admiral-install --single-node \
     --public-ip "$node_ip" --ssh-public-key /home/validator/validator.pub \
