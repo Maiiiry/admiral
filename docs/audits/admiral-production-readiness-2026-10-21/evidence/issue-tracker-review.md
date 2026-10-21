@@ -29,7 +29,7 @@ The open issues fall into three groups. “Fixed in tree” means the independen
 
 `#207`, `#208`, `#209`, `#210`, `#211`, `#212`, `#213`, `#214`, `#215`, `#216`, `#217`, `#218`, `#219`, `#220`, `#221`, `#222`, `#224`, `#227`.
 
-These still require code changes, a security/dependency disposition, or an explicit missing residual to be addressed. `#227` is now additionally supported by the CentOS Stream Multi-Node timing observation in `centos-multi-execution.md`: both API instances were reported healthy before PostgreSQL readiness. The failed-service injection remains the stronger direct reproduction from Single-Node.
+These still require code changes, a security/dependency disposition, or an explicit missing residual to be addressed. `#227` now has direct Release 42 reproductions on both CentOS Stream topologies: Single-Node and a Multi-Node worker each reported success/healthy with the declared PostgreSQL unit failed and no database container. The normal Multi-Node placements also showed an earlier healthy-than-ready window. `#211` was additionally reproduced on a CentOS Stream hub restart and required manual peer reconstruction.
 
 ### Implemented in source; release or affected-cell validation remains open — 25
 
