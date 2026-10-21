@@ -7,7 +7,7 @@ Scope: reconcile issue state and close only issue-level work whose acceptance is
 
 ## Tracker result
 
-The linked-subissue endpoint contained **50 open issues** before this review. Five were closed with per-issue rationale and evidence; **45 remain open**. An earlier interim count of 51 was incorrect and is superseded by this endpoint count.
+The endpoint returned **50 linked sub-issues**. Five issues were closed in the first pass and five more in the 2026-10-21 17:00 UTC follow-up; **40 remain open**. An earlier interim count of 51 is superseded by the endpoint count.
 
 Closed:
 
@@ -18,6 +18,11 @@ Closed:
 | #196 | Worker sync safely skips malformed items without an ID and continues processing valid items. Regression coverage is in `admiral-harbor/tests/test_worker.py:195-235` and `test_client_routes.py:552`; Harbor CI passed on `4e1b88b` (run 39517380653). | No malformed remote payload was injected in the live lab. This closes the code-fix issue, not the broader runtime audit. |
 | #198 | Restore signature trust boundary is documented; duplicate check removed; paused-pod detection is more specific. Fleet CI passed on `bcd1102` (run 39483715766). | Documentation/cleanup acceptance only; no production-readiness claim. |
 | #199 | Shared billing-date presentation helper handles legacy date/datetime values and is registered for the three affected templates; regression tests exist; Harbor CI passed on `4e1b88b` (run 39517380653). | No claim that all views were exercised in all eight cells. |
+| #135 | Release 42 RPM `%check` injects the actual CLI version symbol and verifies the packaged binary reports `0.0.1rc5`; the independent code review confirmed the linker target and an installed artifact reported the expected version. | CLI packaging defect only; no matrix or readiness claim. [Closure comment](https://github.com/admiral-project/admiral/issues/135#issuecomment-6321720914). |
+| #141 | Release 42 architecture-aware `%check` validates the packaged ELF with `readelf` and avoids executing a foreign-architecture binary; the independent code review confirmed the cross-build path. | Packaging check only. ARM64 remains Tier 2, non-blocking, and no ARM runtime validation is claimed. [Closure comment](https://github.com/admiral-project/admiral/issues/141#issuecomment-6321721935). |
+| #203 | Release 42 checks confirmed the Harbor account can read the TLS key while secrets remain `0600 root:root`; the current CentOS Stream Multi-Node package verification also showed no Harbor RPM drift beyond installer-generated `harbor.env`. | TLS permission defect only; full cell validation remains open. [Closure comment](https://github.com/admiral-project/admiral/issues/203#issuecomment-6321723003). |
+| #204 | The corrected RPM metadata uses `0700 root:root` for Rocky-owned shared directories; the Release 42 Rocky installation completed its DNF transaction and package checks. | Rocky DNF conflict only; no full matrix claim. [Closure comment](https://github.com/admiral-project/admiral/issues/204#issuecomment-6321724055). |
+| #206 | The concurrency-safe metadata initializer and race regression tests passed Harbor CI; a fresh Release 42 CentOS Stream admin/portal hub startup completed without a `harbor_meta_pkey`/`UniqueViolation` in its restricted install log. | Startup-race defect only; the eight-cell audit remains incomplete. [Closure comment](https://github.com/admiral-project/admiral/issues/206#issuecomment-6321725041). |
 
 The corrected closing comments are attached to each GitHub issue. The root master remains open.
 
@@ -31,11 +36,11 @@ The open issues fall into three groups. “Fixed in tree” means the independen
 
 These still require code changes, a security/dependency disposition, or an explicit missing residual to be addressed. `#227` now has direct Release 42 reproductions on both CentOS Stream topologies: Single-Node and a Multi-Node worker each reported success/healthy with the declared PostgreSQL unit failed and no database container. The normal Multi-Node placements also showed an earlier healthy-than-ready window. `#211` was additionally reproduced on a CentOS Stream hub restart and required manual peer reconstruction.
 
-### Implemented in source; release or affected-cell validation remains open — 25
+### Implemented in source; release or affected-cell validation remains open — 20
 
-`#133`, `#135`, `#136`, `#137`, `#138`, `#139`, `#140`, `#141`, `#143`, `#144`, `#150`, `#153`, `#155`, `#167`, `#181`, `#182`, `#190`, `#191`, `#201`, `#202`, `#203`, `#204`, `#205`, `#206`, `#225`.
+`#133`, `#136`, `#137`, `#138`, `#139`, `#140`, `#143`, `#144`, `#150`, `#153`, `#155`, `#167`, `#181`, `#182`, `#190`, `#191`, `#201`, `#202`, `#205`, `#225`.
 
-Independent review found fixes or regression tests in the current source for these items, but their own tracker comments require evidence from the packaged candidate, their exact target topology, a distribution matrix, or package metadata/reconciliation checks. Keep them open until those gates are met. In particular, #201 still needs confirmation that the patched Flask RPM is published and installable from the intended public repositories; #205 still needs clean `rpm -V admiral-common` evidence after install and reconciliation; #206 needs the original fresh multi-node first-start path on the corrected candidate.
+Independent review found fixes or regression tests in the current source for these items, but their own tracker comments require evidence from the packaged candidate, their exact target topology, a distribution matrix, or package metadata/reconciliation checks. Keep them open until those gates are met. In particular, #201 still needs confirmation that the patched Flask RPM is published and installable from the intended public repositories; #205 still needs clean `rpm -V admiral-common` evidence after install and reconciliation.
 
 ### Follow-ups with incomplete acceptance — 2
 
@@ -44,4 +49,4 @@ Independent review found fixes or regression tests in the current source for the
 
 ## Audit interpretation
 
-No open issue was closed solely because a source review said “fixed in tree.” The five closures above are limited to issue-level acceptance with current regression/CI evidence or a resolved product decision; their comments explicitly preserve the scope boundary. The 45 remaining issues continue to gate release behavior or audit evidence. Single-Node and Multi-Node remain **NOT READY**, and the eight-cell audit remains incomplete.
+No issue was closed solely because a source review said “fixed in tree.” The ten closures are limited to issue-level acceptance with regression/CI evidence, current-candidate observations, or a resolved product decision; each closure comment states its boundary. The 40 remaining issues continue to gate release behavior or audit evidence. Single-Node and Multi-Node remain **NOT READY**, and the eight-cell audit remains incomplete.
