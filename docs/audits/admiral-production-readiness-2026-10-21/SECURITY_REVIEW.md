@@ -1,8 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT TESTED — the candidate is built and installed on fresh Single-Node guests, but no Release 46 security checks have run.** Matrix: 0/6.<br>
-Release 45 included limited Rawhide and Rocky authentication probes, and Fedora same-host isolation/secret-separation/resource-limit checks. Release 45 was invalidated by #229; none of those observations validate Release 46. Findings, including source fixes, remain open until retested against the exact package set.
+Current Release 47 status: **NOT TESTED — the RPM candidate is not built and no Release 47 guest security checks have run.** Matrix: 0/8.<br>
+Release 45/46 security probes are candidate-specific history and do not validate Release 47. Findings, including source fixes, remain open until retested against the exact package set. The active systems are four x86_64 distributions.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging
@@ -16,7 +16,7 @@ Scope: API/UI authentication and authorization, node trust, workload isolation, 
 
 ## Runtime checks completed
 
-* On the AlmaLinux Single-Node guest, `GET /api/v1/status` without a credential and with a deliberately invalid bearer token both returned HTTP 401. The documented development bootstrap pair `admin` / `secret` was rejected with HTTP 401 at the admin login route. Response bodies were discarded; this checks those specific probes only.
+* Historical Release 42–46 guest probes: on the AlmaLinux Single-Node guest, `GET /api/v1/status` without a credential and with a deliberately invalid bearer token both returned HTTP 401. The documented development bootstrap pair `admin` / `secret` was rejected with HTTP 401 at the admin login route. Response bodies were discarded; this checks those specific probes only and does not validate Release 47.
 * On AlmaLinux Multi-Node, worker1 sent unauthenticated requests over WireGuard to Fleet task claim, callback, node heartbeat and admin task-list routes; each returned HTTP 401. With a synthetic invalid token, the three Fleet routes returned 401 and the admin task-list route returned 429 after repeated probes from that worker IP, matching the configured auth-failure block. TLS verification was disabled to isolate authentication, and an independent before/after state diff was not captured. Signed callbacks and task ownership checks remain untested. See `evidence/alma-multi-auth-negative.md`.
 * On both AlmaLinux Multi-Node workers, rootless Podman ran the app, DB and infra containers. A read-only `podman inspect` sample showed app `Privileged=false`, private PID namespace and `no-new-privileges`; the app Quadlet declared `Restart=always`.
 * Two Fedora Rawhide workloads on the same worker had different network namespace inodes and distinct per-instance DB volume names/paths. Their app containers were non-privileged with private PID namespaces and `no-new-privileges`; the DB containers had no Podman socket paths. The DB service was accepting connections inside its own container. Rootless Podman returned no DB container IPs, so the cross-workload TCP denial could not be tested. Secret separation and effective capability sets remain unproven. See `evidence/fedora-multi-isolation.md`.
@@ -46,4 +46,4 @@ Scope: API/UI authentication and authorization, node trust, workload isolation, 
 
 ## Current security verdict
 
-For the historical Release 42 security evidence, the HTTP/2 endpoint was reachable from a worker and the candidate Go binaries contained reachable advisories (`ADM-F-003`); the parser accepted placeholder keys (`ADM-F-007`); and Harbor emitted an unsafe Markdown URL (`ADM-F-004`). Same-worker isolation evidence was partial. Network denial, secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and comprehensive RPM advisory triage remained open. The Release 42 security assessment was **NOT READY**. Release 45 included limited guest security probes but was invalidated by #229; those results do not apply to Release 46. Current Release 46 security status is **NOT TESTED** until the exact package set receives fresh guest security tests and a current dependency scan.
+For the historical Release 42 security evidence, the HTTP/2 endpoint was reachable from a worker and the candidate Go binaries contained reachable advisories (`ADM-F-003`); the parser accepted placeholder keys (`ADM-F-007`); and Harbor emitted an unsafe Markdown URL (`ADM-F-004`). Same-worker isolation evidence was partial. Network denial, secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and comprehensive RPM advisory triage remained open. The Release 42 security assessment was **NOT READY**. Release 45/46 included limited guest security probes, but those results are candidate-specific. Current Release 47 security status is **NOT TESTED** until the exact package set receives fresh guest security tests and a current dependency scan.

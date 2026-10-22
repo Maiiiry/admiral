@@ -1,9 +1,9 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT VALIDATED — no in-scope fresh three-guest Release 46 execution has started.** Current matrix: 0/6. A Rocky Linux setup attempt was stopped after the user removed that distribution from scope due EPEL dependency resolution; its evidence is excluded.<br>
-Current source root: `7223561646b60d3c24e8bfb257d544a5eb6dea04`; component fix: `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`.<br>
-No Release 45 Multi-Node execution was started. Historical Release 42/43 and Release 45 Single-Node observations do not validate a Release 46 Multi-Node cell. The Release 46 Fedora Single-Node stale-task regression passed, but the same queue path remains untested in a fresh three-guest topology. Other findings remain open pending exact-candidate Multi-Node regression runs.
+Current Release 47 status: **NOT VALIDATED — no Release 47 three-guest cell has run; the RPM build is pending.** Current matrix: 0/8. Rocky Linux 10 is in scope; its earlier dependency failure is historical and the seed compatibility pin must be recorded for every Rocky guest.<br>
+Current source pins: root common payload `e0ca76e5c9a5e22fc62becc7d40ef6ff71686f8d`; component SHAs are recorded in the Makefile/specs and will be copied to the candidate manifest.<br>
+All Release 42–46 Multi-Node observations are historical and do not validate Release 47. Findings remain open pending exact-candidate three-guest regression runs.
 
 ## Observed architecture and guarantees
 
@@ -106,4 +106,4 @@ Loss of the hub or central database blocks new control-plane operations and call
 
 ## Target matrix status and next executions
 
-The current Release 46 matrix is Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (six cells). Rocky Linux 10 is excluded after the EPEL dependency blocker documented in `evidence/release46-rocky-excluded-dependency-block.md`; its earlier placements and other probes are historical evidence only. No in-scope Release 46 three-guest scenario has run, so Multi-Node remains NOT VALIDATED and the overall matrix remains 0/6. Historical prior-candidate records include Fedora, AlmaLinux and CentOS Stream three-node installs, placement, worker outages/rejoins and other targeted probes; they do not validate Release 46. Full cell coverage remains incomplete. Still required: complete install/lifecycle matrix on each in-scope distribution, latency injection, database outage recovery, task/callback interruption, node removal, authorization negatives, complete cross-workload isolation and performance measurements. Do not label this hub-and-spoke setup HA.
+Release 47's current target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). No Release 47 three-guest execution has run yet. Historical three-node installs, placement, worker outages/rejoins and other probes do not validate this candidate. Full cell coverage remains incomplete. Required scenarios include node registration, placement, outage/rejoin/removal, hub restart and peer recovery, partitions, database outage, task/callback interruption, authorization negatives, cross-workload isolation and performance measurement. Do not label this hub-and-spoke setup HA.

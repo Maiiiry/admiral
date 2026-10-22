@@ -1,11 +1,11 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 46 status: **NOT VALIDATED — fresh Single-Node guests for the three in-scope distributions completed installation and targeted probes, but required Single-Node coverage is incomplete.** Current matrix: 0/6.<br>
-Current source root: `7223561646b60d3c24e8bfb257d544a5eb6dea04`; component fix: `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`.<br>
-Release 45 had scoped Fedora Rawhide and Rocky Linux 10 Single-Node executions but was invalidated by stale task replay after a reboot (`ADM-F-009` / #229). Those results are exact-candidate history only; no Release 45 result validates Release 46. See `evidence/fedora-r45-stale-task-replay.md`.
+Current Release 47 status: **NOT VALIDATED — no Release 47 Single-Node cell has run; the RPM build is pending.** The full matrix is 0/8.<br>
+Current source pins: root common payload `e0ca76e5c9a5e22fc62becc7d40ef6ff71686f8d`; component SHAs are recorded in the Makefile/specs and will be copied to the candidate manifest.<br>
+Release 46 Single-Node probes are historical and do not count toward Release 47. The Release 45 stale-task replay after reboot (`ADM-F-009` / #229) remains a prior-candidate finding; see `evidence/fedora-r45-stale-task-replay.md`.
 
-## Release 46 targeted execution — not full cell passes
+## Historical Release 46 targeted execution — not full cell passes
 
 | Test | Environment | Observed | Result | Evidence |
 | --- | --- | --- | --- | --- |
@@ -14,7 +14,7 @@ Release 45 had scoped Fedora Rawhide and Rocky Linux 10 Single-Node executions b
 | Basic workload lifecycle, replay and cleanup | CentOS Stream 10 x86_64, fresh Release 46 guest | Installer recap `ok=228 changed=97 failed=0`; provision reached succeeded/running/healthy, loopback HTTP returned 200; repeating the same key returned the same operation and instance; deprovision succeeded and left no containers, volumes, Quadlets or units | PASS (targeted lifecycle only) | `evidence/release46-followup-single-node-execution.md` |
 | Basic workload lifecycle, replay and cleanup | Fedora Rawhide 46 x86_64, fresh Release 46 guest | Provision reached succeeded/running/healthy; Podman mapped app TCP/80 to 127.0.0.1:40001 and the effective endpoint returned HTTP 200; replay returned the same operation and instance; deprovision removed all matching runtime resources | PASS (targeted lifecycle only) | `evidence/release46-followup-single-node-execution.md` |
 
-These probes do not cover the complete Single-Node scenario catalog; no OS cell is counted as passed. The prior Rocky Release 46 lifecycle probe is excluded from the current matrix because the fresh-install EPEL dependency chain could not be resolved on Rocky 10.2 without a compatibility workaround; see `evidence/release46-rocky-excluded-dependency-block.md`. The follow-up probes observed transient `unhealthy`/`technical_status=failed` while the database image/container was still starting on AlmaLinux and CentOS Stream; after startup, both operations reached `succeeded` and the instance became healthy. This is recorded as a cold-start observation, not a failed final provision result. On Fedora, an initial probe to an assumed fixed port 40000 was refused; Podman showed the actual mapping was 40001, which returned HTTP 200. The wrong-port request was a test-target error, not a product failure.
+These Release 46 probes do not cover the complete Single-Node scenario catalog; no OS cell is counted as passed. Rocky Linux 10 is included in the active Release 47 matrix; its Release 46 lifecycle probe and EPEL dependency investigation are historical only, and the current validation seed pins the documented pyOpenSSL package. The follow-up probes observed transient `unhealthy`/`technical_status=failed` while the database image/container was still starting on AlmaLinux and CentOS Stream; after startup, both operations reached `succeeded` and the instance became healthy. This is recorded as a cold-start observation, not a failed final provision result. On Fedora, an initial probe to an assumed fixed port 40000 was refused; Podman showed the actual mapping was 40001, which returned HTTP 200. The wrong-port request was a test-target error, not a product failure.
 
 ## Release 45 execution record — invalidated, not a cell pass
 
@@ -71,4 +71,4 @@ The previous RC tests did not cover the full audit's concurrency, negative tenan
 
 ## Required next executions
 
-Continue with complete Single-Node scenario sets on each fresh Release 46 guest, then create a fresh three-guest Multi-Node topology for each distribution. Run concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and a progressive load baseline. Revalidate `ADM-F-001`, `ADM-F-006` and applicable queue regressions after any fix. Record raw command timings and runtime/database state. Do not change the source candidate mid-matrix without rebuilding and resetting affected cells.
+Run complete Single-Node scenario sets on fresh Release 47 guests, then create a fresh three-guest Multi-Node topology for each distribution. Run concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and a progressive load baseline. Revalidate applicable findings and queue regressions after any fix. Record raw command timings and runtime/database state. Do not change the source candidate mid-matrix without rebuilding and resetting affected cells.
