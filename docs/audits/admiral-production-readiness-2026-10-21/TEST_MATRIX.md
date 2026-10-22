@@ -1,20 +1,19 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 47 was invalidated by stale `effective_availability` (#237). Release 48 was superseded before VM testing because its `admiral-common` pin lacked the #234 facts fix. Release 49 was explored on Single-Node guests and invalidated by #240. Release 50 built successfully and both local repositories served its six NEVRAs, but no VM installed it; #244 found that the common RPM had no package `%check`, so R50 was superseded before VM testing. Detailed R50 build evidence and hashes are in `evidence/release50-candidate.md` and `evidence/release50-rpm-sha256.txt`.<br>
-**Current matrix completion is 0/8; no complete cell has passed.** R51 was invalidated by #245 and R52 by #246. Release 53 includes the #246 fix (`admirald@b4b125e`, component CI green [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015)); all six RPM checks and both local repository identity checks passed. Fresh Fedora Rawhide, Rocky Linux 10.2, AlmaLinux 10.2 and CentOS Stream 10 Single-Node guests now have passing named scenarios for install, resize/reactivation, concurrent same-key idempotency, local PostgreSQL backup/restore, declared-service failure handling, selected process recovery and boot-ID-confirmed host reboot with SQL-marker persistence. Same-host isolation checks are partial because direct cross-workload TCP denial was not tested. These probes do not complete any cell. See `evidence/release53-candidate.md`, `evidence/release53-initial-single-node-execution.md` and `evidence/release53-followup-single-node-execution.md`. Rocky Linux 10 uses the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception. DHCP/reboot harness findings #247 and #248 are on root main with green CI; runbook issue #249 has a local proposed fix. Issues remain open; none was closed.<br>
-Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
+**Active candidate status — 2026-10-22:** Release 54 built successfully but is **INVALIDATED** by the real CentOS Stream 10 x86_64 Single-Node same-key capacity-race failure in #254. Evidence and raw-log hashes are in `evidence/release54-invalidation-concurrent-idempotency.md`. The fix is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; local regression, full Go tests, vet and build passed. latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is running; the coordinated Release 55 RPM set is not built. All previous-candidate results are historical and do not count toward Release 55.<br>
+**Current matrix completion: 0/8.** All eight Release 55 cells are **NOT TESTED**. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
-| Target OS (x86_64) | Single-Node — next exact candidate | Multi-Node — next exact candidate |
+| Target OS (x86_64) | Single-Node — Release 55 | Multi-Node — Release 55 |
 | --- | --- | --- |
-| Fedora Rawhide | R53 install, #246, same-key concurrency, local backup/restore, failed-service handling, process recovery and targeted host reboot passed; isolation partial; cell incomplete | R53 built; NOT TESTED |
-| Rocky Linux 10 | R53 install, #246, same-key concurrency, local backup/restore, failed-service handling, process recovery and targeted host reboot passed; isolation partial; cell incomplete | R53 built; NOT TESTED |
-| AlmaLinux 10 | R53 install, #246, same-key concurrency, local backup/restore, failed-service handling, process recovery and targeted host reboot passed; isolation partial; cell incomplete | R53 built; NOT TESTED |
-| CentOS Stream 10 | R53 install, #246, same-key concurrency, local backup/restore, failed-service handling, process recovery and targeted host reboot passed; isolation partial; cell incomplete | R53 built; NOT TESTED |
+| Fedora Rawhide | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
+| Rocky Linux 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
+| AlmaLinux 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
+| CentOS Stream 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R52's named probes are historical candidate-specific results only; #246 invalidates them for release readiness. No R52 Multi-Node cell ran. Release 53 is the active exact RPM candidate; all eight full cells remain incomplete. All four Single-Node targets have named runtime scenarios, but none is a complete cell; all four Multi-Node targets have no R53 runtime execution.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. The Release 54 install and runtime probes are invalidated by #254; R53 and older results are also candidate-specific history only. No issue was closed. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
 
-## Release 53 initial runtime probes — partial scenarios, not cell passes
+## Historical Release 53 initial runtime probes — partial scenarios, not cell passes
 
 | Test ID | OS / topology | Procedure | Result | Evidence |
 | --- | --- | --- | --- | --- |

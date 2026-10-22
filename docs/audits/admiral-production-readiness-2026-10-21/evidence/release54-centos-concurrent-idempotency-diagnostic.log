@@ -1,0 +1,116 @@
+=== /var/tmp/adm-r52-centos-concurrent-idempotency/request-1.json
+{
+  "action": "provision_app",
+  "admin_user": "system",
+  "created_at": "2026-10-22T15:59:53.077783Z",
+  "error_message": null,
+  "id": "op_c11251d21ce726f5",
+  "instance_id": "inst_9ade70100754dd21",
+  "node_id": "adm-r54-centos-single",
+  "status": "succeeded",
+  "task_id": "task_470c49ca3b356f12",
+  "updated_at": "2026-10-22T16:00:09.216026Z"
+}
+=== /var/tmp/adm-r52-centos-concurrent-idempotency/request-2.json
+{
+  "code": "no_node_available_for_requested_tier",
+  "message": "No hay nodos disponibles con capacidad suficiente para este tier.",
+  "error": "No hay nodos disponibles con capacidad suficiente para este tier.",
+  "detail": "No hay nodos disponibles con capacidad suficiente para este tier. La politica de capacidad impide asignar mas workloads al nodo evaluado.",
+  "operation_id": "op_4a26a7cc97d8dd6d",
+  "task_id": "task_8d9450d7f9da4dfc",
+  "node_evaluations": [
+    {
+      "node_id": "adm-r54-centos-single",
+      "eligible": false,
+      "rejection_reasons": [
+        "insufficient_ram_commit_capacity"
+      ]
+    },
+    {
+      "node_id": "adm-r54-centos-single-portal",
+      "eligible": false,
+      "rejection_reasons": [
+        "insufficient_disk_commit_capacity",
+        "insufficient_ram_commit_capacity",
+        "invalid_metrics",
+        "not_a_worker_node"
+      ]
+    }
+  ]
+}
+=== /var/tmp/adm-r52-centos-concurrent-idempotency/request-3.json
+{
+  "action": "provision_app",
+  "admin_user": "system",
+  "created_at": "2026-10-22T15:59:53.077783Z",
+  "error_message": null,
+  "id": "op_c11251d21ce726f5",
+  "instance_id": "inst_9ade70100754dd21",
+  "node_id": "adm-r54-centos-single",
+  "status": "succeeded",
+  "task_id": "task_470c49ca3b356f12",
+  "updated_at": "2026-10-22T16:00:09.216026Z"
+}
+=== /var/tmp/adm-r52-centos-concurrent-idempotency/request-1.stderr
+=== /var/tmp/adm-r52-centos-concurrent-idempotency/request-2.stderr
+Error: provision rejected
+Usage:
+  admiralctl instances provision [flags]
+
+Flags:
+      --app string                   Name of application definition (required)
+      --customer string              Unique Customer ID (required)
+  -h, --help                         help for provision
+      --idempotency-key string       Stable key to safely retry this provision request (required)
+      --logical-instance-id string   Preserve logical instance identity for migration
+      --node string                  Explicit node ID to target
+      --output string                Output format: table or json (default "table")
+      --quiet                        Suppress credential output in all formats
+      --tier string                  Name of the service tier (required)
+      --wait                         Wait until the operation reaches a terminal state
+      --wait-timeout duration        Maximum time to wait for an operation (default 30m0s)
+
+Global Flags:
+      --ca-cert string    CA certificate file for admirald HTTPS validation
+      --operator string   Operator name for audit logs
+      --server string     Control plane server endpoint URL
+
+Error: provision rejected
+=== /var/tmp/adm-r52-centos-concurrent-idempotency/request-3.stderr
+=== customer instances
+[
+  {
+    "app_definition_name": "e2e-whoami",
+    "commercial_status": "active",
+    "created_at": "2026-10-22T15:59:53.077783Z",
+    "customer_id": "audit_r54_centos_concurrent",
+    "effective_availability": "available",
+    "emergency_limit_bytes": 0,
+    "health_status": "healthy",
+    "hostname": "",
+    "id": "inst_9ade70100754dd21",
+    "last_health_checked_at": "2026-10-22T16:00:58.155777Z",
+    "logical_instance_id": "inst_9ade70100754dd21",
+    "need_restarting": false,
+    "node_id": "adm-r54-centos-single",
+    "setup_completed": false,
+    "storage_checked_at": "2026-10-22T16:00:57.403622Z",
+    "storage_exceeded": false,
+    "storage_limit_bytes": 1073741824,
+    "storage_state": "ok",
+    "storage_used_bytes": 47965538,
+    "storage_used_percent": 4.46999979019165,
+    "technical_status": "running",
+    "tier_name": "small",
+    "tier_snapshot_json": "{\"app_name\":\"e2e-whoami\",\"name\":\"small\",\"cpu\":1,\"memory\":\"512M\",\"storage\":\"1G\",\"price_monthly\":5,\"free\":false}",
+    "update_type": ""
+  }
+]
+=== rootless containers for failed concurrent customer
+admiral-inst_6e67f826ffb4dc33-infra|Up 2 minutes|127.0.0.1:40000->80/tcp
+admiral-inst_6e67f826ffb4dc33-app|Up 2 minutes|127.0.0.1:40000->80/tcp
+admiral-inst_6e67f826ffb4dc33-db|Up About a minute|127.0.0.1:40000->80/tcp, 5432/tcp
+admiral-inst_9ade70100754dd21-infra|Up About a minute|127.0.0.1:40001->80/tcp
+admiral-inst_9ade70100754dd21-db|Up About a minute|127.0.0.1:40001->80/tcp, 5432/tcp
+admiral-inst_9ade70100754dd21-app|Up About a minute|127.0.0.1:40001->80/tcp

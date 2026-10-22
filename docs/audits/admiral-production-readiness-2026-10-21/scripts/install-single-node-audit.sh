@@ -7,7 +7,7 @@ set -euo pipefail
   exit 2
 }
 distro=$1 ssh_key=$2 known_hosts=$3 target=$4 node_ip=$5 node_id=$6 output=$7
-release=${ADMIRAL_RC_RELEASE:-54}
+release=${ADMIRAL_RC_RELEASE:-55}
 [[ $release =~ ^[0-9]+$ ]] || { echo "invalid Admiral RPM Release: $release" >&2; exit 2; }
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ $node_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid guest IPv4" >&2; exit 2; }
@@ -75,6 +75,35 @@ printf 'package_nevra_delta_begin (minus=before, plus=after)\n'
 diff -u "$rpm_before" "$rpm_after" || true
 printf 'package_nevra_delta_end\n'
 dnf history info last | sed -n '/^Transaction ID/,$p' | tail -n 30 || true
+  if [[ $install_rc -eq 0 ]]; then
+    audit_user=${SUDO_USER:-}
+    [[ -n $audit_user && $audit_user != root ]] || {
+      echo 'cannot initialize the audit CLI: sudo caller is not an unprivileged operator' >&2
+      exit 1
+    }
+    audit_home=$(getent passwd "$audit_user" | cut -d: -f6)
+    audit_group=$(id -gn "$audit_user")
+    [[ -n $audit_home && -n $audit_group ]] || {
+      echo "cannot resolve home and group for audit operator $audit_user" >&2
+      exit 1
+    }
+    cli_config_dir="$audit_home/.config/admiralctl"
+    install -d -o "$audit_user" -g "$audit_group" -m 0700 "$cli_config_dir"
+    install -o "$audit_user" -g "$audit_group" -m 0644 \
+      /etc/admiral/tls/ca.pem "$cli_config_dir/ca.pem"
+    . /etc/admiral/flagship.env
+    [[ -n ${ADMIRAL_INTERNAL_TOKEN:-} && -n ${ADMIRAL_API_URL:-} ]] || {
+      echo 'cannot initialize the audit CLI: generated control-plane credentials are missing' >&2
+      exit 1
+    }
+    runuser -u "$audit_user" -- env HOME="$audit_home" \
+      ADMIRAL_OPERATOR_TOKEN="$ADMIRAL_INTERNAL_TOKEN" \
+      admiralctl init --server "$ADMIRAL_API_URL" \
+      --ca-cert "$cli_config_dir/ca.pem"
+    runuser -u "$audit_user" -- env HOME="$audit_home" \
+      admiralctl status --output json >/dev/null
+    unset ADMIRAL_INTERNAL_TOKEN
+  fi
 exit "$install_rc"
 REMOTE
   printf 'audit_end_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"

@@ -1,10 +1,10 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 53 has multiple passing scenario probes on all four OSes, but no complete Single-Node cell.** R52's fresh Fedora Rawhide and Rocky Linux 10.2 guests reproduced the HIGH resize defect #246; that candidate is invalidated. On R53, Fedora, Rocky, AlmaLinux and CentOS Stream passed install, resize/reactivation, concurrent same-key idempotency, local database backup/restore, declared-service failure handling, selected container/control-plane/Fleet process recovery, and targeted host reboot with SQL-marker persistence. Same-host isolation is only partial: direct cross-workload TCP denial was not tested. All four cells remain incomplete.<br>
-The #246 correction is at `admirald@b4b125e` with green CI [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015); full local tests, vet and build passed. Release 53 package identity/build evidence are in `evidence/release53-candidate.md`; its initial VM results and hashes are in `evidence/release53-initial-single-node-execution.md`. R52's package preparation and VM failure evidence are in `evidence/release52-candidate.md` and `evidence/release52-initial-single-node-execution.md`. R51 install and lifecycle details are in `evidence/release51-initial-lifecycle.md`; those results also do not count. Older candidate observations remain historical only. The Release 45 stale-task replay is documented in `evidence/fedora-r45-stale-task-replay.md`.
+Current status: **NOT VALIDATED — Release 55 is not built; all four Single-Node cells are NOT TESTED for the active candidate.** Release 54's four-OS exploratory Single-Node run is invalidated by the CentOS Stream same-key capacity-race failure #254. Its evidence is in `evidence/release54-invalidation-concurrent-idempotency.md`. The fix is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is running. Earlier R53 probes and all R54 probes do not count for Release 55. Matrix remains 0/8.<br>
+Release 55 must be built from the coordinated six-RPM set and installed on fresh overlays before any scenario can count. Security/isolation, functional lifecycle, persistence, recovery, concurrency, and resource-cleanup checks remain required for each full cell.
 
-## Release 53 exact-candidate probes — partial results
+## Historical Release 53 exact-candidate probes — partial results
 
 | Test ID | OS / configuration | Observed | Result | Evidence |
 | --- | --- | --- | --- | --- |

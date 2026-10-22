@@ -1,7 +1,8 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 53 is built, but no R53 three-guest run has occurred.** Matrix completion remains 0/8. Run fresh three-guest topologies (one admin/portal hub and two workers) on all four OSes using exact R53 RPMs.<br>
+Current status: **NOT VALIDATED — Release 55 is not built; all four Multi-Node cells are NOT TESTED for the active candidate.** Each cell requires a fresh three-guest topology (one admin/portal hub and two workers) on its target OS. Release 54 is invalidated by #254, and no prior-candidate Multi-Node evidence counts toward Release 55. Matrix remains 0/8. The #254 source fix is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is running.<br>
+Historical R53 and earlier results below are candidate-specific only. Findings remain open until revalidated in the relevant topology.
 The #246 source correction is included as `admirald@b4b125e` with green CI [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015). Root package preparation [`e149571`](https://github.com/admiral-project/admiral/commit/e149571e6124d1e4223f2c868a2a1c1f685f8d58) is green in CI [39738673606](https://github.com/admiral-project/admiral/actions/runs/39738673606). Release 53 package evidence is in `evidence/release53-candidate.md`. Older Release 42–52 Multi-Node evidence and partial Single-Node evidence are historical only. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
 
 ## Observed architecture and guarantees

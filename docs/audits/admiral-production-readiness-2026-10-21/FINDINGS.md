@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-R49 was invalidated by #240; R50 was superseded before VM use by #244; R51 was invalidated by #245; R52 was invalidated by #246. The #246 fix is included in Release 53 (`admirald@b4b125e`, component CI green [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015)). R53 package checks and repository identity checks passed. Fresh Fedora, Rocky, AlmaLinux and CentOS Stream guests passed named install, resize/reactivation, concurrent same-key idempotency, local database backup/restore, failed-service detection, selected process-recovery and targeted host-reboot probes; isolation is partial. No cell is complete; matrix remains 0/8. R52/R53 evidence is in the candidate and execution records. Prior findings remain open. Harness issues #247 and #248 have fixes on root `main` at `dd5eca4` with green CI [39783285976](https://github.com/admiral-project/admiral/actions/runs/39783285976); #249's runbook correction is on root `main` at `a7c59c4` with green CI [39787978275](https://github.com/admiral-project/admiral/actions/runs/39787978275). Issue #250 is open and `fix-proposed`; this update corrects its underlay/overlay instructions and helper naming. None affects Admiral RPM identity. Rocky’s EPEL pin is a visible seed exception.
+Release 54 is the latest built candidate and was invalidated by #254 after a real CentOS Stream 10 Single-Node same-key capacity-race rejection; see `evidence/release54-invalidation-concurrent-idempotency.md`. The fix is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; local regression, full Go tests, vet and build passed, with latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) pending. Release 55 is not built. Matrix remains 0/8, all older candidate results remain historical, and no issue was closed.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -352,3 +352,29 @@ Harbor README calls the component an “Admin workspace for operators,” while 
 * Task delivery is at least once. Lease expiry, callback replay and external side-effect deduplication need real interruption tests.
 * There is no control-plane HA or automatic worker migration guarantee. These are architectural limits, not unexpected behavior.
 * Workload isolation, cross-tenant authorization, memory/disk pressure, network partitions, concurrent update/delete safety, and dependency advisories have not been fully tested.
+
+## ADM-F-025 — Concurrent duplicate provision may be rejected after capacity selection ([#254](https://github.com/admiral-project/admiral/issues/254))
+
+* **Severity:** MEDIUM.
+* **Component:** `admirald` provision API.
+* **Environment:** Confirmed on Admiral RC5 Release 54, CentOS Stream 10 x86_64, Single-Node, 2 vCPU / 2 GiB.
+* **Reproduction:** With capacity sufficient for one more `small` tier, launch three simultaneous `admiralctl instances provision` calls with the same customer, payload and idempotency key. See `scripts/r53/r53-concurrent-idempotency.sh` and the Release 54 evidence file. Request 1 and 3 returned the same successful operation/instance; request 2 returned a different `no_node_available_for_requested_tier` rejection after capacity was reserved.
+* **Expected:** Every identical same-key call returns the existing operation and instance, even when the first call consumes remaining capacity.
+* **Observed:** A concurrent call took the no-capacity branch and created a separate rejected operation instead of replaying the committed request. No duplicate workload was created, but the idempotency response contract was violated.
+* **Evidence:** `evidence/release54-invalidation-concurrent-idempotency.md`, `evidence/release54-centos-concurrent-idempotency.log` (SHA-256 `8fecb47f569018eb9dd0dafe1f55fa213bcc2ae94680a18fbcec142f89e36a64`), and `evidence/release54-centos-concurrent-idempotency-diagnostic.log` (SHA-256 `924509812946e9e1bb9f94c7e730ad0016a9c044a1749b572c9cac4d903ab065`).
+* **Root cause:** Confirmed in source: `HandleCustomerApps` checked the idempotency record before node selection, then recorded a capacity rejection without checking whether a concurrent request had committed that key in the meantime.
+* **Recommendation:** Recheck and replay the idempotency record before recording a no-capacity rejection.
+* **Regression:** The proposed test forces the node unavailable after a successful provision and invokes the no-capacity path, asserting the same response and no new operation. It passes locally; component CI and Release 55 VM validation remain pending. The finding and issue remain open.
+
+## ADM-F-026 — Task dispatch can overwrite a terminal operation state ([#255](https://github.com/admiral-project/admiral/issues/255))
+
+* **Severity:** MEDIUM pending live confirmation.
+* **Component:** `admirald` task dispatch and Multi-Node migration restore.
+* **Environment:** Reproduced as a five-minute timeout in GitHub CI run [39811936913](https://github.com/admiral-project/admirald/actions/runs/39811936913), in `TestRunMigrationCutoverPreservesLogicalInstanceID`; no live worker runtime reproduction yet.
+* **Reproduction:** Run `go test ./internal/api -run TestRunMigrationCutoverPreservesLogicalInstanceID -count=1 -timeout 300s` with the mock publisher able to complete a task before the post-publish status update. The original CI run remained in `waitForOp` during restore until package timeout.
+* **Expected:** A task that has entered running or terminal state cannot be moved back to `queued`; migration observes restore completion and completes cutover.
+* **Observed:** The CI test waited for a restore operation whose terminal status could be overwritten by unconditional `queued` writes after publish. The mock used asynchronous completion and made the issue timing-sensitive.
+* **Evidence:** CI run [39811936913](https://github.com/admiral-project/admirald/actions/runs/39811936913), `admirald/internal/api/admin_instances.go`, `admirald/internal/api/handlers_tasks.go`, and deterministic regression in `TestRunMigrationCutoverPreservesLogicalInstanceID`.
+* **Root cause:** Confirmed in source: enqueue paths wrote `queued` unconditionally after publishing; `enqueueRestoreTask` repeated task-ID and queued updates. Whether the same ordering occurs with a live Fleet worker remains a hypothesis.
+* **Recommendation:** Advance to `queued` only from `pending_dispatch`, remove duplicate post-publish restore writes, and keep an immediate-completion regression.
+* **Regression:** Updated migration test completes tasks synchronously before `PublishTask` returns; focused test, full Go suite, vet and build pass locally. Latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is pending; R55 VM validation remains required. Issue stays open.
