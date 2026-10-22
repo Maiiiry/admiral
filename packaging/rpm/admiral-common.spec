@@ -15,6 +15,7 @@ Source0: https://github.com/admiral-project/admiral/archive/%{commit}.tar.gz
 BuildArch: noarch
 
 BuildRequires: systemd-rpm-macros
+BuildRequires: python3
 
 Requires: python3
 Requires: ansible-core
@@ -106,6 +107,29 @@ mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/harbor/uploads
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral/ssh-delivery
 mkdir -p %{buildroot}%{_localstatedir}/lib/admiral-apps
 install -D -m 0644 %{SOURCE1} %{buildroot}%{_sysusersdir}/%{name}.conf
+
+%check
+for script in \
+    %{buildroot}%{_bindir}/admiral-install \
+    %{buildroot}%{_bindir}/admiral-control-plane-backup \
+    %{buildroot}%{_libexecdir}/admiral-wireguard-load-peers \
+    %{buildroot}%{_libexecdir}/admiral-letsencrypt-deploy-hook; do
+    bash -n "$script"
+done
+python3 - \
+    %{buildroot}%{_bindir}/admiral-known-host \
+    %{buildroot}%{_bindir}/admiral-revoke-bootstrap-key \
+    %{buildroot}%{_bindir}/admiral-ssh-delivery-cleanup \
+    %{buildroot}%{_bindir}/admiral-rootless-subids \
+    %{buildroot}%{_bindir}/admiral-https-setup <<'PY'
+from pathlib import Path
+import sys
+
+for filename in sys.argv[1:]:
+    source = Path(filename).read_text(encoding="utf-8")
+    compile(source, filename, "exec")
+PY
+
 %pre
 %sysusers_create_package %{name} %{SOURCE1}
 
