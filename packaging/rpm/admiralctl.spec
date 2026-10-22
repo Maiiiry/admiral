@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit 5ed381d7d152e1606e78fafe332587cca09bc989
+%global commit 49cf2428c064434c65af9a14f96975c1bb2db637
 
 %ifarch x86_64
 %global admiral_goarch amd64
@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 53%{?dist}
+Release: 54%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -23,7 +23,7 @@ ExclusiveArch: x86_64 aarch64
 URL:     https://github.com/admiral-project/admiralctl
 Source0: https://github.com/admiral-project/admiralctl/archive/%{commit}.tar.gz
 Source1: admiralctl.yaml
-Source2: https://github.com/admiral-project/admirald/archive/b4b125ee293ac65a863256666faa22199720de0f.tar.gz
+Source2: https://github.com/admiral-project/admirald/archive/ac50b5a6583e16cecba72d5e8d589be49064ecc7.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils

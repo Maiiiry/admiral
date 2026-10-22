@@ -1,11 +1,11 @@
 SHELL := /bin/bash
 VERSION := 0.0.1rc5
-ADMIRAL_COMMON_COMMIT := 6a249990671292d3f28401dc268db78f2bb5b601
-ADMIRALD_COMMIT := b4b125ee293ac65a863256666faa22199720de0f
-FLEET_COMMIT := 740b690fdb49e86fa63c9db2b56a1e576247b162
-ADMIRALCTL_COMMIT := 5ed381d7d152e1606e78fafe332587cca09bc989
-FLAGSHIP_COMMIT := 3911eb784aef732f0bbe4662d1dbc6a5947eb659
-HARBOR_COMMIT := 92c5ccac6a647cb85da36b056cb3352f391ab8c9
+ADMIRAL_COMMON_COMMIT := 3888e28a77a0e81a0e7c7fb8ddbf636bcce181a4
+ADMIRALD_COMMIT := ac50b5a6583e16cecba72d5e8d589be49064ecc7
+FLEET_COMMIT := 3cb2bf83d9787947d3b3212f6c1f92bf3fa81fda
+ADMIRALCTL_COMMIT := 49cf2428c064434c65af9a14f96975c1bb2db637
+FLAGSHIP_COMMIT := b7325bbc71fc474a521496e593b2967e4d555ac1
+HARBOR_COMMIT := dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
 RPMDIR := $(CURDIR)/packaging/build
 RPMTOPDIR := $(RPMDIR)
 SPECSDIR := $(CURDIR)/packaging/rpm
@@ -32,7 +32,7 @@ FLASK_LOGIN_SHA256 := 3b2489f46d854b5f1d7a55007271d2eae9f744e0935ca7b88ab584c770
 MISTUNE_SHA256 := 121828b8bb4b9b8f0ace26e7574dab4d9a3f391e97e7f07b30aa3d34b9f5690a
 FLASK_WHEEL_SHA256 := f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c
 
-.PHONY: all clean rpm rpm-admiral rpmlint validate-release-refs all-sources \
+.PHONY: all clean rpm rpm-admiral rpmlint validate-release-refs test-admiralctl-local all-sources \
 	source-superproject source-admiral-flagship source-admiral-harbor \
 	srpm srpms \
 	rpm-admiral-common rpm-admirald rpm-admiral-fleet \
@@ -47,6 +47,9 @@ all: rpm
 
 validate-release-refs:
 	python3 scripts/validate-release-refs.py
+
+test-admiralctl-local:
+	scripts/test-admiralctl-local.sh
 
 clean:
 	rm -rf $(RPMDIR)

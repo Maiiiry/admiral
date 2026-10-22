@@ -27,6 +27,10 @@ R53_REBOOT_SCRIPT = (
     ROOT
     / "docs/audits/admiral-production-readiness-2026-10-21/scripts/r53/r53-host-reboot.sh"
 )
+WORKER_INSTALL_SCRIPT = (
+    ROOT
+    / "docs/audits/admiral-production-readiness-2026-10-21/scripts/install-worker-audit.sh"
+)
 SPEC = importlib.util.spec_from_file_location("prepare_audit_cloud_init", HELPER)
 assert SPEC and SPEC.loader
 prepare_audit_cloud_init = importlib.util.module_from_spec(SPEC)
@@ -238,3 +242,82 @@ def test_reboot_harness_uses_accessible_working_directory_before_rootless_comman
     assert "systemctl reboot --no-block" in script
     assert 'previous_boot_id=$(ssh_guest' in script
     assert 'current_boot_id != "$previous_boot_id"' in script
+
+
+def test_worker_bootstrap_uses_both_pinned_hosts_and_a_temporary_revoked_key():
+    script = WORKER_INSTALL_SCRIPT.read_text(encoding="utf-8")
+
+    assert "[[ $# -eq 9 ]]" in script
+    assert "ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS" in script
+    assert "StrictHostKeyChecking=yes" in script
+    assert "UserKnownHostsFile=$known_hosts" in script
+    assert "ssh-keygen -q -t ed25519 -N ''" in script
+    assert 'chmod 0600 "$bootstrap_private_key" "$bootstrap_private_key.pub"' in script
+    assert "--ssh-key '$hub_bootstrap_key'" in script
+    assert "--ssh-fingerprint '$fingerprint'" in script
+    assert "remove_worker_bootstrap_key" in script
+    assert "could not remove temporary private key from the hub" in script
+    assert "cannot verify bootstrap-key revocation" in script
+    assert "pinned validator access remains available" in script
+    assert "capture_rpm_manifest" in script
+    assert "hub_package_nevra_delta_begin" in script
+    assert "worker_package_nevra_delta_begin" in script
+    assert "--no-revoke-ssh-key" not in script
+    assert "/home/validator/.ssh/validator_ed25519" not in script
+
+
+def test_worker_bootstrap_rejects_old_argument_shape_without_mutation():
+    result = subprocess.run(
+        ["bash", str(WORKER_INSTALL_SCRIPT)],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 2
+    assert "ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS" in result.stderr
+
+
+def test_worker_bootstrap_never_overwrites_existing_evidence(tmp_path):
+    admin_key = tmp_path / "admin-key"
+    hub_known_hosts = tmp_path / "hub-known-hosts"
+    worker_known_hosts = tmp_path / "worker-known-hosts"
+    output = tmp_path / "existing-install.log"
+    for path in (admin_key, hub_known_hosts, worker_known_hosts):
+        path.write_text("test-only\n", encoding="utf-8")
+    output.write_text("preserve failed evidence\n", encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            "bash",
+            str(WORKER_INSTALL_SCRIPT),
+            str(admin_key),
+            str(hub_known_hosts),
+            str(worker_known_hosts),
+            "10.77.0.10",
+            "10.77.0.11",
+            "r53-test-worker",
+            "10.99.0.2",
+            "SHA256:" + "A" * 43,
+            str(output),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1
+    assert "refusing to overwrite existing audit log" in result.stderr
+    assert output.read_text(encoding="utf-8") == "preserve failed evidence\n"
+
+
+def test_single_node_audit_captures_installer_package_delta_and_elapsed_time():
+    script = (
+        ROOT
+        / "docs/audits/admiral-production-readiness-2026-10-21/scripts/install-single-node-audit.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\\n'" in script
+    assert "installer_elapsed_seconds=%s" in script
+    assert "package_nevra_delta_begin" in script
+    assert "dnf history info last" in script

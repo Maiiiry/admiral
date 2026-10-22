@@ -1,0 +1,7 @@
+# Release 54 x86_64 validation seed images
+# SHA-256 values computed on 2026-10-22 UTC from the immutable libvirt seed files.
+# Exact image filenames are recorded to make every R54 overlay reproducible.
+ba766601efa2eef1db5d9a95e52167c9c41e9103e60804a5ee395cbe3eb5afb5  /var/lib/libvirt/images/admiral-validation/seeds/Fedora-Rawhide-seed-20261022.x86_64.qcow2
+d54978cf31c4b288df0bc620101fb7656a6b2940e12cd6d4ec227ae9e63b744b  /var/lib/libvirt/images/admiral-validation/seeds/Rocky-10.2-seed-20261022.x86_64.qcow2
+110ccdef91273f04170b27adff847f1c72e75d8c7f61f6a80a32b0df697c5f22  /var/lib/libvirt/images/admiral-validation/seeds/AlmaLinux-10.2-seed-20261022.x86_64.qcow2
+fa2fe9ad0533619b8c9a268224f0432b388d275c9b40121329df2c72bca5fb64  /var/lib/libvirt/images/admiral-validation/seeds/CentOS-Stream-10-seed-20261022.x86_64.qcow2

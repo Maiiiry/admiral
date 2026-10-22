@@ -7,7 +7,7 @@ set -euo pipefail
   exit 2
 }
 distro=$1 ssh_key=$2 known_hosts=$3 target=$4 node_ip=$5 node_id=$6 output=$7
-release=${ADMIRAL_RC_RELEASE:-53}
+release=${ADMIRAL_RC_RELEASE:-54}
 [[ $release =~ ^[0-9]+$ ]] || { echo "invalid Admiral RPM Release: $release" >&2; exit 2; }
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ $node_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid guest IPv4" >&2; exit 2; }
@@ -52,9 +52,31 @@ for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor a
 done
 rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' python3-mistune | grep -Fx "$expected_mistune_nevra"
 REMOTE
-  ssh "${ssh_args[@]}" "$target" sudo admiral-install --single-node \
-    --public-ip "$node_ip" --ssh-public-key /home/validator/validator.pub \
-    --node-id "$node_id"
+  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$node_ip" "$node_id" <<'REMOTE'
+set -euo pipefail
+node_ip=$1 node_id=$2
+rpm_before=$(mktemp)
+rpm_after=$(mktemp)
+trap 'rm -f -- "$rpm_before" "$rpm_after"' EXIT
+rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort >"$rpm_before"
+install_start_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+install_started=$SECONDS
+set +e
+admiral-install --single-node --public-ip "$node_ip" \
+  --ssh-public-key /home/validator/validator.pub --node-id "$node_id"
+install_rc=$?
+set -e
+install_elapsed=$((SECONDS - install_started))
+install_end_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort >"$rpm_after"
+printf 'installer_start_utc=%s installer_end_utc=%s installer_elapsed_seconds=%s installer_exit_code=%s\n' \
+  "$install_start_utc" "$install_end_utc" "$install_elapsed" "$install_rc"
+printf 'package_nevra_delta_begin (minus=before, plus=after)\n'
+diff -u "$rpm_before" "$rpm_after" || true
+printf 'package_nevra_delta_end\n'
+dnf history info last | sed -n '/^Transaction ID/,$p' | tail -n 30 || true
+exit "$install_rc"
+REMOTE
   printf 'audit_end_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 } 2>&1 | tee "$output"
 chmod 0600 "$output"

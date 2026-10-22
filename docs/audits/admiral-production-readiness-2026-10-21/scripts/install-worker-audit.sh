@@ -2,29 +2,153 @@
 # SPDX-License-Identifier: Apache-2.0
 # Run the supported worker bootstrap from an installed admin-portal node.
 set -euo pipefail
-[[ $# -eq 8 ]] || {
-  echo "usage: $0 ADMIN_SSH_KEY KNOWN_HOSTS ADMIN_IP WORKER_IP NODE_ID WIREGUARD_IP HOST_FINGERPRINT OUTPUT_LOG" >&2
+[[ $# -eq 9 ]] || {
+  echo "usage: $0 ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS HUB_IP WORKER_IP NODE_ID WIREGUARD_IP HOST_FINGERPRINT OUTPUT_LOG" >&2
   exit 2
 }
-admin_key=$1 known_hosts=$2 admin_ip=$3 worker_ip=$4 node_id=$5 wg_ip=$6 fingerprint=$7 output=$8
+admin_key=$1 hub_known_hosts=$2 worker_known_hosts=$3 hub_ip=$4 worker_ip=$5
+node_id=$6 wg_ip=$7 fingerprint=$8 output=$9
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
-[[ $admin_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ && $worker_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid IPv4 address" >&2; exit 2; }
+[[ $hub_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ && $worker_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid IPv4 address" >&2; exit 2; }
 [[ $wg_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid WireGuard address" >&2; exit 2; }
 [[ $fingerprint =~ ^SHA256:[A-Za-z0-9+/]+$ ]] || { echo "invalid SSH fingerprint" >&2; exit 2; }
-[[ -r $admin_key && -r $known_hosts ]] || { echo "admin SSH identity or known-hosts file is unreadable" >&2; exit 1; }
+[[ -r $admin_key && -r $hub_known_hosts && -r $worker_known_hosts ]] || {
+  echo "admin SSH identity or pinned known-hosts file is unreadable" >&2
+  exit 1
+}
+command -v ssh >/dev/null
+command -v ssh-keygen >/dev/null
+command -v python3 >/dev/null
+
 umask 077
 mkdir -p "$(dirname "$output")"
+(set -o noclobber; : >"$output") || {
+  echo "refusing to overwrite existing audit log: $output" >&2
+  exit 1
+}
 start=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+temp_dir=$(mktemp -d)
+chmod 0700 "$temp_dir"
+bootstrap_private_key="$temp_dir/worker-bootstrap.ed25519"
+bootstrap_public_key=""
+hub_bootstrap_key=""
+worker_bootstrap_installed=0
+rc=1
+
+ssh_to() {
+  local ip=$1 known_hosts=$2
+  shift 2
+  ssh -i "$admin_key" -o IdentitiesOnly=yes -o BatchMode=yes \
+    -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$known_hosts" \
+    "validator@$ip" "$@"
+}
+
+capture_rpm_manifest() {
+  local ip=$1 known_hosts=$2
+  ssh_to "$ip" "$known_hosts" \
+    "rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\\n' | sort"
+}
+
+remove_worker_bootstrap_key() {
+  [[ -n $bootstrap_public_key ]] || return 0
+  local public_key_b64
+  public_key_b64=$(printf '%s' "$bootstrap_public_key" | base64 -w0)
+  ssh_to "$worker_ip" "$worker_known_hosts" \
+    "python3 -c 'import base64,os,pathlib,stat,sys,tempfile; p=pathlib.Path.home()/\".ssh\"; a=p/\"authorized_keys\"; key=base64.b64decode(sys.argv[1]).decode(); p.mkdir(mode=0o700,exist_ok=True); os.chmod(p,0o700); s=a.lstat() if a.exists() or a.is_symlink() else None; (s is None or (stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode))) or sys.exit(3); lines=a.read_text().splitlines() if s else []; kept=[line for line in lines if line != key]; fd,tmp=tempfile.mkstemp(prefix=\".authorized_keys.audit-\",dir=p); os.close(fd); pathlib.Path(tmp).write_text(\"\\n\".join(kept)+(\"\\n\" if kept else \"\")); os.chmod(tmp,0o600); os.replace(tmp,a)' '$public_key_b64'" \
+    >/dev/null 2>&1
+}
+
+cleanup() {
+  local saved_rc=$?
+  trap - EXIT
+  if [[ -n $hub_bootstrap_key ]]; then
+    ssh_to "$hub_ip" "$hub_known_hosts" "rm -f -- '$hub_bootstrap_key'" >/dev/null 2>&1 || {
+      echo "warning: could not remove temporary private key from the hub: $hub_bootstrap_key" >&2
+      [[ $saved_rc -ne 0 ]] || saved_rc=1
+    }
+  fi
+  if [[ $worker_bootstrap_installed -eq 1 ]]; then
+    remove_worker_bootstrap_key || {
+      echo "warning: could not remove temporary validator key from worker $worker_ip" >&2
+      [[ $saved_rc -ne 0 ]] || saved_rc=1
+    }
+  fi
+  chmod 0600 "$output" 2>/dev/null || true
+  rm -rf -- "$temp_dir"
+  exit "$saved_rc"
+}
+trap cleanup EXIT
+
+ssh-keygen -q -t ed25519 -N '' -C "admiral-audit-worker-$node_id" -f "$bootstrap_private_key"
+chmod 0600 "$bootstrap_private_key" "$bootstrap_private_key.pub"
+bootstrap_public_key=$(<"$bootstrap_private_key.pub")
+
+# Grant only this temporary key to the worker's existing validator account.
+bootstrap_public_key_b64=$(printf '%s' "$bootstrap_public_key" | base64 -w0)
+ssh_to "$worker_ip" "$worker_known_hosts" \
+  "python3 -c 'import base64,os,pathlib,stat,sys,tempfile; p=pathlib.Path.home()/\".ssh\"; a=p/\"authorized_keys\"; key=base64.b64decode(sys.argv[1]).decode(); p.mkdir(mode=0o700,exist_ok=True); os.chmod(p,0o700); s=a.lstat() if a.exists() or a.is_symlink() else None; (s is None or (stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode))) or sys.exit(3); lines=a.read_text().splitlines() if s else []; (key in lines) or lines.append(key); fd,tmp=tempfile.mkstemp(prefix=\".authorized_keys.audit-\",dir=p); os.close(fd); pathlib.Path(tmp).write_text(\"\\n\".join(lines)+\"\\n\"); os.chmod(tmp,0o600); os.replace(tmp,a)' '$bootstrap_public_key_b64'"
+worker_bootstrap_installed=1
+
+hub_bootstrap_key=$(ssh_to "$hub_ip" "$hub_known_hosts" \
+  'umask 077; install -d -m 0700 /home/validator/.ssh; mktemp /home/validator/.ssh/.admiral-bootstrap.XXXXXXXX')
+[[ $hub_bootstrap_key =~ ^/home/validator/\.ssh/\.admiral-bootstrap\.[A-Za-z0-9]+$ ]] || {
+  echo "hub returned an unexpected temporary key path" >&2
+  exit 1
+}
+ssh_to "$hub_ip" "$hub_known_hosts" "cat > '$hub_bootstrap_key' && chmod 0600 '$hub_bootstrap_key'" \
+  <"$bootstrap_private_key"
+
+hub_rpm_before=$(capture_rpm_manifest "$hub_ip" "$hub_known_hosts")
+worker_rpm_before=$(capture_rpm_manifest "$worker_ip" "$worker_known_hosts")
+install_start_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+install_started=$SECONDS
 set +e
-ssh -i "$admin_key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$known_hosts" \
-  "validator@$admin_ip" sudo admiral-install --worker-node --yes \
-  --node-id "$node_id" --public-ip "$worker_ip" --wireguard-ip "$wg_ip" \
-  --admin-endpoint "$admin_ip" --ssh-user validator \
-  --ssh-key /home/validator/.ssh/validator_ed25519 --ssh-fingerprint "$fingerprint" \
+ssh_to "$hub_ip" "$hub_known_hosts" \
+  "sudo -n admiral-install --worker-node --yes --node-id '$node_id' --public-ip '$worker_ip' --wireguard-ip '$wg_ip' --admin-endpoint '$hub_ip' --ssh-user validator --ssh-key '$hub_bootstrap_key' --ssh-fingerprint '$fingerprint'" \
   >"$output" 2>&1
 rc=$?
 set -e
-chmod 0600 "$output"
+install_elapsed=$((SECONDS - install_started))
+install_end_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+set +e
+hub_rpm_after=$(capture_rpm_manifest "$hub_ip" "$hub_known_hosts")
+hub_rpm_status=$?
+worker_rpm_after=$(capture_rpm_manifest "$worker_ip" "$worker_known_hosts")
+worker_rpm_status=$?
+set -e
+{
+  printf 'installer_start_utc=%s installer_end_utc=%s installer_elapsed_seconds=%s ssh_exit_code=%s\n' \
+    "$install_start_utc" "$install_end_utc" "$install_elapsed" "$rc"
+  printf 'hub_package_nevra_delta_begin (minus=before, plus=after)\n'
+  if [[ $hub_rpm_status -eq 0 ]]; then
+    diff -u <(printf '%s\n' "$hub_rpm_before") <(printf '%s\n' "$hub_rpm_after") || true
+  else
+    printf 'hub package inventory unavailable after installer; ssh_exit_code=%s\n' "$hub_rpm_status"
+  fi
+  printf 'hub_package_nevra_delta_end\n'
+  printf 'worker_package_nevra_delta_begin (minus=before, plus=after)\n'
+  if [[ $worker_rpm_status -eq 0 ]]; then
+    diff -u <(printf '%s\n' "$worker_rpm_before") <(printf '%s\n' "$worker_rpm_after") || true
+  else
+    printf 'worker package inventory unavailable after installer; ssh_exit_code=%s\n' "$worker_rpm_status"
+  fi
+  printf 'worker_package_nevra_delta_end\n'
+} >>"$output"
+
+if [[ $rc -eq 0 ]]; then
+  if ! ssh_to "$worker_ip" "$worker_known_hosts" true >/dev/null 2>&1; then
+    echo "cannot verify bootstrap-key revocation: pinned validator access to worker is unavailable" >&2
+    rc=1
+  elif ssh -i "$bootstrap_private_key" -o IdentitiesOnly=yes -o BatchMode=yes \
+      -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$worker_known_hosts" \
+      "validator@$worker_ip" true >/dev/null 2>&1; then
+    echo "worker installer returned success but the temporary validator credential still works" >&2
+    rc=1
+  else
+    echo "verified temporary bootstrap key is rejected while pinned validator access remains available"
+  fi
+fi
+
 end=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 printf 'start_utc=%s end_utc=%s ssh_exit_code=%s\n' "$start" "$end" "$rc"
 python3 - "$output" <<'PY'
