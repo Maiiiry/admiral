@@ -1,0 +1,7 @@
+# SHA-256 manifest for Release 50 Admiral RPMs.
+590f7da4b3ca3bb2531210575f27de9bd69e8546b613ee46a863825e6de28e04  admiral-common-0.0.1rc5-50.el10.noarch.rpm
+770f865505d94022d3513ff506855b6afde5ff596aada9068e1d0c070930d79b  admiral-flagship-0.0.1rc5-50.el10.noarch.rpm
+3815fbbf0c3002b6911f13e1793a6052b37fdecb8ea0e8a2131ba31fc992c943  admiral-fleet-0.0.1rc5-50.el10.x86_64.rpm
+56e92bff726aa3074ec6fc9019b44fe74b4230a88c37e14f8fc5ff85e50cf631  admiral-harbor-0.0.1rc5-50.el10.noarch.rpm
+23f10c5892f062c81ba1146015a01c20d8d9b46660035ba0d1e45efdc059f4ac  admiralctl-0.0.1rc5-50.el10.x86_64.rpm
+1221e112e3eae33067ff9baa0be814d7a9aca00d2b0a7149cc584f597ddb3bd1  admirald-0.0.1rc5-50.el10.x86_64.rpm

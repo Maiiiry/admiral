@@ -28,4 +28,4 @@ The verification command queried `/etc/ssh/ssh_host_ed25519_key.pub` through the
 
 Both guests were shut down and removed with `scripts/cleanup-audit-vm.sh`. The helper removed each exact DHCP reservation, overlay, ISO and cloud-init directory containing its private host key. `virsh list --all` was empty afterward and the shared seed images remained present. Host disk availability was 89 GiB before this run; post-cleanup availability was also 89 GiB.
 
-This validates the first-contact SSH trust path for the harness on one Fedora and one EL10 guest. It does not count toward the Admiral runtime matrix and does not validate an RPM candidate. Release 50 still requires the packaging pin-refresh commit and its green CI before its RPM build.
+This validates the first-contact SSH trust path for the harness on one Fedora and one EL10 guest. It does not count toward the Admiral runtime matrix or validate an RPM candidate. R50 has since been built but superseded before VM testing by #244; repeat this harness path on the fresh Release 51 matrix guests.

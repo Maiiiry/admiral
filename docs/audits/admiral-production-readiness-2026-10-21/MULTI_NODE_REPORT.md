@@ -1,8 +1,8 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no Release 49 three-guest run was made.** R49 was installed and explored in Single-Node on all four OSes, but #240 invalidated it for final validation; matrix completion remains 0/8. The next exact six-RPM candidate must use fresh three-guest topologies (one admin/portal hub and two workers) for all four OSes.<br>
-R49's capacity-rejection issue is locally fixed but still needs commit/push and green CI before its coordinated rebuild. All Release 42–48 Multi-Node observations remain historical and do not validate the next candidate. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
+Current status: **NOT VALIDATED — no Release 49 or Release 50 three-guest run occurred.** R50 was superseded before any VM testing when #244 exposed the missing common-package `%check`; matrix completion remains 0/8. Release 51 must use fresh three-guest topologies (one admin/portal hub and two workers) on all four OSes.<br>
+The #240 capacity-rejection fix, #239 host-key harness fix, and proposed #244 package check are committed with green root/component CI. Release 51 package preparation and its RPM build remain pending. All Release 42–50 Multi-Node evidence is historical and does not validate the next candidate. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
 
 ## Observed architecture and guarantees
 

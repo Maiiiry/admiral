@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 49 exploratory installs and provisions ran on four Single-Node guests, then #240 invalidated the candidate.** The one-off startup and operation durations are not a controlled performance series. No progressive load, resource-pressure, sample-percentile or Multi-Node throughput test has been run on the next candidate; matrix remains 0/8.
+Current status: **NOT VALIDATED — R49 exploratory timing is invalidated by #240; R50 was superseded before VM testing by #244.** No Release 51 performance measurement has run. There are no controlled load, resource-pressure, percentile or Multi-Node throughput results for the active candidate; matrix remains 0/8.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 

@@ -1,8 +1,8 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 49 fault scenarios were explored on four Single-Node guests, then #240 invalidated the package set.** Controlled guest reboot preserved SQL markers and recovered workloads; killing app containers and `admirald` triggered systemd recovery; the failed-service and Podman-deprovision injections returned failures and allowed clean retries. Multi-Node resilience and the full scenario catalog are still untested on the next candidate; matrix remains 0/8.<br>
-Candidate-specific details and raw-log checksums are in `evidence/release49-exploratory-single-node.md`. No Release 49 Multi-Node fault test ran. All older-candidate results are history only.
+Current status: **NOT VALIDATED — R49 fault scenarios were exploratory and invalidated by #240; R50 was superseded before VM testing by #244.** No Release 50 or Release 51 fault-injection scenario has run; matrix remains 0/8.<br>
+R49 details and raw-log checksums are in `evidence/release49-exploratory-single-node.md`. No R49 or R50 Multi-Node fault test ran. All older-candidate results are history only.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.
 

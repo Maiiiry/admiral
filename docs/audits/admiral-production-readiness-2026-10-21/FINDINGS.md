@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 49 was built and explored on fresh Single-Node guests for Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10. A real concurrent capacity rejection exposed #240, invalidating R49 for final validation. Matrix completion remains 0/8; no Release 49 Multi-Node test ran. Its scenario-level results are recorded in `evidence/release49-exploratory-single-node.md` and do not pass any cell on the next candidate. The complete local test suites passed on 2026-10-22. The #240 fix is committed and pushed to `admiralctl@5ed381d`, and GitHub CI run [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667) is green. The #233 cleanup-helper fix is committed and pushed to root `2159d27`, with root CI run [39724727343](https://github.com/admiral-project/admiral/actions/runs/39724727343) green. The active target is the four x86_64 OSes in both topologies. Rocky's pinned EPEL package is a visible seed exception, not a product fix. Findings remain open pending exact-candidate regressions; #238's harness fix is pushed and CI green.
+Release 49 was explored on four fresh Single-Node guests and invalidated by #240. Release 50 built and repository queries succeeded, but no VM installed it; review found no `%check` in the common RPM, issue #244, so R50 was superseded before testing. Matrix completion remains 0/8. The proposed #244 check is in signed root commit `012a571` with green CI [39727055542](https://github.com/admiral-project/admiral/actions/runs/39727055542); it still needs an actual Release 51 package build. The #240 fix is pushed to `admiralctl@5ed381d` with CI [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667) green. The #233 cleanup-helper fix is pushed as root `2159d27` with CI [39724727343](https://github.com/admiral-project/admiral/actions/runs/39724727343) green. The #239 SSH pin fix is root `54d4a6b` with CI [39726030742](https://github.com/admiral-project/admiral/actions/runs/39726030742) green. The active target is the four x86_64 OSes in both topologies. Rocky's pinned EPEL package is a visible seed exception, not a product fix. Findings remain open pending exact-candidate regressions; #238's harness fix is pushed and CI green.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -151,7 +151,7 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Evidence:** `scripts/bootstrap-candidate-node.sh` had a stale literal default. `scripts/test_audit_release_defaults.py` now compares both helper defaults against all six RPM spec `Release` values; the root script suite passed 112 tests locally.
 * **Root cause:** Candidate release was duplicated as independent hard-coded values in two helpers, with no synchronization check.
 * **Recommendation:** Keep the release defaults aligned and retain the regression check so a coordinated spec bump cannot leave either helper stale.
-* **Regression test:** Run the root script test suite and `bash -n` on both helpers; verify default selection points to the active staged candidate. The regression test passed locally in root commit `11c6c6861e81293148d4220c266305d6146375c`, and GitHub CI passed in run 39713868071. Both helpers now default to Release 49 in the pending package-preparation tree. Keep #238 open until the exact-candidate helper path is verified.
+* **Regression test:** Run the root script test suite and `bash -n` on both helpers; verify default selection points to the active staged candidate. The regression test passed locally in root commit `11c6c6861e81293148d4220c266305d6146375c`, and GitHub CI passed in run 39713868071. Both helpers now default to Release 51 in the pending package-preparation tree. Keep #238 open until the exact-candidate helper path is verified.
 
 ## ADM-F-012 — Ansible roles use deprecated injected fact variables ([#234](https://github.com/admiral-project/admiral/issues/234))
 
@@ -229,7 +229,20 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Evidence:** Historical R49 note in issue #239; current targeted test and integration results in `evidence/ssh-host-key-bootstrap.md`.
 * **Root cause:** The VM creator asked cloud-init to generate the host key inside the guest without exporting its public half over an authenticated out-of-band channel.
 * **Recommendation:** Generate the key on the trusted host, provision it through protected cloud-init material, and emit a host-side per-guest `known_hosts` pin. Remove the protected cloud-init artifacts with the guest cleanup helper.
-* **Regression test:** Five local tests pass for key correspondence, address pins, file modes, overwrite refusal and the ISO mode-preserving command. A synthetic ISO inspection confirmed `user-data` and `meta-data` remain `0600`. Fresh Fedora Rawhide and Rocky 10.2 guests accepted strict SSH, and their remote SHA-256 fingerprints matched the host pins. The root source change still requires signed commit, push and green CI; then repeat as part of fresh Release 50 matrix guests. This finding does not count as an Admiral runtime matrix pass.
+* **Regression test:** Five local tests pass for key correspondence, address pins, file modes, overwrite refusal and the ISO mode-preserving command. A synthetic ISO inspection confirmed `user-data` and `meta-data` remain `0600`. Fresh Fedora Rawhide and Rocky 10.2 guests accepted strict SSH, and their remote SHA-256 fingerprints matched the host pins. The fix is signed root commit `54d4a6b` with green CI [39726030742](https://github.com/admiral-project/admiral/actions/runs/39726030742); repeat on fresh Release 51 matrix guests. The harness integration does not count as an Admiral runtime matrix pass.
+
+## ADM-F-018 — Common RPM payload has no package-local `%check` ([#244](https://github.com/admiral-project/admiral/issues/244))
+
+* **Severity:** LOW (packaging test coverage; no runtime defect observed).
+* **Component:** `admiral-common` RPM spec and staged installer/Ansible payload.
+* **Environment:** Release 50 RPM build on Rocky Linux 10.2 x86_64.
+* **Reproduction:** Build the coordinated six-package set and inspect the raw build log. Five package specs enter `Executing(%check)`; `admiral-common.spec` has no `%check` section.
+* **Expected:** The common package's staged shell and Python entry points receive a package-local syntax check, or a documented reason explains why such a check is not applicable and which runtime checks cover them.
+* **Observed:** The R50 common RPM built successfully without a package-local check. The root script suite passed separately; no R50 guest or matrix test ran.
+* **Evidence:** `evidence/release50-candidate.md`, `evidence/release50-rpm-sha256.txt`, and restricted raw log hash `4d456ca97ac408141d9d680704bff7b72e1d1d9424434db246ae1d8a136f47db`.
+* **Root cause:** `packaging/rpm/admiral-common.spec` had no `%check` section.
+* **Recommendation:** Run `bash -n` on the four staged shell scripts and compile the five staged Python scripts during `%check`; keep this separate from the full install E2E checks.
+* **Regression test:** The proposed check is in signed root commit `012a571f3ffb2f4bfc58eed82c5778a92d07314c`, root CI [39727055542](https://github.com/admiral-project/admiral/actions/runs/39727055542) is green, and equivalent source syntax checks passed locally. Verify the actual staged-payload `%check` during Release 51 build. The issue remains open and is not yet verified in a built RPM.
 
 ## Additional open source-review findings
 
