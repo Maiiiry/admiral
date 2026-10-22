@@ -1,20 +1,31 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: Release 47 source refs are pinned to the fetched component `origin/main` commits; all six Admiral specs are Release 47. The six RPMs are built, staged and queryable from both local repository endpoints; fresh guest execution is pending. See `evidence/release47-candidate.md`.<br>
-**Current-candidate completion is 0/8; no Release 47 cell has been run.** Release 46 targeted probes and all older-candidate results are historical and do not count. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception.<br>
+Release 47 was built and installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests. The reboot probes found stale `effective_availability` (#237), so Release 47 is invalidated; none of its partial results count toward a cell. A fix is pushed to `admirald/main` at `d50523f7a75b0a1606c761423de9d1cdc844425e` and its GitHub CI is green. Release 48 root pins and six package `Release` bumps are prepared locally; root CI and the RPM build are pending. See `evidence/release47-invalidated-single-node.md`.<br>
+**Current matrix completion is 0/8; no complete cell has passed.** Single-Node diagnostic subsets on Fedora and Rocky are invalidated R47 evidence; the other six cells have not run on R47. Release 46 targeted probes and all older-candidate results are historical and do not count. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
 | Target OS (x86_64) | Single-Node — Release 47 | Multi-Node — Release 47 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED | NOT TESTED |
-| Rocky Linux 10 | NOT TESTED | NOT TESTED |
-| AlmaLinux 10 | NOT TESTED | NOT TESTED |
-| CentOS Stream 10 | NOT TESTED | NOT TESTED |
+| Fedora Rawhide | INVALIDATED — partial R47 diagnostic; #237 | NOT TESTED on R47 |
+| Rocky Linux 10 | INVALIDATED — partial R47 diagnostic; #237 | NOT TESTED on R47 |
+| AlmaLinux 10 | NOT TESTED on R47 | NOT TESTED on R47 |
+| CentOS Stream 10 | NOT TESTED on R47 | NOT TESTED on R47 |
 
-Current candidate completion: **0/8**. Single-Node and Multi-Node are **NOT VALIDATED** on Release 47. Prior Fedora, AlmaLinux and CentOS Stream Single-Node probes do not count for this candidate. Rocky's old failed dependency-resolution attempt is not a Rocky runtime result.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. Fedora/Rocky R47 subsets reproduced stale availability after reboot and are explicitly invalidated; the next candidate must rerun them. All remaining Single-Node and Multi-Node cells require fresh exact-candidate execution.
 
-Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
+Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **INVALIDATED** means a later defect requiring a fix voided that candidate's evidence; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
+
+## Release 47 diagnostic subsets — invalidated, not cell passes
+
+| Test ID | Exact scenario | Environment | Result | Evidence / remaining scope |
+| --- | --- | --- | --- | --- |
+| FEDORA-R47-SN-INSTALL-001 | Fresh exact-R47 packages and secure Single-Node install | Fedora Rawhide 46 x86_64 | PASS (install subset only) | Installer recap `ok=238 changed=99 failed=0`; services/API healthy. Reboot availability issue #237 invalidated the candidate. |
+| FEDORA-R47-SN-REBOOT-001 | Reboot with workload and SQL marker | Same guest | FAIL — MEDIUM #237 | API returned stale `healthy/available` while required containers were absent, then lagged container recovery. Data marker persisted; HTTP returned 200 after recovery. |
+| ROCKY-R47-SN-INSTALL-001 | Fresh exact-R47 packages and secure Single-Node install | Rocky Linux 10.2 x86_64 | PASS (install subset only) | Installer recap `ok=232 changed=97 failed=0`; pinned pyOpenSSL 25.0.0 present; services/API healthy. Reboot issue #237 invalidated the candidate. |
+| ROCKY-R47-SN-REBOOT-001 | Reboot with workload and SQL marker | Same guest | FAIL — MEDIUM #237 | API returned stale `healthy/available` while app/DB containers were absent or starting; data marker persisted and status converged. |
+
+Both partial R47 runs are described in `evidence/release47-invalidated-single-node.md`. No R47 full-cell pass was achieved. The availability fix is pushed at `admirald@d50523f` with CI green; rebuild all six RPMs as Release 48 and rerun affected scenarios before counting any cell.
 
 ## Historical Release 46 targeted execution checkpoint — not full cell passes
 
@@ -25,7 +36,7 @@ Status vocabulary: **PASS** means the exact scenario was run and evidence exists
 | CENTOS-R46-SN-E2E-001 | Fresh install, provision whoami + PostgreSQL, idempotent replay, HTTP request, deprovision and cleanup | CentOS Stream 10 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe; cold DB startup observed) | `evidence/release46-followup-single-node-execution.md`; full-cell scenarios remain NOT TESTED. |
 | FEDORA-R46-SN-E2E-002 | Post-reboot install check, provision whoami + PostgreSQL, idempotent replay, effective host-port HTTP request, deprovision and cleanup | Fedora Rawhide 46 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe) | `evidence/release46-followup-single-node-execution.md`; port was read from Podman (`127.0.0.1:40001`). |
 
-These rows document named Release 46 probes only and do not count toward Release 47. The complete Release 47 matrix remains **0/8** until fresh exact-candidate execution.
+These rows document named Release 46 probes only and do not count toward Release 48. The next complete matrix remains **0/8** until fresh exact-candidate execution.
 
 ## Release 45 limited Single-Node execution — invalidated
 

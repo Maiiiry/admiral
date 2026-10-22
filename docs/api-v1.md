@@ -275,6 +275,16 @@ Soporta filtro opcional:
 Esto permite a `admiral-harbor` consultar solo las instancias pertenecientes
 al cliente autenticado sin exponer el listado global completo.
 
+Las respuestas incluyen `effective_availability` y `availability_reason`.
+`effective_availability` es `unknown` hasta recibir la primera observación de
+salud del workload. Es `unavailable` si el nodo no esta activo y sano, si el
+ultimo reporte del workload no es `healthy`, o si han pasado 60 segundos desde
+el ultimo reporte. Fleet comprueba los workloads cada 30 segundos; por eso dos
+comprobaciones perdidas hacen que la disponibilidad se considere obsoleta.
+El estado observado (`health_status`, `health_message` y
+`last_health_checked_at`) conserva el ultimo reporte recibido y no se modifica
+por este calculo.
+
 ### `POST /api/v1/customer-apps`
 
 Crea una instancia y encola `provision_app`.

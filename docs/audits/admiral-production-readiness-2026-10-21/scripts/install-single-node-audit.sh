@@ -7,7 +7,7 @@ set -euo pipefail
   exit 2
 }
 distro=$1 ssh_key=$2 known_hosts=$3 target=$4 node_ip=$5 node_id=$6 output=$7
-release=${ADMIRAL_RC_RELEASE:-47}
+release=${ADMIRAL_RC_RELEASE:-48}
 [[ $release =~ ^[0-9]+$ ]] || { echo "invalid Admiral RPM Release: $release" >&2; exit 2; }
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ $node_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid guest IPv4" >&2; exit 2; }

@@ -1,9 +1,21 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 47 status: **NOT VALIDATED — the RPM set is built, but no Release 47 Single-Node cell has run.** The full matrix is 0/8.<br>
-Current source pins and exact RPM hashes are in `evidence/release47-candidate.md` and `evidence/release47-rpm-sha256.txt`.<br>
-Release 46 Single-Node probes are historical and do not count toward Release 47. The Release 45 stale-task replay after reboot (`ADM-F-009` / #229) remains a prior-candidate finding; see `evidence/fedora-r45-stale-task-replay.md`.
+Current status: **NOT VALIDATED — Release 47 is invalidated and Release 48 is not yet built.** Fresh Release 47 Single-Node diagnostic subsets ran on Fedora Rawhide and Rocky Linux 10, but both reproduced stale post-reboot availability (#237); matrix completion remains 0/8.<br>
+R47 package pins and hashes are in `evidence/release47-candidate.md` and `evidence/release47-rpm-sha256.txt`; its invalidated guest results are in `evidence/release47-invalidated-single-node.md`. The fix is pushed at `admirald@d50523f` with CI green; R48 root pins and six spec bumps are prepared locally, while root CI and the coordinated six-RPM build are pending.<br>
+Release 46 Single-Node probes and Release 47 diagnostic subsets do not count toward the next candidate. The Release 45 stale-task replay after reboot (`ADM-F-009` / #229) remains a prior-candidate finding; see `evidence/fedora-r45-stale-task-replay.md`.
+
+## Release 47 diagnostic execution — invalidated, not cell passes
+
+| Scenario | Environment | Observed | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| Fresh secure install and service health | Fedora Rawhide 46 x86_64, 2 vCPU / 2 GiB, exact R47 RPMs | Installer recap `ok=238 changed=99 failed=0`; all six R47 RPMs present; API online/control plane healthy; no failed system units | PASS (install subset only; candidate invalidated) | `evidence/release47-invalidated-single-node.md` |
+| Provision, same-key replay and HTTP | Same Fedora guest | Operation `op_f75f4ee644e1fc89` succeeded in 43.54s; replay returned the same operation/instance; HTTP 200 in 17ms | PASS (targeted subset only; no cleanup check) | Same evidence file; restricted output hashes therein |
+| Host reboot with SQL marker | Same Fedora guest | Initial snapshot reported stale `running/healthy/available` while only infra existed; later `stopped` while containers had returned; recovered to healthy at ~63s after first reconnect. Marker persisted and HTTP returned 200. | FAIL — MEDIUM #237; invalidates R47 | Same evidence file and restricted logs |
+| Fresh secure install and service health | Rocky Linux 10.2 x86_64, 2 vCPU / 2 GiB, exact R47 RPMs | Installer recap `ok=232 changed=97 failed=0`; all six R47 RPMs present; API online/control plane healthy; pyOpenSSL 25.0.0-1.el10_1 present | PASS (install subset only; candidate invalidated) | `evidence/release47-invalidated-single-node.md` |
+| Provision and host reboot with SQL marker | Same Rocky guest | Provision succeeded in 30.06s; first post-reboot snapshot reported stale `running/healthy/available` with infra Up, app Created and DB absent; later all containers/marker returned, HTTP 200 and health converged. | FAIL — MEDIUM #237; invalidates R47 | Same evidence file and restricted logs |
+
+Neither diagnostic run completed deprovision/cleanup, backup/restore, negative isolation, concurrent update/delete, Podman/systemd failure injection, pressure, or the full scenario catalog. The next package candidate must rerun all relevant checks; no Single-Node cell is counted as passed.
 
 ## Historical Release 46 targeted execution — not full cell passes
 
@@ -71,4 +83,4 @@ The previous RC tests did not cover the full audit's concurrency, negative tenan
 
 ## Required next executions
 
-Run complete Single-Node scenario sets on fresh Release 47 guests, then create a fresh three-guest Multi-Node topology for each distribution. Run concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and a progressive load baseline. Revalidate applicable findings and queue regressions after any fix. Record raw command timings and runtime/database state. Do not change the source candidate mid-matrix without rebuilding and resetting affected cells.
+After Release 48 is built, rerun the reboot availability regression first on all four Single-Node distributions. Then complete each cell's lifecycle, concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and progressive load scenarios. Revalidate applicable findings and queue regressions after any fix. Record raw command timings and runtime/database state. Do not change the source candidate mid-matrix without rebuilding and resetting affected cells.

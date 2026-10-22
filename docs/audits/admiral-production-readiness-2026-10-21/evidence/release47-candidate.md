@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`<br>
 Candidate: Admiral RC5 Release 47, x86_64 build; package payload architectures are x86_64 and noarch.<br>
-Build result: **six coordinated Admiral RPMs built successfully, tested, copied into an isolated local repository, and exposed through both EL10 and Fedora Rawhide repo endpoints.** DNF returned the same six Release 47 Admiral NEVRAs for both endpoints. No Release 47 guest installation or matrix scenario has run; matrix completion remains **0/8**.<br>
+Build result: **six coordinated Admiral RPMs built successfully, tested, copied into an isolated local repository, and exposed through both EL10 and Fedora Rawhide repo endpoints.** DNF returned the same six Release 47 Admiral NEVRAs for both endpoints. Two fresh Single-Node diagnostics were then run; a reboot availability defect (#237) invalidated Release 47. None of those partial results count toward the matrix; completion remains **0/8**. See `release47-invalidated-single-node.md`.<br>
 Build time: 2026-10-22 UTC.<br>
 
 ## Source and CI identity
@@ -48,4 +48,4 @@ Both `repomd.xml` endpoints returned HTTP 200. A DNF `repoquery` against each is
 
 ## Validation status
 
-Release 47 is a newly built candidate. All Release 46 and older runtime results remain historical and do not count. No guest has installed Release 47 yet, so all eight x86_64 cells remain **NOT TESTED** and the matrix remains **0/8**. The four OS targets and two topologies must each be tested with this exact candidate. Any newly found defect will be opened for tracking; if a product fix changes a packaged source, build a new coordinated Release and reset the affected validation evidence.
+Release 47 is an invalidated candidate. Fedora and Rocky Single-Node diagnostic runs found stale post-reboot `effective_availability`; the finding is tracked in #237 and the fix is pushed at `admirald@d50523f` with CI green. Release 48 root submodule pins and all six package `Release` fields are prepared in the current local working tree; no R48 RPM has been built yet, and root commit CI must pass before building. The eight-cell matrix remains **0/8**; R47 observations do not count. Any new defect requiring a source fix invalidates candidate evidence and requires a new coordinated Release.

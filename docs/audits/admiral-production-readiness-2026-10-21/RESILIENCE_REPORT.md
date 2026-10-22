@@ -1,8 +1,8 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 47 status: **NOT TESTED — candidate RPMs are built, but no Release 47 fault injection has run.** Current matrix: 0/8.<br>
-All Release 45/46 resilience results are historical and do not validate Release 47. The Release 45 stale-task replay remains finding `ADM-F-009` / #229; it must be rerun on the exact new package set, including Multi-Node.
+Current status: **NOT VALIDATED — Release 47 is invalidated by #237; Release 48 is not built.** A controlled host reboot ran on the two R47 Single-Node guests and exposed stale availability; no other R47 fault injection ran. Current matrix: 0/8.<br>
+Release 45/46 resilience results and the R47 reboot observations do not validate the next candidate. The Release 45 stale-task replay remains finding `ADM-F-009` / #229; it must be rerun on the exact new package set, including Multi-Node.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.
 
@@ -13,7 +13,7 @@ No production infrastructure has been modified. Failure injection is restricted 
 | R-01 | Kill `admirald` during no task / active task | service restart, operation state, queue state, resource count | NOT TESTED |
 | R-02 | Kill `admiral-fleet` after claim and during side effect | lease expiry, retry count, duplicate behavior, outbox/callback state | NOT TESTED |
 | R-03 | Stop/restart Podman or user systemd | task result must reflect actual resource state; recovery and orphan inventory | NOT TESTED |
-| R-04 | Reboot a Single-Node guest | PostgreSQL, Caddy, Admiral services and workloads recover in dependency order | PASS on AlmaLinux 10.2 x86_64 with ~36s instance-state lag; CentOS Stream 10 workload and SQL marker recovered, but its API health state converged after a 91s stopped-state window. See `alma-single-execution.md` and `centos-single-execution.md`. |
+| R-04 | Reboot a Single-Node guest | PostgreSQL, Caddy, Admiral services and workloads recover in dependency order | Prior-candidate scoped recovery passed on AlmaLinux/CentOS/Fedora/Rocky with observed state lag. R47 Fedora and Rocky reboots preserved SQL markers and recovered HTTP, but initially exposed stale `running/healthy/available` and then lagging state (#237); R47 invalidated. See `evidence/release47-invalidated-single-node.md`. |
 | R-05 | Reboot a worker guest | heartbeat loss/rejoin and workload persistence | PASS on AlmaLinux 10.2 x86_64 (service/volume recovery; no marker) and Fedora Rawhide x86_64 (boot ID changed, same containers returned, PostgreSQL accepted connections, SQL marker survived and node heartbeat recovered); Rocky Linux 10 x86_64 also preserved its SQL marker |
 | R-06 | Block hub-worker traffic with an isolated firewall rule | no unauthorized execution; leases and callbacks recover safely | FAIL (state reporting): Rocky hub firewall drop marked worker offline after 133s while its instance still reported stale `running/healthy`; after rule removal node rejoined in 10s and the instance deprovisioned cleanly. No in-flight lease/callback was tested; see `evidence/rocky-multi-partition.md` and `ADM-F-002`. |
 | R-07 | Add controlled network latency/loss | bounded timeouts and stable state after restoration | NOT TESTED |

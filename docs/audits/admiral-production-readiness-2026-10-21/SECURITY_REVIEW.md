@@ -1,8 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 47 status: **NOT TESTED — the RPM candidate is built and staged, but no Release 47 guest security checks have run.** Matrix: 0/8.<br>
-Release 45/46 security probes are candidate-specific history and do not validate Release 47. Findings, including source fixes, remain open until retested against the exact package set. The active systems are four x86_64 distributions.
+Current status: **NOT VALIDATED — Release 47 is invalidated by #237; Release 48 is not built.** R47 installation baselines confirmed SELinux Enforcing, but no dedicated authorization, isolation, socket, or secret-negative tests were run. Matrix: 0/8.<br>
+Release 45/46 security probes and R47 installation checks are candidate-specific history and do not validate the next candidate. Findings, including source fixes, remain open until retested against its exact package set. The active systems are four x86_64 distributions.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging

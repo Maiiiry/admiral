@@ -1,13 +1,13 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Current source root for the common RPM payload: `e0ca76e5c9a5e22fc62becc7d40ef6ff71686f8d` (`main`); component pins are the fetched `origin/main` SHAs in the Release 47 Makefile/specs.<br>
-Current candidate: Release 47's six Admiral RPMs are built and staged in the isolated local repositories; all eight x86_64 guest cells are pending. Current matrix is 0/8. Exact package identity is in `evidence/release47-candidate.md`.<br>
+Current proposed common RPM payload source: `admiral-commons@d68dfa0a82ae6c2035c566260e0be2be27c0e200` (`origin/main`). Release 47 pins in the Makefile/specs are historical; its six RPMs were built and partially exercised on Fedora Rawhide and Rocky Linux 10 before #237 invalidated the candidate.<br>
+The #237 availability fix is pushed to `admirald/main` at `d50523f7a75b0a1606c761423de9d1cdc844425e`, with GitHub CI green. Release 48 pins and all six package `Release` fields are prepared locally; the root commit and CI remain pending before the build. Current matrix completion remains 0/8. R47 identity is in `evidence/release47-candidate.md`; diagnostic guest observations are in `evidence/release47-invalidated-single-node.md`.<br>
 Release 46 and earlier guest results are historical. The Release 45 HIGH stale-task replay (`ADM-F-009` / #229) invalidated that candidate; see `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Scope and evidence rules
 
-This audit follows the active user-directed target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each in Single-Node and Multi-Node (eight cells). Rocky's Release 46 EPEL/cryptography dependency conflict is historical; the new Rocky seed pins the archived EPEL `python3-pyOpenSSL` 25.0.0 package as a visible validation-environment exception. The host is x86_64 with KVM, 4 vCPU, 8 GiB RAM and 4 GiB swap. Earlier candidate executions do not count toward Release 47. Multi-Node uses the admin/portal hub and two workers.
+This audit follows the active user-directed target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each in Single-Node and Multi-Node (eight cells). Rocky's Release 46 EPEL/cryptography dependency conflict is historical; the Rocky seed pins archived EPEL `python3-pyOpenSSL` 25.0.0 as a visible validation-environment exception. The host is x86_64 with KVM, 4 vCPU, 8 GiB RAM and 4 GiB swap. R47 guest observations are diagnostic only and do not count toward the rebuilt candidate. Multi-Node uses the admin/portal hub and two workers.
 
 The active audit matrix includes four x86_64 distributions and two topologies. Results from a different OS, candidate, or topology do not satisfy a target cell.
 

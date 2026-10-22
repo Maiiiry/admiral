@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: the six Release 47 Admiral RPMs are built and staged locally, but guest validation has not run; current matrix is 0/8. Target OS are Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. Release 46 probes and fixes are historical until rerun against Release 47. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and other findings remain open pending exact-candidate regressions.
+Release 47 was installed and partially exercised on Fedora Rawhide and Rocky Linux 10 Single-Node guests, but is invalidated by the new MEDIUM finding `ADM-F-010` / #237. The next coordinated candidate has not been built; completion remains 0/8. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. R46 and R47 probes are historical until rerun on the rebuilt candidate. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and the other findings remain open pending exact-candidate regressions.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -125,6 +125,20 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Root cause:** Confirmed in Release 45 source: `HandleTaskClaim` returned a claimed queue payload without checking operation terminal state, operation/task identity or node assignment. The terminal callback branch returned HTTP success without settling the queue row. A lease retry could therefore execute stale work after an operation had already failed or been deprovisioned.
 * **Recommendation:** Validate operation status and identity before returning any task to Fleet; cancel stale queue commands, and settle late callbacks without mutating terminal operation state. This minimum source fix is pushed in `admirald@e2b4fcee8fcd63d3c66b9f659156874d2a1bbb09`; the targeted Single-Node regression passed on Release 46, with Multi-Node runtime evidence still required.
 * **Regression test:** On a fresh Release 46 Fedora Rawhide guest, force provision failure, deprovision to zero resources, reboot, then verify the stale task remains cancelled and absent. This Single-Node test passed at attempt 2/5; API claim tests and the same queue-path check in a three-guest Multi-Node environment remain required before closing #229.
+
+## ADM-F-010 — Effective availability can remain stale after host reboot ([#237](https://github.com/admiral-project/admiral/issues/237))
+
+* **Severity:** MEDIUM.
+* **Component:** `admirald` instance API availability derivation and consumers of `effective_availability`.
+* **Environment:** Reproduced with exact Release 47 RPMs on fresh Fedora Rawhide 46 and Rocky Linux 10.2 x86_64 Single-Node guests. Multi-Node has not been checked on the fixed candidate.
+* **Reproduction:** Install R47, provision `examples/apps/e2e-whoami.yaml`, insert a marker in its PostgreSQL database, reboot the disposable guest, and query `admiralctl instances show`, rootless `podman ps -a`, the marker and HTTP endpoint on first SSH reconnect and through recovery.
+* **Expected:** `effective_availability` is `unknown` until a workload health report exists, `unavailable` when a fresh report is not healthy, and `unavailable` after the last report becomes stale. The last observed `health_status` and timestamp remain intact. Availability returns only after a fresh healthy report.
+* **Observed:** On Fedora and Rocky, the first post-reboot API snapshot reported `running/healthy/available` with a health timestamp 68–71 seconds old, while required app/DB containers were missing or still starting. Fedora then reported stopped while containers had returned and converged healthy after about 63 seconds; Rocky converged after about 34 seconds. SQL markers persisted on both guests and HTTP returned 200 after recovery. These are transient state discrepancies, not terminal failures or data loss.
+* **Evidence:** `evidence/release47-invalidated-single-node.md`; restricted raw files are mode 0600 under ignored `packaging/build/validation/rc5-r47/`. Candidate-specific hashes are recorded in that evidence file.
+* **Root cause:** Confirmed in `admirald/internal/database/instances.go`: the shared SQL expression derived effective availability only from assigned node status, heartbeat and health; it did not check whether instance health had ever been reported, was currently nonhealthy, or was older than the 30-second Fleet health interval.
+* **Recommendation:** Treat no health report as unknown, nonhealthy workload observations as unavailable, and an observation older than two health-check intervals (60 seconds) as stale/unavailable while preserving last-known runtime fields.
+* **Regression test:** Cover unknown-before-first-report, stale healthy, fresh stopped/unhealthy, node outage precedence, and fresh healthy recovery without changing placement or the last observation. Reboot a workload guest on the rebuilt candidate and require unavailable/unknown until a fresh healthy report; repeat on a Multi-Node worker.
+* **Fix status:** Implemented and pushed as `admirald@d50523f7a75b0a1606c761423de9d1cdc844425e`; focused regression passed 10/10, full Go tests, `go vet` and `go build` passed locally, and GitHub CI is green. Issue remains open until Release 48 runtime regression.
 
 ## Additional open source-review findings
 

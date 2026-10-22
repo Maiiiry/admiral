@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 47%{?dist}
+Release: 48%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -23,7 +23,7 @@ ExclusiveArch: x86_64 aarch64
 URL:     https://github.com/admiral-project/admiralctl
 Source0: https://github.com/admiral-project/admiralctl/archive/%{commit}.tar.gz
 Source1: admiralctl.yaml
-Source2: https://github.com/admiral-project/admirald/archive/7f487d811c4e4ed08e532cca3efaa6a0c6695dcc.tar.gz
+Source2: https://github.com/admiral-project/admirald/archive/d50523f7a75b0a1606c761423de9d1cdc844425e.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
