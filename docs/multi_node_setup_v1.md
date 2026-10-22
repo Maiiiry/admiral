@@ -111,9 +111,12 @@ The supported topology for v1 is:
 «star topology»
 
 For the current RC acceptance matrix, the admin node also runs Harbor through
-`--admin-portal-node`, with two or more `--worker-node` guests. A dedicated
-`--portal-node` remains an available deployment mode, but it is outside this
-Rocky Linux 10 and Fedora Rawhide 2×2 matrix.
+`--admin-portal-node`, with two or more `--worker-node` guests. The release
+gate covers Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10
+on x86_64, with Single-Node and Multi-Node cells for each distribution; see
+master tracker [#200](https://github.com/admiral-project/admiral/issues/200)
+for the authoritative status. A dedicated `--portal-node` remains an available
+deployment mode, but is outside this shared admin-and-portal matrix.
 
 Example:
 
