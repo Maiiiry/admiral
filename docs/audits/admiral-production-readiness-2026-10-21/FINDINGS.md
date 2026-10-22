@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-R49 was invalidated by #240; R50 was superseded before VM use by #244; R51 was invalidated by #245; R52 was invalidated by #246. The #246 fix is included in Release 53 (`admirald@b4b125e`, component CI green [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015)). R53 package checks and repository identity checks passed. Fresh Fedora/Rocky guests passed named install, resize/reactivation, concurrent same-key idempotency, local database backup/restore, failed-service detection, selected process-recovery and targeted host-reboot probes; isolation is partial. No cell is complete; matrix remains 0/8. R52/R53 evidence is in the candidate and execution records. Prior findings remain open. Harness issues #247 and #248 have local fixes proposed and await root CI; they do not affect Admiral RPMs. Rocky’s EPEL pin is a visible seed exception.
+R49 was invalidated by #240; R50 was superseded before VM use by #244; R51 was invalidated by #245; R52 was invalidated by #246. The #246 fix is included in Release 53 (`admirald@b4b125e`, component CI green [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015)). R53 package checks and repository identity checks passed. Fresh Fedora, Rocky, AlmaLinux and CentOS Stream guests passed named install, resize/reactivation, concurrent same-key idempotency, local database backup/restore, failed-service detection, selected process-recovery and targeted host-reboot probes; isolation is partial. No cell is complete; matrix remains 0/8. R52/R53 evidence is in the candidate and execution records. Prior findings remain open. Harness issues #247 and #248 have fixes on root `main` at `dd5eca4` with green CI [39783285976](https://github.com/admiral-project/admiral/actions/runs/39783285976); #249's runbook fix is local and awaits CI. None affects Admiral RPM identity. Rocky’s EPEL pin is a visible seed exception.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -281,7 +281,7 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Observed:** The host-key pin was generated for the requested address; strict SSH refused to connect to an unrecognized endpoint. We inspected the actual leases, matched each address to its host-generated guest key and only then continued. RPMs were not transferred during failed attempts. The corrected addresses and evidence are recorded in `evidence/release53-initial-single-node-execution.md`.
 * **Root cause:** Confirmed stale dnsmasq lease records persist until expiry even after the previous libvirt guest and reservation are removed. `create-audit-vm.sh` added the new reservation but did not verify the actual guest lease before reporting success.
 * **Recommendation:** The local proposed fix waits for the MAC's lease and fails closed with the actual address and safe retry instructions when it differs; strict host-key checking remains enabled.
-* **Regression test:** `scripts/test_audit_vm_hostkeys.py` now tests expected, conflicting and missing leases, and asserts lease validation occurs before the success message. All 123 root script tests pass locally; root CI is pending. The helper fix is in the local tree and the issue remains OPEN with `fix-proposed`, linked to master tracker #200. It does not alter Admiral RPM identity.
+* **Regression test:** `scripts/test_audit_vm_hostkeys.py` tests expected, conflicting and missing leases, and asserts lease validation occurs before the success message. All 123 root script tests pass locally. The fix is on root `main` at `dd5eca4` and root CI is green in [run 39783285976](https://github.com/admiral-project/admiral/actions/runs/39783285976). The issue remains OPEN with `fix-proposed`, linked to master tracker #200, pending end-to-end validation on future guests. It does not alter Admiral RPM identity.
 
 ## ADM-F-022 — Audit reboot helper reconnects before guest reboot completes ([#248](https://github.com/admiral-project/admiral/issues/248))
 
@@ -294,7 +294,20 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Evidence:** `evidence/release53-initial-single-node-execution.md`; restricted final captures `fedora-host-reboot-bootid.log` (SHA-256 `2c967ce2d123ad59b51d4b703cbdf90bdebc70dfa8082ece3d9e573267f0c965`) and `rocky-host-reboot-bootid.log` (SHA-256 `ff87b3e9fdb900e942a59a7ef3b5f571a93d236be220e95374796781822967da`) remain mode `0600` outside Git.
 * **Root cause:** Confirmed in the local helper: SSH reconnect alone was treated as proof of a completed reboot; no changed-boot-ID assertion prevented an early reconnection from being accepted.
 * **Recommendation:** Keep the boot-ID transition as a mandatory precondition for every post-reboot probe and preserve the before/after IDs in evidence.
-* **Regression test:** Local host-key/reboot-helper tests assert pre-reboot boot-ID capture and a changed ID before post-boot checks. The full root suite passes locally; the fix remains in the local tree and issue #248 remains OPEN with `fix-proposed`, linked to master tracker #200. This does not alter Admiral RPM identity.
+* **Regression test:** Local host-key/reboot-helper tests assert pre-reboot boot-ID capture and a changed ID before post-boot checks. The full root suite passes locally; the fix is on root `main` at `dd5eca4` and root CI is green in [run 39783285976](https://github.com/admiral-project/admiral/actions/runs/39783285976). Issue #248 remains OPEN with `fix-proposed`, linked to master tracker #200, pending end-to-end use across the matrix. This does not alter Admiral RPM identity.
+
+## ADM-F-023 — R53 guest-side scenario runbook omits root CLI context ([#249](https://github.com/admiral-project/admiral/issues/249))
+
+* **Severity:** LOW (audit harness documentation; not a product defect).
+* **Component:** `scripts/r53/README.md` and guest-side scenario invocation.
+* **Environment:** Fresh Release 53 AlmaLinux 10.2 and CentOS Stream 10 Single-Node guests.
+* **Reproduction:** Upload the fixture and run `r53-concurrent-idempotency.sh` as `validator`. `admiralctl` exits before any state change with `no authentication token configured`, because the secure installer stores its admin CLI config under `/root/.config/admiralctl/config.yaml`. Re-run with `sudo -n bash`; all three same-key requests return one operation and one instance, then cleanup succeeds.
+* **Expected:** The runbook specifies the required root execution context and gives a token-free command example.
+* **Observed:** The initial non-root invocations on both guests failed before `apps apply`; the corrected privileged invocations passed and created no duplicate instances. The full scenario was executed with `sudo -n bash`.
+* **Evidence:** `evidence/release53-followup-single-node-execution.md`; restricted failed-invocation SHA-256 values `0d9fe5e5eaa303f0a8d61aab9cea19e77bdc68585fbf262497b70349ff8c56ef` (AlmaLinux) and `eae19ed184518aeffc61a5433f7a14c41e3d26a606ce4b96bfe8ba0d7f9b8386` (CentOS Stream).
+* **Root cause:** Confirmed runbook omission; the helper scripts rely on the root CLI profile installed by the secure installer.
+* **Recommendation:** Document root invocation, state that tokens must not be passed on the command line, and keep scenario logs mode `0600` until scanned.
+* **Regression test:** Reproduce as `validator` to confirm failure occurs before any API mutation; execute the documented `sudo -n bash` command on the remaining R53 matrix cells and confirm expected operation/resource results. The local runbook fix is proposed; issue #249 remains OPEN with `fix-proposed`, linked to master tracker #200.
 
 ## Additional open source-review findings
 
