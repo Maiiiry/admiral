@@ -109,6 +109,7 @@
   changed_when: admiral_security_updates.rc == 0 and 'Nothing to do' not in admiral_security_updates.stdout
   when:
     - not (admiral_dev_mode | default(false) | bool)
+    - not (admiral_validation_seed | default(false) | bool)
     - >-
       (ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
       (ansible_facts['distribution_major_version'] | int) == 10) or

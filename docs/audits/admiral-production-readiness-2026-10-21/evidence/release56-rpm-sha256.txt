@@ -1,0 +1,6 @@
+5bc0d36d97686b9d126b7fbc119e1149383fd4e7f23e7357df139376c9631ee4  packaging/build/RPMS/x86_64/admirald-0.0.1rc5-56.el10.x86_64.rpm
+98b0894663067bc84b080780cf9d9bcfdca07a3a43f4b7c08765506bfe26a039  packaging/build/RPMS/x86_64/admiral-fleet-0.0.1rc5-56.el10.x86_64.rpm
+16ee2bb1a00008658068bfe55bd16e2fd0eedb8c0120229241206f8d53d7743b  packaging/build/RPMS/x86_64/admiralctl-0.0.1rc5-56.el10.x86_64.rpm
+3d5fea91db7b2a1cd3fa86665343e26dee975c0afeaf1aa3d7cb0b8d99e04962  packaging/build/RPMS/noarch/admiral-common-0.0.1rc5-56.el10.noarch.rpm
+85406433bdfc3f106afaf7604dd4aa946004751b14d4ad6390fffd39dde16f65  packaging/build/RPMS/noarch/admiral-flagship-0.0.1rc5-56.el10.noarch.rpm
+fec5cf0030722793d1770dab71afecab7e14047bac7dd5656bc9093c8341ccfe  packaging/build/RPMS/noarch/admiral-harbor-0.0.1rc5-56.el10.noarch.rpm

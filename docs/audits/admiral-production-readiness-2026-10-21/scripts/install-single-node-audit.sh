@@ -62,7 +62,7 @@ rpm -qa --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' | sort >"$rpm_before"
 install_start_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 install_started=$SECONDS
 set +e
-admiral-install --single-node --public-ip "$node_ip" \
+admiral-install --single-node --validation-seed --public-ip "$node_ip" \
   --ssh-public-key /home/validator/validator.pub --node-id "$node_id"
 install_rc=$?
 set -e

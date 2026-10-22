@@ -240,6 +240,7 @@ Options:
   --ssh-public-key    Public key to authorize for the generated administrator.
   --ssh-fingerprint   Expected SSH host key fingerprint (SHA256:...) for verification.
   --s3-credentials-file  File containing ADMIRAL_S3_ACCESS_KEY_ID and ADMIRAL_S3_SECRET_ACCESS_KEY.
+  --validation-seed  Skip OS update transactions on a recently updated validation image only.
   --yes               Confirm non-interactive dangerous operations such as --dev-node.
   --no-revoke-ssh-key Do not revoke the bootstrap SSH key after spoke onboarding.
   -h, --help          Show this help message.
@@ -269,6 +270,7 @@ ADMIN_SSH_DELIVERY_KEY=""
 INSTALL_S3_CREDENTIALS_FILE=""
 INSTALL_NO_REVOKE_SSH_KEY="false"
 INSTALL_YES="false"
+INSTALL_VALIDATION_SEED="false"
 INSTALLER_TEMP_BASE=""
 EXTRA_VARS_FILE=""
 TMP_INVENTORY=""
@@ -396,6 +398,9 @@ while [[ $# -gt 0 ]]; do
         --no-revoke-ssh-key)
             INSTALL_NO_REVOKE_SSH_KEY="true"
             ;;
+        --validation-seed)
+            INSTALL_VALIDATION_SEED="true"
+            ;;
         -h|--help)
             usage
             exit 0
@@ -450,6 +455,9 @@ PY
 fi
 
 [[ -n "$INSTALL_MODE" ]] || die "An installation mode is required. Use --single-node, --dev-node, --admin-node, --admin-portal-node, --worker-node or --portal-node."
+if [[ "$INSTALL_VALIDATION_SEED" == "true" ]]; then
+    warn "Validation seed mode skips base OS and security update transactions; use only with a verified, recently updated disposable image."
+fi
 if [[ "$INSTALL_DEV_MODE" == "true" && "$INSTALL_YES" != "true" ]]; then
     if [[ ! -t 0 ]]; then
         die "--dev-node requires --yes when stdin is not interactive."
@@ -724,8 +732,12 @@ esac
 # updates (for example vim-minimal/vim-data); allow DNF to replace the stale
 # member so the rest of the setup starts from a consistent transaction state.
 if [[ "$ID" != "amzn" && "$INSTALL_MODE" != "worker-node" && "$INSTALL_MODE" != "portal-node" ]]; then
-    info "Applying available system updates before Admiral setup..."
-    dnf -y update --refresh --allowerasing
+    if [[ "$INSTALL_VALIDATION_SEED" == "true" ]]; then
+        info "Skipping OS update transactions for the explicitly selected, recently updated validation seed."
+    else
+        info "Applying available system updates before Admiral setup..."
+        dnf -y update --refresh --allowerasing
+    fi
 fi
 
 # --- 3. verify Python 3 ---
@@ -885,6 +897,7 @@ fi
 EXTRA_VARS_JSON=$(
     INSTALL_MODE="$INSTALL_MODE" \
     INSTALL_DEV_MODE="$INSTALL_DEV_MODE" \
+    INSTALL_VALIDATION_SEED="$INSTALL_VALIDATION_SEED" \
     INSTALL_NODE_ID="$INSTALL_NODE_ID" \
     INSTALL_PUBLIC_IP="$INSTALL_PUBLIC_IP" \
     INSTALL_WIREGUARD_IP="$INSTALL_WIREGUARD_IP" \
@@ -920,6 +933,9 @@ d = {
 
 if os.environ.get("INSTALL_DEV_MODE") == "true":
     d["admiral_dev_mode"] = True
+
+if os.environ.get("INSTALL_VALIDATION_SEED") == "true":
+    d["admiral_validation_seed"] = True
 
 if os.environ.get("INSTALL_NODE_ID"):
     d["fleet_node_id"] = os.environ["INSTALL_NODE_ID"]

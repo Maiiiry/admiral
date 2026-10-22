@@ -628,6 +628,10 @@ can expose issues relevant to a future EL11.
 Installation applies available vendor security errata and enables automatic
 security updates: `dnf-automatic.timer` on EL10 and `dnf5-automatic.timer` on
 Fedora. Kernel updates can still require an operator-controlled reboot.
+The validation-only `--validation-seed` option skips the base OS and security
+update transactions when using a verified, recently updated disposable image.
+Use it only for controlled release validation; omit it for normal installations.
+The installer still configures automatic security-update support.
 Fail2ban uses its native nftables action and the playbook exercises a temporary
 documentation-range ban to prove that an effective kernel rule is installed.
 

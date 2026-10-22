@@ -1,0 +1,10 @@
+# Release 56 local, protected runtime evidence log checksums (2026-10-22)
+# Raw files remain under /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/ with mode 0600.
+219cc52582fc9b4316e6743f99056f57cd3a860a34f4365dfdc20f123f622c66  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/fedora-install.log
+58b237a7cfad3fc84dbc3be1e3cc0eb71b7f550a67a551da4cbc4580c3fc5270  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/rocky-install.log
+2d0c93e0d28e297d933fe425c66c4873745c68d5f8134fb2ea7b2f19754e0742  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/fedora-baseline.txt
+89746020516f5115e8e7bf58f5f143d9b6f7667db804642b10dbdb2a0182a859  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/rocky-baseline.txt
+5ce52914903983e41ee53421f2c833eaf5f8f6e250f98e4aece830b597bbc3a5  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/fedora-dependency-query-fixed.txt
+c82ac3604d658b9a8342476cfd268ece2774dce32aa1d372278b5516aca9e0dc  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/rocky-dependency-query-fixed.txt
+d4903cab60bb9ddf18e6605759e3ed92dfd9bb8a9778cdbf71c1cb99384725b1  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/fedora-reboot.log
+9a363f39e22657856b9b686efecaaa771fe405a664fec35acfe2426f962e1c88  /var/lib/libvirt/images/admiral-validation/validation/rc5-r56/single/rocky-reboot.log

@@ -121,6 +121,12 @@ Use this flag when reconverging a spoke that already has a working
 admiral-ssh identity, or when the handshake must be verified manually before
 locking down root SSH access.
 .TP
+\fB\-\-validation-seed\fR
+Skip the base OS and security update transactions when installing from a
+verified, recently updated disposable validation image. This flag is only for
+controlled release testing; ordinary installations must omit it and retain the
+default update behavior. Automatic security-update support is still configured.
+.TP
 \fB\-\-yes\fR
 Confirm non-interactive dangerous operations such as
 .BR \-\-dev-node .

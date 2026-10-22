@@ -1,17 +1,30 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Active candidate status — 2026-10-22:** Release 55 built all six RPMs and ran targeted Fedora Rawhide and Rocky Linux 10 Single-Node probes. It is **INVALIDATED** by a Fedora reboot false-availability finding, tracked in #256. The exact candidate and evidence are in `evidence/release55-candidate.md` and `evidence/release55-invalidation-reboot-health.md`. A boot-ID fix is pushed in `admirald@a816f47` and `admiral-fleet@74e8b0f`; the PostgreSQL-backed regression and local suites passed. Fleet CI [39819815054](https://github.com/admiral-project/admiral-fleet/actions/runs/39819815054) is green; admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed on `9b8f129`. Release 56 is not built. No R55 observation counts toward a cell.<br>
-**Current matrix completion: 0/8.** All eight Release 56 cells are **NOT TESTED**. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
+**Active candidate status — 2026-10-22:** Release 55 is **INVALIDATED** by the Fedora reboot false-availability finding #256; none of its observations count toward a cell. Release 56 includes the boot-ID fix; root and all five component CI runs are green, and all six RPM `%check` stages passed. Fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests installed R56 and passed the targeted reboot regression, but the clean repository dependency query failed for Flask/Mistune availability. See #201 and #257 plus the restricted local log hashes in `evidence/release56-runtime-log-sha256.txt`. These are partial scenarios, not full cells.<br>
+**Current matrix completion: 0/8.** Fedora and Rocky Single-Node have partial Release 56 scenario evidence; six cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
 | Target OS (x86_64) | Single-Node — Release 56 | Multi-Node — Release 56 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
-| Rocky Linux 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
-| AlmaLinux 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
-| CentOS Stream 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
+| Fedora Rawhide | PARTIAL — fresh R56 install and reboot regression; repository dependency gate FAIL; full cell incomplete | NOT TESTED — fresh three-guest run pending |
+| Rocky Linux 10 | PARTIAL — fresh R56 install and reboot regression; repository dependency gate FAIL; full cell incomplete | NOT TESTED — fresh three-guest run pending |
+| AlmaLinux 10 | NOT TESTED — fresh guest run pending | NOT TESTED — fresh three-guest run pending |
+| CentOS Stream 10 | NOT TESTED — fresh guest run pending | NOT TESTED — fresh three-guest run pending |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. Release 55 targeted probes are retained only as candidate history and invalidated by #256; R54 and older results are also candidate-specific. No issue was closed. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R55 observations are invalidated by #256. R56 Fedora/Rocky install and reboot probes passed as named scenarios only; their clean public-repository dependency check failed for Flask and Mistune (#201, #257), so neither cell passes. No issue was closed. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+
+## Release 56 executed scenarios — partial results, no complete cell
+
+| Test ID | Candidate / environment | Procedure and expected result | Observed result | Status / evidence |
+|---|---|---|---|---|
+| `R56-FEDORA-SN-INSTALL` | Root `042e578`; Fedora Rawhide x86_64, 2 vCPU / 2 GiB, `adm-r56-fedora-single` | Install exact six R56 RPMs on fresh seed overlay and run secure installer; expect clean package transaction and no failed Ansible tasks. | Exact six RPMs installed; recap `ok=238 changed=99 unreachable=0 failed=0`; installer ran 685 s. Seed already had Flask 3.1.3 and Mistune 3.4.0; this transaction does not prove dependency closure. | PASS (installation subset only); protected `fedora-install.log`, hash in `evidence/release56-runtime-log-sha256.txt` |
+| `R56-ROCKY-SN-INSTALL` | Root `042e578`; Rocky Linux 10 x86_64, 2 vCPU / 2 GiB, `adm-r56-rocky-single` | Same procedure and expectation as Fedora. | Exact six RPMs installed; recap `ok=232 changed=97 unreachable=0 failed=0`; installer ran 682 s. Flask 3.1.3 and Mistune 3.4.0 were preinstalled in the seed. | PASS (installation subset only); protected `rocky-install.log`, hash in the R56 log manifest |
+| `R56-FEDORA-SN-REBOOT` | Same Fedora guest and exact R56 RPM set | Run `scripts/r56/r56-host-reboot.sh`; changed boot ID must be observed; API must remain unavailable until all declared services and persisted SQL data recover. | Changed boot ID observed. API was unavailable until poll 7; three containers and PostgreSQL were ready, HTTP 200 and SQL marker `r56-reboot-persisted` verified, then cleanup succeeded. | PASS (targeted #256 regression only); protected `fedora-reboot.log`, hash in the R56 log manifest |
+| `R56-ROCKY-SN-REBOOT` | Same Rocky guest and exact R56 RPM set | Same reboot and persistence procedure as Fedora. | Changed boot ID observed. API remained unavailable until poll 6; three containers and PostgreSQL were ready, HTTP 200 and SQL marker verified, then cleanup succeeded. | PASS (targeted #256 regression only); protected `rocky-reboot.log`, hash in the R56 log manifest |
+| `R56-FEDORA-DEPS` | Fedora Rawhide, configured distribution repos and Admiral COPR; private candidate repo disabled | Query available packages satisfying Harbor's Flask >=3.1.3 and Mistune >=3.3.0 RPM requirements. | Flask 3.1.3 is available from Rawhide; Mistune is only 3.2.1 from Rawhide/COPR. | FAIL (repository dependency gate; #257); protected query log hash in the R56 manifest |
+| `R56-ROCKY-DEPS` | Rocky Linux 10.2, BaseOS/AppStream/CRB/Extras/EPEL/Admiral COPR; private candidate repo disabled | Same clean dependency query as Fedora. | Flask only 3.1.2 from EPEL (none from Admiral COPR); Mistune only up to 3.2.1 from COPR. | FAIL (repository dependency gate; #201 and #257); protected query log hash in the R56 manifest |
+
+The pre-fix install helper performed system update transactions despite the refreshed seeds: Fedora elapsed 685 s and applied 17 OS package actions including a new kernel; Rocky elapsed 682 s and upgraded `crun`. These exact-candidate observations and protected log hashes are also in `evidence/release56-candidate.md`. Issue #235 is being addressed by an explicit validation-seed mode that leaves normal installer updates enabled.
 
 ## Release 55 targeted Single-Node probes — invalidated, not cell passes
 

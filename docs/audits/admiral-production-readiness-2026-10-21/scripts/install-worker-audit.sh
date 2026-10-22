@@ -104,7 +104,7 @@ install_start_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 install_started=$SECONDS
 set +e
 ssh_to "$hub_ip" "$hub_known_hosts" \
-  "sudo -n admiral-install --worker-node --yes --node-id '$node_id' --public-ip '$worker_ip' --wireguard-ip '$wg_ip' --admin-endpoint '$hub_ip' --ssh-user validator --ssh-key '$hub_bootstrap_key' --ssh-fingerprint '$fingerprint'" \
+  "sudo -n admiral-install --worker-node --validation-seed --yes --node-id '$node_id' --public-ip '$worker_ip' --wireguard-ip '$wg_ip' --admin-endpoint '$hub_ip' --ssh-user validator --ssh-key '$hub_bootstrap_key' --ssh-fingerprint '$fingerprint'" \
   >"$output" 2>&1
 rc=$?
 set -e

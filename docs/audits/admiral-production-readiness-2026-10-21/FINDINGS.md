@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 55 is the latest built candidate and was invalidated by #256 after a real Fedora Rawhide Single-Node reboot returned false healthy/available state; see `evidence/release55-invalidation-reboot-health.md`. The fix is pushed in `admirald@a816f47` and `admiral-fleet@74e8b0f`. The PostgreSQL-backed regression, local full component suites, vet and builds passed; Fleet CI [39819815054](https://github.com/admiral-project/admiral-fleet/actions/runs/39819815054) is green and admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed on `9b8f129`. Release 56 is not built. Matrix remains 0/8, older candidate results remain historical, and no issue was closed.
+Release 56 is the latest locally built candidate, pinned to root commit `042e578efe0470124f47c905ddf493aa335d56d0`; all six package `%check` stages passed. Root and all five component CI runs are green. Exact NEVRAs and hashes are recorded in `evidence/release56-candidate.md`. Fresh Fedora and Rocky Single-Node guests installed R56 and passed the targeted reboot regression, but no complete cell has passed; matrix remains 0/8. The clean repository query failed for Flask/Mistune availability (#201, #257). Release 55 remains invalidated by #256 and its observations are historical. No issue was closed.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -390,4 +390,30 @@ Harbor README calls the component an “Admin workspace for operators,” while 
 * **Evidence:** Protected raw logs (mode `0600`): Fedora `fedora-host-reboot.log`, SHA-256 `92e521d6a62e85b365354dd728bfc79f6171d280450d50227f9cbd7f15862e6d`; Rocky `rocky-host-reboot.log`, SHA-256 `28f0fb57bdf487e2a8b72c298792778370276632e6ab9b16b99851baf1dd5b25`. Full record: `evidence/release55-invalidation-reboot-health.md`.
 * **Root cause:** Confirmed. Effective availability only marked a health report stale after 60 seconds; local restart did not invalidate the pre-boot observation, so Fedora reconnected before that age threshold.
 * **Recommendation:** Bind each Fleet runtime observation to the Linux boot ID reported by its node and require equality with the latest authenticated heartbeat boot ID before deriving `available`, while retaining historical health fields.
-* **Regression:** A PostgreSQL-backed test proves an old-boot healthy report becomes unavailable on boot-ID change, retains its health fields/timestamp, and returns available only after a new-boot report. Fix pushed in `admirald@a816f47` and `admiral-fleet@74e8b0f`; local suites, vet/build and Fleet CI pass. Admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed; Release 56 real guest reboot validation remains required. Issue remains open with `fix-proposed`.
+* **Regression:** A PostgreSQL-backed test proves an old-boot healthy report becomes unavailable on boot-ID change, retains its health fields/timestamp, and returns available only after a new-boot report. The fix is pushed in the pinned `admirald@9b8f129` and `admiral-fleet@74e8b0f`; local suites, vet/build and component CI pass. R56 fresh-guest reboot probes passed on Fedora Rawhide (available at poll 7) and Rocky Linux 10 (poll 6), with all containers, PostgreSQL readiness, HTTP 200, SQL marker and cleanup verified. This is targeted coverage; remaining OSes, full cells and Multi-Node reboot behavior are still required. Issue #256 remains open with `fix-proposed`.
+
+## ADM-F-028 — EL10 repositories do not provide patched Flask required by Harbor ([#201](https://github.com/admiral-project/admiral/issues/201))
+
+* **Severity:** HIGH — a clean Rocky Linux 10 installation cannot resolve the Harbor RPM's required Flask version from the configured repositories.
+* **Component:** RPM dependency packaging and Admiral COPR publication.
+* **Environment:** Rocky Linux 10.2 x86_64, BaseOS, AppStream, CRB, Extras, EPEL and Admiral COPR enabled; private R56 candidate repository disabled.
+* **Reproduction:** Query available `python3-flask` packages from the configured repositories, then request the Release 56 Admiral packages with the Harbor RPM's `python3-flask >= 3.1.3` requirement.
+* **Expected:** Admiral COPR provides the maintained Flask 3.1.3 RPM so DNF can install the candidate without weakening the security floor or depending on a preinstalled seed package.
+* **Observed:** EPEL offers `python3-flask-3.1.2-2.el10_2`; Admiral COPR exposes no Flask package. The clean dependency gate fails. The validation seed already had `python3-flask-3.1.3-2.el10` installed, masking this gap during the first R56 package transaction.
+* **Evidence:** R56 clean repository query and checksum in `evidence/release56-runtime-log-sha256.txt`; exact candidate RPM requirements and package identity in `evidence/release56-candidate.md`.
+* **Root cause:** Confirmed repository publication gap. `packaging/rpm/python-flask.spec` builds 3.1.3 locally, but that helper RPM is not present in the enabled Admiral COPR metadata.
+* **Recommendation:** Publish the signed EL10 Flask 3.1.3 helper RPM through the supported Admiral package repository while preserving the Flask security minimum.
+* **Regression:** On a fresh Rocky Linux 10 guest with no Flask preinstalled, enable only the expected distribution repos and Admiral COPR, verify DNF metadata/GPG checks, and install all six exact Admiral RPMs. Record Flask's selected NEVRA and the complete transaction. Keep #201 open until reproduced.
+
+## ADM-F-029 — Supported repositories do not provide Harbor's required Mistune version ([#257](https://github.com/admiral-project/admiral/issues/257))
+
+* **Severity:** HIGH — clean Fedora Rawhide and EL10 installations cannot resolve the Harbor RPM's declared Mistune minimum.
+* **Component:** Harbor runtime dependency packaging and Admiral COPR publication.
+* **Environment:** Fedora Rawhide x86_64 and Rocky Linux 10.2 x86_64 with distribution repos and Admiral COPR enabled; private candidate repository disabled.
+* **Reproduction:** Query available `python3-mistune` NEVRAs and attempt a clean installation of the Release 56 Admiral RPMs, where Harbor requires `python3-mistune >= 3.3.0`.
+* **Expected:** The configured Admiral repository provides a maintained Mistune release at 3.3.0 or newer for Fedora Rawhide and EL10.
+* **Observed:** Fedora offers Mistune 3.2.1 from Rawhide/COPR. Rocky offers 3.1.3 from EPEL and 3.2.1 from COPR. No available package satisfies the RPM requirement. Both seeds already had Mistune 3.4.0 installed, masking the gap during the first R56 package transaction.
+* **Evidence:** R56 Fedora and Rocky clean repository queries and checksums in `evidence/release56-runtime-log-sha256.txt`; exact Harbor requirement in the candidate RPM metadata.
+* **Root cause:** Confirmed publication gap. The tree contains `packaging/rpm/python-mistune.spec` for 3.4.0 and the local validation repository contains the built RPMs, but the configured public repository metadata does not.
+* **Recommendation:** Publish signed Mistune 3.4.0 helper RPMs for Fedora Rawhide and EL10 through the supported Admiral package repository.
+* **Regression:** On fresh Fedora Rawhide and EL10 guests without Mistune preinstalled, verify repository metadata/GPG checks and install all six exact Admiral RPMs with the private local repository disabled. Record the selected Mistune NEVRA and complete DNF transaction. Keep #257 open until reproduced.

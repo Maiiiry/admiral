@@ -262,6 +262,43 @@ done
 
         self.assertIn("--admin-portal-node", result.stdout)
         self.assertIn("--yes", result.stdout)
+        self.assertIn("--validation-seed", result.stdout)
+
+    def test_validation_seed_flag_is_explicit_and_skips_only_update_transactions(self) -> None:
+        result = subprocess.run(
+            ["bash", str(INSTALLER), "--validation-seed"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        installer = INSTALLER.read_text(encoding="utf-8")
+        common_tasks = COMMON_TASKS.read_text(encoding="utf-8")
+
+        # Parsing the flag without an installation mode must reach the mode
+        # validation error, not reject the flag as unknown or mutate the host.
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("An installation mode is required", result.stderr)
+        self.assertNotIn("Unknown argument", result.stderr)
+        self.assertIn('INSTALL_VALIDATION_SEED="false"', installer)
+        update_section = installer.split("# Normalize the base operating system", 1)[1].split(
+            "# --- 3. verify Python 3 ---", 1
+        )[0]
+        self.assertIn('if [[ "$INSTALL_VALIDATION_SEED" == "true" ]]', update_section)
+        self.assertIn(
+            'info "Applying available system updates before Admiral setup..."',
+            update_section,
+        )
+        self.assertIn("dnf -y update --refresh --allowerasing", update_section)
+        self.assertIn('warn "Validation seed mode skips base OS and security update transactions;', installer)
+        self.assertIn(
+            'Skipping OS update transactions for the explicitly selected, recently updated validation seed.',
+            installer,
+        )
+        self.assertIn('d["admiral_validation_seed"] = True', installer)
+        security_update_task = common_tasks.split(
+            "- name: Apply available security updates", 1
+        )[1].split("\n- name:", 1)[0]
+        self.assertIn("not (admiral_validation_seed | default(false) | bool)", security_update_task)
 
     def test_dev_mode_requires_explicit_noninteractive_confirmation(self) -> None:
         result = subprocess.run(

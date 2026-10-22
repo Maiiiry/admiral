@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest built RPM set: Admiral RC5 Release 55, built from root candidate source `d5654ac776617154e2d63cb745d81c8d2ac9ee22`. All six package checks passed. Fresh Fedora Rawhide and Rocky Linux 10 Single-Node probes were partial; Fedora reboot exposed false healthy/available state while PostgreSQL was not ready. R55 is **INVALIDATED** by #256; evidence and exact package hashes are in `evidence/release55-candidate.md` and `evidence/release55-invalidation-reboot-health.md`. A boot-ID fix is pushed as `admirald@a816f47` and `admiral-fleet@74e8b0f`; DB-backed regression and local full suites passed. Fleet CI [39819815054](https://github.com/admiral-project/admiral-fleet/actions/runs/39819815054) is green; admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed on `9b8f129`. Release 56 has not been prepared or built. No R55 observation counts toward a matrix cell.<br>
-The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. All four Release 56 Single-Node cells and all four Multi-Node cells are NOT TESTED. No issue was closed. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
+Latest built RPM set: Admiral RC5 Release 56, built from root candidate source `042e578efe0470124f47c905ddf493aa335d56d0`. All six package `%check` stages passed; root and all five component CI runs are green. Exact package hashes and component pins are in `evidence/release56-candidate.md`. R55 is **INVALIDATED** by #256, and no R55 observation counts toward a matrix cell. Fresh Fedora and Rocky Single-Node guests installed R56 and passed a targeted reboot regression; their full cells are incomplete.<br>
+The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. Fedora and Rocky Single-Node have partial scenario evidence; AlmaLinux and CentOS Stream Single-Node and all four Multi-Node cells are NOT TESTED on R56. Clean DNF resolution failed for Flask/Mistune availability (#201, #257), and other runtime acceptance checks remain open. No issue was closed. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | R55 ran scoped install, lifecycle, backup/restore, isolation and recovery probes on Fedora and Rocky, but the candidate is invalidated by #256 and none counts as a cell. All four Release 56 cells are NOT TESTED. Full lifecycle, safety, recovery, load and performance coverage remain. |
-| Multi-Node | **NOT VALIDATED** | No R55 or R56 three-guest topology ran. All four Release 56 cells remain NOT TESTED. |
+| Single-Node | **NOT VALIDATED** | Fedora and Rocky have partial fresh R56 install/reboot evidence, but fail the clean repository dependency gate; AlmaLinux and CentOS Stream R56 runs remain. No full cell passes. Lifecycle, safety, recovery, load and performance coverage remain. |
+| Multi-Node | **NOT VALIDATED** | No R56 three-guest topology ran. All four cells remain NOT TESTED. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 

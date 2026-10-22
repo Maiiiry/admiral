@@ -88,6 +88,14 @@ From the admin node, SSH into the target worker host and run:
 The installer connects as root, provisions the node, verifies the WireGuard
 and Fleet handshakes, then revokes the bootstrap key.
 .RE
+.SS Use a prepared validation seed
+For controlled release testing only, a freshly updated disposable image can
+skip the otherwise automatic base OS and security update transactions by
+passing
+.BR \-\-validation-seed .
+Verify the seed identity and freshness before using this option. Normal
+production and administrative installations must omit it; their default update
+behavior remains enabled. Automatic security-update support is still configured.
 .SS Reconcile a worker node
 .RS
 .IP
@@ -144,7 +152,7 @@ to retain the bootstrap key during subsequent runs.
 .IP
 .B harborctl ping
 .RE
-.SSS Security checklist
+.SS Security checklist
 The installer enforces a blocking security checklist on all secure modes:
 .RS
 .IP 1.

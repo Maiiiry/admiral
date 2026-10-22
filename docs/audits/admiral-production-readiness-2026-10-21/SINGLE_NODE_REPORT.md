@@ -1,8 +1,23 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 55 is invalidated by #256; Release 56 is not built.** Fresh Fedora Rawhide and Rocky Linux 10 R55 guests completed scoped Single-Node probes, but Fedora reboot exposed false availability while PostgreSQL was not ready. No result counts toward the matrix; all four Release 56 Single-Node cells are NOT TESTED and completion remains 0/8. See `evidence/release55-invalidation-reboot-health.md` and the exact candidate record. The boot-ID fix is pushed in `admirald@a816f47` and `admiral-fleet@74e8b0f`; local DB-backed regression and component suites passed; Fleet CI is green and admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed.<br>
-Release 56 must be built from a coordinated six-RPM set and installed on fresh overlays. Full lifecycle, persistence, isolation, recovery, concurrency, resource-cleanup and performance checks remain required for each cell.
+Current status: **NOT VALIDATED — Release 56 has partial Fedora/Rocky Single-Node results; matrix 0/8.** Release 55 is invalidated by #256. Fresh R56 Fedora Rawhide and Rocky Linux 10 guests installed the exact six RPMs and passed the targeted reboot recovery scenario; neither full cell is complete. The separate clean repository query failed because the configured repos lack the required Flask/Mistune versions (#201, #257), and the initial guest transactions had those dependencies preinstalled. AlmaLinux and CentOS Stream R56 Single-Node runs have not started. Evidence is summarized in `evidence/release56-candidate.md`, with raw-log hashes in `evidence/release56-runtime-log-sha256.txt`.<br>
+Full dependency closure, lifecycle, persistence, isolation, recovery, concurrency, resource cleanup and performance checks remain required for all four cells.
+
+## Release 56 targeted Single-Node results — partial, not cell passes
+
+All runs below use root candidate `042e578efe0470124f47c905ddf493aa335d56d0` and fresh R56 guest overlays. Raw runtime logs remain mode 0600 on the lab host; their SHA-256 values are in `evidence/release56-runtime-log-sha256.txt`.
+
+| Test ID | OS / topology | Procedure and observed result | Status | Evidence |
+|---|---|---|---|---|
+| `R56-FEDORA-SN-INSTALL` | Fedora Rawhide x86_64 / Single-Node | Installed the exact six R56 RPMs and ran the secure installer; recap `ok=238 changed=99 unreachable=0 failed=0`, elapsed 685 seconds. The seed already had Flask 3.1.3 and Mistune 3.4.0, so this did not prove clean dependency closure. | PASS (install/setup subset only) | Protected `fedora-install.log`; manifest above |
+| `R56-ROCKY-SN-INSTALL` | Rocky Linux 10 x86_64 / Single-Node | Installed the exact six R56 RPMs and ran the secure installer; recap `ok=232 changed=97 unreachable=0 failed=0`, elapsed 682 seconds. The seed already had Flask 3.1.3 and Mistune 3.4.0, so this did not prove clean dependency closure. | PASS (install/setup subset only) | Protected `rocky-install.log`; manifest above |
+| `R56-FEDORA-SN-REBOOT` | Fedora Rawhide x86_64 / Single-Node | Confirmed changed boot ID; after reboot, availability returned at poll 7 only after all three containers and PostgreSQL were ready. HTTP 200, SQL marker `r56-reboot-persisted`, and deprovision cleanup passed. | PASS (targeted #256 regression only) | Protected `fedora-reboot.log`; manifest above |
+| `R56-ROCKY-SN-REBOOT` | Rocky Linux 10 x86_64 / Single-Node | Confirmed changed boot ID; the service remained unavailable until poll 6, when all three containers and PostgreSQL were ready. HTTP 200, SQL marker `r56-reboot-persisted`, and cleanup passed. | PASS (targeted #256 regression only) | Protected `rocky-reboot.log`; manifest above |
+| `R56-FEDORA-DEPS` / `R56-ROCKY-DEPS` | Fedora Rawhide / Rocky Linux 10 x86_64 | Queried configured distribution repositories and Admiral COPR with private candidate repo disabled. Fedora had Flask 3.1.3 but Mistune 3.2.1; Rocky had Flask 3.1.2 and Mistune no newer than 3.2.1. Harbor requires Flask >=3.1.3 and Mistune >=3.3.0. | FAIL (clean dependency gate; #201, #257) | Protected `*-dependency-query.txt`; checksums above |
+| `R56-ALMA-SN` / `R56-CENTOS-SN` | AlmaLinux 10 / CentOS Stream 10 x86_64 | No Release 56 guest run yet. | NOT TESTED | — |
+
+The Fedora installer applied 17 OS package actions, including a new kernel; Rocky upgraded `crun`. This is recorded under the existing seed-update follow-up #235. These host updates did not change the Release 56 RPM identities, but the successful installer transaction cannot substitute for the failed clean dependency gate. No Single-Node cell is complete.
 
 ## Historical Release 53 exact-candidate probes — partial results
 
@@ -100,4 +115,4 @@ The previous RC tests did not cover the full audit's concurrency, negative tenan
 
 ## Required next executions
 
-Release 53 is the active candidate. The #246 resize/reactivation regression passed on fresh Fedora and Rocky Single-Node guests. Next run the #245 lifecycle and reboot-availability regressions on both, then complete each cell's lifecycle, concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and progressive load. Revalidate findings after fixes, retain raw command timings and runtime/database state, and reset affected cells if a product source fix changes the candidate.
+Release 56 is the active locally built candidate. Its targeted reboot regression passed on Fedora (available at poll 7) and Rocky (poll 6), with the persisted SQL marker, HTTP 200 and cleanup verified. First close the clean repository dependency gate in #201 and #257, then run fresh R56 cells; the present Fedora/Rocky guest results remain partial. Complete each cell's lifecycle, concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and progressive load. Revalidate findings after fixes and retain raw command timings and runtime/database state.

@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 55 is invalidated by #256; no Release 56 security validation has run.** R55 single-host isolation probes on Fedora Rawhide and Rocky Linux 10 confirmed distinct namespaces, non-privileged containers, `NoNewPrivs`, no Podman socket mount and host-published cross-workload port denial; direct container-IP TCP denial was NOT TESTED because no routable target IP was available. This partial sample is not a cell pass or a complete isolation proof. Matrix remains 0/8. Full capability, filesystem escape, tenant authorization and Multi-Node trust checks remain unproven.
+Current status: **NOT VALIDATED — Release 56 built; no Release 56 security validation has run.** R55 single-host isolation probes on Fedora Rawhide and Rocky Linux 10 are historical only because that candidate was invalidated by #256. No R56 isolation or security tests have been executed. Matrix remains 0/8. Full capability, filesystem escape, tenant authorization and Multi-Node trust checks remain unproven.
 R49–R52 observations are candidate-specific history only. R53 includes the #246 source fix and has passed package checks; the named R53 isolation samples do not establish a security guarantee or complete a cell. Build identity and runtime hashes are in the R53 candidate, initial and follow-up execution reports.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
