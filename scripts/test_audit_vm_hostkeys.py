@@ -48,7 +48,7 @@ def generate_validator_key(directory: Path) -> Path:
     return private_key.with_suffix(".pub")
 
 
-def test_host_key_is_pre_pinned_for_nat_and_wireguard_before_network_use(tmp_path):
+def test_host_key_is_pre_pinned_for_nat_and_private_underlay_before_network_use(tmp_path):
     validator_public_key = generate_validator_key(tmp_path)
     guest_directory = tmp_path / "cloud-init" / "audit-worker"
 
@@ -57,7 +57,7 @@ def test_host_key_is_pre_pinned_for_nat_and_wireguard_before_network_use(tmp_pat
         "audit-worker",
         "192.168.122.246",
         "52:54:00:aa:bb:01",
-        "10.99.0.246",
+        "10.77.0.11",
         "52:54:00:aa:bb:02",
         validator_public_key,
     )
@@ -86,7 +86,7 @@ def test_host_key_is_pre_pinned_for_nat_and_wireguard_before_network_use(tmp_pat
 
     expected_hosts = {
         f"192.168.122.246 ssh-ed25519 {public_line[1]}",
-        f"10.99.0.246 ssh-ed25519 {public_line[1]}",
+        f"10.77.0.11 ssh-ed25519 {public_line[1]}",
     }
     pin_lines = set(known_hosts.read_text(encoding="utf-8").splitlines())
     assert pin_lines == expected_hosts
@@ -106,7 +106,8 @@ def test_host_key_is_pre_pinned_for_nat_and_wireguard_before_network_use(tmp_pat
 
     network_config = (guest_directory / "network-config").read_text(encoding="utf-8")
     assert "192.168.122.246" not in network_config
-    assert "10.99.0.246/24" in network_config
+    assert "10.77.0.11/24" in network_config
+    assert "10.99.0.2" not in network_config
 
 
 def test_single_network_guest_gets_only_nat_host_pin(tmp_path):
@@ -177,6 +178,19 @@ def test_cloud_init_iso_keeps_private_source_modes():
 
     assert " -r " not in f" {iso_command} "
     assert 'chmod 0600 "$iso"' in script
+
+
+def test_create_helper_names_private_nic_as_underlay_not_wireguard():
+    script = CREATE_SCRIPT.read_text(encoding="utf-8")
+    cloud_init = HELPER.read_text(encoding="utf-8")
+
+    assert "[PRIVATE_IP PRIVATE_MAC]" in script
+    assert '"$private_ip"' in script
+    assert '"$private_mac"' in script
+    assert "--private-ip" in script
+    assert "--private-mac" in script
+    assert "wg_ip" not in script
+    assert 'parser.add_argument("--wg-ip"' not in cloud_init
 
 
 def test_create_helper_checks_the_actual_dhcp_lease_before_reporting_success():

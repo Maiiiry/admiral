@@ -38,8 +38,8 @@ def prepare_guest_files(
     name: str,
     nat_ip: str,
     nat_mac: str,
-    wg_ip: str,
-    wg_mac: str,
+    private_ip: str,
+    private_mac: str,
     validator_public_key_file: Path,
 ) -> tuple[Path, Path]:
     """Generate a unique host key, cloud-init material, and known_hosts pin.
@@ -54,12 +54,12 @@ def prepare_guest_files(
     _validate_ipv4(nat_ip, "NAT address")
     if not MAC_ADDRESS.fullmatch(nat_mac):
         raise ValueError(f"invalid NAT MAC address: {nat_mac}")
-    if bool(wg_ip) != bool(wg_mac):
+    if bool(private_ip) != bool(private_mac):
         raise ValueError("private IPv4 and MAC must be supplied together")
-    if wg_ip:
-        _validate_ipv4(wg_ip, "private address")
-        if not MAC_ADDRESS.fullmatch(wg_mac):
-            raise ValueError(f"invalid private MAC address: {wg_mac}")
+    if private_ip:
+        _validate_ipv4(private_ip, "private underlay address")
+        if not MAC_ADDRESS.fullmatch(private_mac):
+            raise ValueError(f"invalid private underlay MAC address: {private_mac}")
 
     validator_key = validator_public_key_file.read_text(encoding="utf-8").strip()
     validator_fields = validator_key.split()
@@ -139,8 +139,8 @@ def prepare_guest_files(
         )
 
         addresses = [nat_ip]
-        if wg_ip:
-            addresses.append(wg_ip)
+        if private_ip:
+            addresses.append(private_ip)
             network_lines = [
                 "version: 2",
                 "renderer: NetworkManager",
@@ -152,11 +152,11 @@ def prepare_guest_files(
                 "    dhcp6: false",
                 "  private:",
                 "    match:",
-                f"      macaddress: '{wg_mac.lower()}'",
+                f"      macaddress: '{private_mac.lower()}'",
                 "    dhcp4: false",
                 "    dhcp6: false",
                 "    addresses:",
-                f"      - {wg_ip}/24",
+                f"      - {private_ip}/24",
             ]
             _write_private(
                 directory / "network-config", "\n".join(network_lines) + "\n"
@@ -177,8 +177,16 @@ def main() -> int:
     parser.add_argument("--name", required=True)
     parser.add_argument("--nat-ip", required=True)
     parser.add_argument("--nat-mac", required=True)
-    parser.add_argument("--wg-ip", default="")
-    parser.add_argument("--wg-mac", default="")
+    parser.add_argument(
+        "--private-ip",
+        default="",
+        help="static address for the libvirt private underlay NIC",
+    )
+    parser.add_argument(
+        "--private-mac",
+        default="",
+        help="MAC address for the libvirt private underlay NIC",
+    )
     parser.add_argument("--validator-public-key", type=Path, required=True)
     args = parser.parse_args()
 
@@ -188,8 +196,8 @@ def main() -> int:
             args.name,
             args.nat_ip,
             args.nat_mac,
-            args.wg_ip,
-            args.wg_mac,
+            args.private_ip,
+            args.private_mac,
             args.validator_public_key,
         )
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:

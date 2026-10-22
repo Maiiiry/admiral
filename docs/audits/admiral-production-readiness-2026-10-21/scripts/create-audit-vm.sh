@@ -4,25 +4,25 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 {fedora|rocky|alma|centos} NAME NAT_IP NAT_MAC [WG_IP WG_MAC] PUBKEY_FILE" >&2
+  echo "usage: $0 {fedora|rocky|alma|centos} NAME NAT_IP NAT_MAC [PRIVATE_IP PRIVATE_MAC] PUBKEY_FILE" >&2
   exit 2
 }
 
 [[ $# -eq 5 || $# -eq 7 ]] || usage
 os=$1 name=$2 nat_ip=$3 nat_mac=$4
 if [[ $# -eq 5 ]]; then
-  wg_ip= wg_mac= pubkey_file=$5
+  private_ip= private_mac= pubkey_file=$5
 else
-  wg_ip=$5 wg_mac=$6 pubkey_file=$7
+  private_ip=$5 private_mac=$6 pubkey_file=$7
 fi
 [[ $EUID -eq 0 ]] || { echo "run as root" >&2; exit 1; }
 [[ $name =~ ^[a-zA-Z0-9][a-zA-Z0-9-]{0,62}$ ]] || { echo "invalid guest name" >&2; exit 2; }
 [[ $nat_mac =~ ^([[:xdigit:]]{2}:){5}[[:xdigit:]]{2}$ ]] || { echo "invalid NAT MAC" >&2; exit 2; }
 [[ $nat_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid NAT IPv4" >&2; exit 2; }
 [[ -r $pubkey_file ]] || { echo "cannot read public key file" >&2; exit 2; }
-if [[ -n $wg_ip ]]; then
-  [[ $wg_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid private IPv4" >&2; exit 2; }
-  [[ $wg_mac =~ ^([[:xdigit:]]{2}:){5}[[:xdigit:]]{2}$ ]] || { echo "invalid private MAC" >&2; exit 2; }
+if [[ -n $private_ip || -n $private_mac ]]; then
+  [[ $private_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid private IPv4" >&2; exit 2; }
+  [[ $private_mac =~ ^([[:xdigit:]]{2}:){5}[[:xdigit:]]{2}$ ]] || { echo "invalid private MAC" >&2; exit 2; }
 fi
 
 root=/var/lib/libvirt/images/admiral-validation
@@ -49,7 +49,7 @@ seed_dir="$root/cloud-init/$name"
 mkdir -p "$(dirname "$overlay")"
 python3 "$(dirname "$0")/prepare-audit-cloud-init.py" \
   --directory "$seed_dir" --name "$name" --nat-ip "$nat_ip" --nat-mac "$nat_mac" \
-  --wg-ip "$wg_ip" --wg-mac "$wg_mac" --validator-public-key "$pubkey_file"
+  --private-ip "$private_ip" --private-mac "$private_mac" --validator-public-key "$pubkey_file"
 virsh net-update default add ip-dhcp-host "<host mac='$nat_mac' name='$name' ip='$nat_ip'/>" --live --config
 
 iso_files=(user-data meta-data)
@@ -63,8 +63,8 @@ chown qemu:qemu "$overlay" "$iso"
 chmod 0600 "$iso"
 restorecon -F "$overlay" "$iso"
 networks=(--network "network=default,mac=$nat_mac,model=virtio")
-if [[ -n $wg_ip ]]; then
-  networks+=(--network "network=admiral-validation,mac=$wg_mac,model=virtio")
+if [[ -n $private_ip ]]; then
+  networks+=(--network "network=admiral-validation,mac=$private_mac,model=virtio")
 fi
 virt-install --name "$name" --memory 2048 --vcpus 2 --osinfo "$osinfo" --import \
   --disk "path=$overlay,format=qcow2,bus=virtio" \
@@ -73,6 +73,6 @@ virt-install --name "$name" --memory 2048 --vcpus 2 --osinfo "$osinfo" --import 
 python3 "$(dirname "$0")/verify-audit-vm-lease.py" \
   --network default --mac "$nat_mac" --requested-ip "$nat_ip" --timeout 90
 printf 'Created %s from %s at NAT %s%s.\n' \
-  "$name" "$(basename "$base")" "$nat_ip" "${wg_ip:+ and private $wg_ip}"
+  "$name" "$(basename "$base")" "$nat_ip" "${private_ip:+ and private underlay $private_ip}"
 printf 'known_hosts_file=%s/known_hosts\n' "$seed_dir"
 ssh-keygen -lf "$seed_dir/ssh_host_ed25519_key.pub" -E sha256
