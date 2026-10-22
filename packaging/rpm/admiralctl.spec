@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit 2840536316dcd4ae5a038bee9b29334a67a5d7de
+%global commit 5ed381d7d152e1606e78fafe332587cca09bc989
 
 %ifarch x86_64
 %global admiral_goarch amd64
@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 49%{?dist}
+Release: 50%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -87,6 +87,9 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-50
+- Rebuild coordinated six-package candidate with current main source refs
+
 * Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-45
 - Rebuild with safe Harbor links and idempotent Fleet cleanup
 

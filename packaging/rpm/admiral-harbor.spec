@@ -3,7 +3,7 @@
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 49%{?dist}
+Release: 50%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -126,6 +126,9 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-50
+- Rebuild coordinated six-package candidate with current main source refs
+
 * Wed Oct 21 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-45
 - Rebuild with safe Harbor links and idempotent Fleet cleanup
 
