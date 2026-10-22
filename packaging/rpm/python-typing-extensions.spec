@@ -4,8 +4,8 @@
 %global debug_package %{nil}
 
 Name:           python3-typing-extensions
-Version:        4.15.0
-Release:        7%{?dist}
+Version:        4.16.0
+Release:        1%{?dist}
 Summary:        Backported and Experimental Type Hints for Python
 
 License:        PSF-2.0
@@ -40,6 +40,9 @@ sed -i '/^license-files/d' pyproject.toml
 %license LICENSE
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 4.16.0-1
+- Update typing-extensions to the latest upstream release
+
 * Sun Jul 05 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 4.15.0-7
 - Rebuild for admiral 0.0.1beta14
 

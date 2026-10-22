@@ -5,8 +5,8 @@
 %global tag_version %(echo %{version} | tr '.' '_')
 
 Name:           python3-alembic
-Version:        1.18.4
-Release:        7%{?dist}
+Version:        1.20.1
+Release:        1%{?dist}
 Summary:        A database migration tool for SQLAlchemy
 
 License:        MIT
@@ -58,6 +58,9 @@ sed -i '/^license-files/d' pyproject.toml
 %endif
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 1.20.1-1
+- Update Alembic to the latest upstream release
+
 * Sun Jul 05 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 1.18.4-7
 - Rebuild for admiral 0.0.1beta14
 

@@ -4,8 +4,8 @@
 %global debug_package %{nil}
 
 Name:           python3-flask-alembic
-Version:        3.1.1
-Release:        7%{?dist}
+Version:        3.3.0
+Release:        1%{?dist}
 Summary:        Integrate Alembic with Flask
 
 License:        MIT
@@ -30,6 +30,9 @@ plain SQLAlchemy applications.
 
 %prep
 %autosetup -n flask-alembic-%{version}
+# Keep the PEP 621 license metadata compatible with EL10's flit-core.
+sed -i 's/^license = "MIT"$/license = {text = "MIT"}/' pyproject.toml
+sed -i '/^license-files/d' pyproject.toml
 
 %build
 %pyproject_wheel
@@ -42,6 +45,9 @@ plain SQLAlchemy applications.
 %license LICENSE.txt
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.3.0-1
+- Update Flask-Alembic to the latest upstream release
+
 * Sun Jul 05 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.1.1-7
 - Rebuild for admiral 0.0.1beta14
 
