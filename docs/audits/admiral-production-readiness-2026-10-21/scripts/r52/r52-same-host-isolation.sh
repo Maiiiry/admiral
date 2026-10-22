@@ -2,14 +2,19 @@
 set -euo pipefail
 os=$1
 customer_prefix=$2
-run_dir="/var/tmp/adm-r52-${os}-isolation"
+run_id=${ADMIRAL_AUDIT_RUN_ID:-}
+if [[ -z $run_id ]]; then
+  run_id="$(date -u +%Y%m%dT%H%M%S)-$$"
+fi
+[[ $run_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,47}$ ]] || { echo "invalid ADMIRAL_AUDIT_RUN_ID: $run_id" >&2; exit 2; }
+run_dir="/var/tmp/adm-r54-$os-isolation-$run_id"
 install -d -m 0700 "$run_dir"
 cp /tmp/audit-e2e-backup.yaml "$run_dir/e2e-backup.yaml"
 admiralctl apps apply --file "$run_dir/e2e-backup.yaml" > "$run_dir/apply.log" 2>&1
-printf 'os=%s start_utc=%s\n' "$os" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+printf 'os=%s run_id=%s start_utc=%s\n' "$os" "$run_id" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 for n in 1 2; do
-  customer="${customer_prefix}_${n}"
-  key="adm-r52-${os}-isolation-${n}-20261022"
+  customer="$customer_prefix"_"$run_id"_"$n"
+  key="adm-$os-isolation-$run_id-$n"
   admiralctl instances provision --app e2e-backup --tier small --customer "$customer" --idempotency-key "$key" --wait --wait-timeout 10m --quiet --output json > "$run_dir/provision-$n.json"
   python3 - "$run_dir/provision-$n.json" <<'PY'
 import json,sys
@@ -80,6 +85,18 @@ printf 'app_network_namespace_a=%s\napp_network_namespace_b=%s\n' "$net_a" "$net
 [[ $net_a != "$net_b" ]] || { echo 'different workloads share a network namespace'; exit 1; }
 echo '--- app loopback port mappings ---'
 for ctr in "$app_a" "$app_b"; do su -s /bin/sh admiral-apps -c "cd / && podman port $ctr 80/tcp"; done
+host_port_b=$(su -s /bin/sh admiral-apps -c "cd / && podman port $app_b 80/tcp" | sed -E 's/.*:([0-9]+)$/\1/')
+[[ $host_port_b =~ ^[0-9]+$ ]] || { echo "could not determine workload B host port: $host_port_b"; exit 1; }
+host_alias=$(su -s /bin/sh admiral-apps -c "cd / && podman exec $db_a getent hosts host.containers.internal" | awk 'NR==1 {print $1}')
+[[ $host_alias =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "rootless host alias is unavailable: $host_alias"; exit 1; }
+echo '--- cross-workload host-port reachability from workload A (expected denied) ---'
+set +e
+su -s /bin/sh admiral-apps -c "cd / && podman exec $db_a timeout 4 bash -c '</dev/tcp/$host_alias/$host_port_b'" > "$run_dir/cross-workload-host-port.txt" 2>&1
+host_port_status=$?
+set -e
+cat "$run_dir/cross-workload-host-port.txt"
+printf 'workload_a_to_workload_b_host_port=%s:%s exit=%s\n' "$host_alias" "$host_port_b" "$host_port_status"
+[[ $host_port_status -ne 0 ]] || { echo 'workload A reached workload B through the rootless host alias'; exit 1; }
 echo '--- cross-workload PostgreSQL reachability (pg_isready only; no credentials) ---'
 db_ip_b=$(su -s /bin/sh admiral-apps -c "cd / && podman inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $db_b")
 if [[ -n $db_ip_b ]]; then
@@ -99,5 +116,5 @@ for instance_id in "$id_a" "$id_b"; do
   su -s /bin/sh admiral-apps -c "cd / && podman ps --all --filter name=${instance_id} --format '{{.Names}}'" > "$run_dir/cleanup-${instance_id}.txt"
   [[ ! -s "$run_dir/cleanup-${instance_id}.txt" ]] || { cat "$run_dir/cleanup-${instance_id}.txt"; exit 1; }
 done
-echo 'same_host_runtime_isolation_sample=PASS; cross_workload_tcp=recorded_above'
+echo 'same_host_runtime_isolation_sample=PASS; host_alias_cross_workload_port=DENIED; database_direct_ip_probe=recorded_above'
 printf 'end_utc=%s instance_a=%s instance_b=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$id_a" "$id_b"
