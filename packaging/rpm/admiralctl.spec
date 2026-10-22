@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 56%{?dist}
+Release: 57%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -87,6 +87,10 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-57
+- Rebuild the coordinated RC5 package set with validation-seed update mode
+- Pin the common installer and Ansible payload to the tested root commit
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-55
 - Rebuild coordinated RC5 packages with the concurrent provisioning idempotency fix
 

@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: William Moreno Reyes CP | MBA
 # SPDX-License-Identifier: Apache-2.0
 
-%global commit 3888e28a77a0e81a0e7c7fb8ddbf636bcce181a4
+%global commit f7118329c23a75ef36b0cd6067f30a82617d9ac9
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 56%{?dist}
+Release: 57%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -250,6 +250,10 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-57
+- Rebuild the coordinated RC5 package set with validation-seed update mode
+- Pin the common installer and Ansible payload to the tested root commit
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-55
 - Rebuild coordinated RC5 packages with the concurrent provisioning idempotency fix
 

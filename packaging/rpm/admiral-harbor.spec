@@ -3,7 +3,7 @@
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 56%{?dist}
+Release: 57%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -126,6 +126,10 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-57
+- Rebuild the coordinated RC5 package set with validation-seed update mode
+- Pin the common installer and Ansible payload to the tested root commit
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-55
 - Rebuild coordinated RC5 packages with the concurrent provisioning idempotency fix
 
