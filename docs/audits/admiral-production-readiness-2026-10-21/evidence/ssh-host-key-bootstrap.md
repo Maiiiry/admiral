@@ -3,7 +3,7 @@
 Audit: `ADM-AUDIT-2026-10-21`
 Date: 2026-10-22 UTC
 Issue: [#239](https://github.com/admiral-project/admiral/issues/239)
-Status: **targeted harness verification passed; source change awaits commit, push and CI**.
+Status: **targeted harness verification passed; source commit `54d4a6b2e3843cb22f33526c198b32e4ac8e53bf` is pushed and root CI is green**.
 
 ## Change under test
 
@@ -28,4 +28,4 @@ The verification command queried `/etc/ssh/ssh_host_ed25519_key.pub` through the
 
 Both guests were shut down and removed with `scripts/cleanup-audit-vm.sh`. The helper removed each exact DHCP reservation, overlay, ISO and cloud-init directory containing its private host key. `virsh list --all` was empty afterward and the shared seed images remained present. Host disk availability was 89 GiB before this run; post-cleanup availability was also 89 GiB.
 
-This validates the first-contact SSH trust path for the harness on one Fedora and one EL10 guest. It does not count toward the Admiral runtime matrix and does not validate an RPM candidate.
+This validates the first-contact SSH trust path for the harness on one Fedora and one EL10 guest. It does not count toward the Admiral runtime matrix and does not validate an RPM candidate. Release 50 still requires the packaging pin-refresh commit and its green CI before its RPM build.
