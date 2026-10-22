@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit afcf02f094cf7c572cd0e135a280ebb48c0202d5
+%global commit 9b8f1299fe43d0540442b4bc05cdbe0c5f4611aa
 
 %ifarch x86_64
 %global admiral_goarch amd64
@@ -15,7 +15,7 @@
 
 Name:    admirald
 Version: 0.0.1rc5
-Release: 55%{?dist}
+Release: 56%{?dist}
 Summary: Admiral Control Plane - Core API and orchestration service
 
 License: Apache-2.0

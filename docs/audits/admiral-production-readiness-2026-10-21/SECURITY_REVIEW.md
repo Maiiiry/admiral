@@ -1,8 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 55 is not built; no security scenario has run on the active candidate.** Release 54 is invalidated by #254; older R53 isolation evidence is partial and historical only. Direct cross-workload TCP denial, filesystem escape, capability attacks, tenant authorization and Multi-Node trust remain unproven. Matrix remains 0/8.<br>
-Historical security observations below do not count toward Release 55. The source fix for #254 is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is running.
+Current status: **NOT VALIDATED — Release 55 is invalidated by #256; no Release 56 security validation has run.** R55 single-host isolation probes on Fedora Rawhide and Rocky Linux 10 confirmed distinct namespaces, non-privileged containers, `NoNewPrivs`, no Podman socket mount and host-published cross-workload port denial; direct container-IP TCP denial was NOT TESTED because no routable target IP was available. This partial sample is not a cell pass or a complete isolation proof. Matrix remains 0/8. Full capability, filesystem escape, tenant authorization and Multi-Node trust checks remain unproven.
 R49–R52 observations are candidate-specific history only. R53 includes the #246 source fix and has passed package checks; the named R53 isolation samples do not establish a security guarantee or complete a cell. Build identity and runtime hashes are in the R53 candidate, initial and follow-up execution reports.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 

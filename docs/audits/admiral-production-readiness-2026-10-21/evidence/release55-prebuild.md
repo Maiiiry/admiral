@@ -1,5 +1,7 @@
 # Admiral RC5 Release 55 preparation — pre-build checkpoint
 
+> Superseded: this checkpoint correctly described the pre-build state on 2026-10-22, but Release 55 was later built and partially executed. See `release55-candidate.md` and `release55-invalidation-reboot-health.md` for the authoritative final candidate status. Release 55 is invalidated and the active matrix remains 0/8.
+
 - Recorded: 2026-10-22 UTC.
 - Status: **PREPARED, NOT BUILT**. No Release 55 RPM or VM result exists yet.
 - Active matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64, Single-Node and Multi-Node (8 cells).

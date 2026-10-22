@@ -1,8 +1,8 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 55 is not built; all four Single-Node cells are NOT TESTED for the active candidate.** Release 54's four-OS exploratory Single-Node run is invalidated by the CentOS Stream same-key capacity-race failure #254. Its evidence is in `evidence/release54-invalidation-concurrent-idempotency.md`. The fix is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is running. Earlier R53 probes and all R54 probes do not count for Release 55. Matrix remains 0/8.<br>
-Release 55 must be built from the coordinated six-RPM set and installed on fresh overlays before any scenario can count. Security/isolation, functional lifecycle, persistence, recovery, concurrency, and resource-cleanup checks remain required for each full cell.
+Current status: **NOT VALIDATED — Release 55 is invalidated by #256; Release 56 is not built.** Fresh Fedora Rawhide and Rocky Linux 10 R55 guests completed scoped Single-Node probes, but Fedora reboot exposed false availability while PostgreSQL was not ready. No result counts toward the matrix; all four Release 56 Single-Node cells are NOT TESTED and completion remains 0/8. See `evidence/release55-invalidation-reboot-health.md` and the exact candidate record. The boot-ID fix is pushed in `admirald@a816f47` and `admiral-fleet@74e8b0f`; local DB-backed regression and component suites passed; Fleet CI is green and admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed.<br>
+Release 56 must be built from a coordinated six-RPM set and installed on fresh overlays. Full lifecycle, persistence, isolation, recovery, concurrency, resource-cleanup and performance checks remain required for each cell.
 
 ## Historical Release 53 exact-candidate probes — partial results
 

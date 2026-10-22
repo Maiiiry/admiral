@@ -1,8 +1,8 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 55 is not built; no resilience scenario has run on the active candidate.** Release 54 is invalidated by #254. R53 fault-injection and reboot observations are candidate-specific history and do not count toward Release 55. In-flight tasks, Podman/systemd daemon loss, storage exhaustion, database outage and Multi-Node recovery remain untested for the active candidate. Matrix remains 0/8.<br>
-No production infrastructure has been modified. Failure injection remains restricted to disposable libvirt guests. Historical rows below are not Release 55 results.
+Current status: **NOT VALIDATED — Release 55 is invalidated by #256; Release 56 has not been built.** On fresh R55 Fedora and Rocky Single-Node guests, killing the workload app container, `admirald` and Fleet recovered through systemd. Rocky reboot stayed unavailable until all workload containers and PostgreSQL were ready. Fedora reboot **FAILED**: the API briefly reported available using a pre-boot health observation while PostgreSQL was not ready. The defect is documented in `evidence/release55-invalidation-reboot-health.md`; no R55 scenario counts toward a cell. In-flight task crashes, daemon loss, storage exhaustion, database outage and Release 56 Multi-Node recovery remain untested. Matrix remains 0/8.<br>
+No production infrastructure has been modified. Failure injection remains restricted to disposable libvirt guests. Historical rows below are not Release 56 results.
 R49 details and raw-log checksums are in `evidence/release49-exploratory-single-node.md`. No R52 Multi-Node fault test ran. All older-candidate results are history only.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.

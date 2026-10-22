@@ -117,6 +117,7 @@ Request:
 ```json
 {
   "node_id": "node_001",
+  "boot_id": "90465c52-d27b-4b02-b719-c92480c46d73",
   "status": "active",
   "hostname": "worker-1",
   "ip": "10.0.0.10",
@@ -134,6 +135,8 @@ Campos requeridos:
 
 - `node_id`
 - `status`
+- `boot_id` — identificador de arranque Linux leído desde
+  `/proc/sys/kernel/random/boot_id`. Cambia al reiniciar el host.
 
 `hostname`, `ip`, `podman_version`, `fleet_version` se persisten en el nodo.
 `disk_total_bytes`, `disk_used_bytes`, `pods_active`, `pods_paused`, `pods_failed` se persisten como metrica del nodo pero no se usan hoy para decisiones operativas.
@@ -281,6 +284,11 @@ salud del workload. Es `unavailable` si el nodo no esta activo y sano, si el
 ultimo reporte del workload no es `healthy`, o si han pasado 60 segundos desde
 el ultimo reporte. Fleet comprueba los workloads cada 30 segundos; por eso dos
 comprobaciones perdidas hacen que la disponibilidad se considere obsoleta.
+También permanece `unavailable` cuando el último reporte de salud pertenece a
+un arranque anterior del nodo. Fleet incluye `boot_id` tanto en el heartbeat
+como en cada reporte de salud; después de un reinicio se requiere una nueva
+observación de salud del arranque actual. El historial (`health_status`,
+`health_message` y `last_health_checked_at`) se conserva durante esa espera.
 También es `unavailable` durante los estados técnicos no servibles
 `stopped`, `paused_for_storage`, `deprovisioning` y `deprovisioned`, aunque la
 última observación de Fleet todavía diga `healthy`. En esos casos,
@@ -436,11 +444,16 @@ Request:
 {
   "instance_id": "inst_789",
   "node_id": "node_001",
+  "boot_id": "90465c52-d27b-4b02-b719-c92480c46d73",
   "health_status": "healthy",
   "message": "",
   "checked_at": "2026-05-29T00:00:00Z"
 }
 ```
+
+`boot_id` es requerido y debe corresponder al arranque Linux que produjo la
+observación. Un reporte anterior al último heartbeat de arranque no vuelve a
+marcar disponible la instancia.
 
 ### `POST /api/v1/fleet/storage`
 

@@ -1,0 +1,9 @@
+d9ae38b5062a1b0e524f8de143b5ec49ead5a2a69332348b299f22795cda1547  admiral-common-0.0.1rc5-55.el10.noarch.rpm
+38771d633ff405afaf4c51b5967416fd04fe56a75d5f62d30ed59fd2e6e02b35  admirald-0.0.1rc5-55.el10.x86_64.rpm
+dcaaa197df266a9779c0d188a39faf9dd8ff542fe536d26eae2c785bd8811b54  admiral-fleet-0.0.1rc5-55.el10.x86_64.rpm
+978483da5d440e8ad99e6384368b44f5aee1e40b262ad1646cf0487987bb6474  admiralctl-0.0.1rc5-55.el10.x86_64.rpm
+0c542b87b69a6d5d0395ea7033824554e21ce1333b621861bfb8e833b6f47b10  admiral-flagship-0.0.1rc5-55.el10.noarch.rpm
+673638c2d11a842921310c58928b723f19c0445c429673d841b24cfa633875b6  admiral-harbor-0.0.1rc5-55.el10.noarch.rpm
+
+# The RPMs are retained in the isolated local candidate repository, not in Git.
+# Build-log SHA-256 recorded at build time: df27c52845219b0163d2dc6b59f51205925ad7778396e5834dfd33e393cc2026

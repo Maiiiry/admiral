@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 55 is not built; no controlled performance scenario has run on the active candidate.** Release 54 is invalidated by #254, and no previous-candidate timing counts toward Release 55. There are no controlled latency, load, resource-pressure or Multi-Node throughput measurements. Matrix remains 0/8.
+Current status: **NOT VALIDATED — Release 55 is invalidated by #256; Release 56 is not built.** No controlled latency, load, resource-pressure or Multi-Node throughput measurements exist for the active candidate. R55 installer and operation timings are retained as candidate diagnostics only and are not controlled performance samples. Matrix remains 0/8.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 

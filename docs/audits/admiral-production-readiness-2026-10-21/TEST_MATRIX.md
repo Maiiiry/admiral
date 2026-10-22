@@ -1,17 +1,21 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Active candidate status — 2026-10-22:** Release 54 built successfully but is **INVALIDATED** by the real CentOS Stream 10 x86_64 Single-Node same-key capacity-race failure in #254. Evidence and raw-log hashes are in `evidence/release54-invalidation-concurrent-idempotency.md`. The fix is pushed as `admirald@afcf02f094cf7c572cd0e135a280ebb48c0202d5`; local regression, full Go tests, vet and build passed. latest component CI run [39813463149](https://github.com/admiral-project/admirald/actions/runs/39813463149) is running; the coordinated Release 55 RPM set is not built. All previous-candidate results are historical and do not count toward Release 55.<br>
-**Current matrix completion: 0/8.** All eight Release 55 cells are **NOT TESTED**. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
+**Active candidate status — 2026-10-22:** Release 55 built all six RPMs and ran targeted Fedora Rawhide and Rocky Linux 10 Single-Node probes. It is **INVALIDATED** by a Fedora reboot false-availability finding, tracked in #256. The exact candidate and evidence are in `evidence/release55-candidate.md` and `evidence/release55-invalidation-reboot-health.md`. A boot-ID fix is pushed in `admirald@a816f47` and `admiral-fleet@74e8b0f`; the PostgreSQL-backed regression and local suites passed. Fleet CI [39819815054](https://github.com/admiral-project/admiral-fleet/actions/runs/39819815054) is green; admirald CI [39820151915](https://github.com/admiral-project/admirald/actions/runs/39820151915) passed on `9b8f129`. Release 56 is not built. No R55 observation counts toward a cell.<br>
+**Current matrix completion: 0/8.** All eight Release 56 cells are **NOT TESTED**. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
-| Target OS (x86_64) | Single-Node — Release 55 | Multi-Node — Release 55 |
+| Target OS (x86_64) | Single-Node — Release 56 | Multi-Node — Release 56 |
 | --- | --- | --- |
 | Fedora Rawhide | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
 | Rocky Linux 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
 | AlmaLinux 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
 | CentOS Stream 10 | NOT TESTED — candidate not built | NOT TESTED — candidate not built |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. The Release 54 install and runtime probes are invalidated by #254; R53 and older results are also candidate-specific history only. No issue was closed. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. Release 55 targeted probes are retained only as candidate history and invalidated by #256; R54 and older results are also candidate-specific. No issue was closed. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+
+## Release 55 targeted Single-Node probes — invalidated, not cell passes
+
+The exact Release 55 six-RPM set was installed on fresh Fedora Rawhide and Rocky Linux 10 seed overlays. Same-key concurrent provision, resize/reactivation with SQL marker persistence, failed declared-service readiness, local DB backup/restore, process recovery, and selected isolation checks passed on both guests. Direct cross-workload TCP denial was **NOT TESTED** because rootless Podman exposed no DB target IP. Fedora host reboot **FAILED**: for 45 seconds after the last pre-boot health report, the API returned `running/healthy/available` while only one rootless container was running and PostgreSQL readiness failed. Rocky reboot remained unavailable until its workload and PostgreSQL recovered. Detailed outcomes and protected-log hashes are in `evidence/release55-invalidation-reboot-health.md`. These are scenario results only; the candidate is invalidated and counts as **0/8**.
 
 ## Historical Release 53 initial runtime probes — partial scenarios, not cell passes
 
