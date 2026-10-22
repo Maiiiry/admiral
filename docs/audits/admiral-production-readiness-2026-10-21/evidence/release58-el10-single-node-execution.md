@@ -1,0 +1,52 @@
+# Release 58 — EL10 Single-Node targeted execution
+
+Audit ID: `ADM-AUDIT-2026-10-21`  
+Execution date: 2026-10-22 UTC  
+Candidate: Admiral RC5 Release 58, local RPM repository, unpublished  
+Scope: targeted Single-Node scenarios on Rocky Linux 10.2, AlmaLinux 10.2 and CentOS Stream 10 x86_64. These are named-scenario results, not complete matrix cells.
+
+**Candidate disposition:** Release 58 was invalidated for release validation after the user-systemd restart probe exposed one intermittent false `healthy/available` observation on Rocky Linux (tracked by [#259](https://github.com/admiral-project/admiral/issues/259), linked to #200 and #256). Other R58 results remain exact-candidate diagnostic evidence only and do not validate a subsequent build.
+
+## Candidate and guests
+
+The six Admiral RPMs are `0.0.1rc5-58.el10`; exact source pins and RPM SHA-256 values are recorded in [the candidate record](release58-candidate.md) and [RPM hash list](release58-rpm-sha256.txt). The guests were fresh disposable overlays from updated EL10 seeds, with the private local Release 58 repository configured. Rocky used the documented EPEL `python3-pyOpenSSL` 25.0.0 seed pin. No production host or public repository was modified.
+
+| Guest | OS | Guest name / address | Candidate install evidence |
+|---|---|---|---|
+| Rocky | Rocky Linux 10.2 x86_64 | `adm-r58-rocky-single` / `192.168.122.225` | `packaging/build/validation/rc5-r58/rocky-baseline.txt`, `install-rocky.log` |
+| Alma | AlmaLinux 10.2 x86_64 | `adm-r58-alma-single` / `192.168.122.226` | `packaging/build/validation/rc5-r58/alma-baseline.txt`, `install-alma.log` |
+| CentOS | CentOS Stream 10 x86_64 | `adm-r58-centos-single` / `192.168.122.227` | `packaging/build/validation/rc5-r58/centos-baseline.txt`, `install-centos.log` |
+
+Each baseline records all six Release 58 packages, pinned Python RPMs, the four Admiral services active, no failed units, and `admiralctl status` healthy. The raw installer logs are retained locally with mode `0600`. They do not demonstrate a clean COPR build: the local Admiral RPM build skipped `%check` and bypassed host BuildRequires as described in the candidate record.
+
+## Executed scenarios
+
+`PASS` applies only to the named procedure and guest; `PARTIAL` identifies a deliberately incomplete assertion. Raw logs listed below are under ignored `packaging/build/validation/rc5-r58/`. Their SHA-256 values are in [the raw evidence manifest](release58-el10-single-node-raw-sha256.txt).
+
+| Test ID | Procedure and expected result | Observed result | Status / raw evidence |
+|---|---|---|---|
+| R58-EL10-SN-INSTALL | Install exact candidate on fresh overlays; services start and control-plane health is healthy. | All three installs completed; baselines show exact Release 58 NEVRAs, active services, no failed units and healthy CLI status. | PASS (install subset only); `install-{rocky,alma,centos}.log`, `*-baseline.txt` |
+| R58-EL10-SN-IDEMP | Submit three concurrent provisions with the same idempotency key; expect one operation, instance and runtime resource set. | One operation/instance was returned for all three requests on each OS; exactly three runtime containers were present and teardown left none. | PASS on all three; `*-concurrent-idempotency*.log` |
+| R58-EL10-SN-FAILED-SERVICE | Make the declared database service fail; provisioning must fail and the instance must not become healthy/available. | Provisioning failed; instance stayed unhealthy/unavailable; no DB unit/container was left; cleanup succeeded. | PASS on all three; `*-failed-service.log` |
+| R58-EL10-SN-BACKUP | Create local PostgreSQL backup, verify checksum, reject restore while active, then restore a changed marker while paused. | Checksum verification succeeded; active restore was rejected with HTTP 409; the original marker was restored and workload cleanup succeeded. | PASS on all three; `*-backup-restore.log`. Object/S3 and volume backup not covered. |
+| R58-EL10-SN-DB-OUTAGE | Stop only the workload's PostgreSQL user unit for 55 seconds; require the API not to report healthy/available, then restart it and verify marker persistence. | Rocky changed to `failed/unhealthy/unavailable` by poll 2; Alma by poll 4; CentOS reported `running/stopped/unavailable` then `failed/unhealthy/unavailable` by poll 5. No healthy/available poll occurred while the DB unit was stopped. All recovered to healthy/available after DB readiness, preserved the marker and deprovisioned cleanly. | PASS on all three; `*-db-service-outage.log`. Does not cover loss of the central Admiral PostgreSQL database. |
+| R58-EL10-SN-USER-SYSTEMD | Restart the lingering `admiral-apps` user manager with a live workload; require a new manager PID, unit/workload recovery, HTTP 200 and SQL marker persistence. | Manager PID changed and workloads/data recovered on all guests. In the first Rocky run, one API sample reported `running/healthy/available` while the pod was `activating`, DB container absent and HTTP unavailable; a subsequent poll became `running/unknown`. An instrumented Rocky repeat, Alma and CentOS stayed non-healthy until readiness. One false sample in four manager restarts. | **FAIL / intermittent on Rocky; no false sample in the other three runs.** Issue #259. Raw logs: `rocky-user-systemd-restart.log`, `rocky-user-systemd-restart-repro.log`, `alma-user-systemd-restart.log`, `centos-user-systemd-restart.log`. |
+| R58-EL10-SN-REBOOT | Reboot each guest; require changed boot ID, service/workload recovery, HTTP 200 and persisted SQL marker. | All boot IDs changed; API did not report healthy/available before dependencies recovered; three containers and PostgreSQL returned, HTTP 200 and marker persisted, then cleanup succeeded. | PASS on all three; `*-host-reboot.log`. This is guest reboot, not hypervisor/physical-host reboot. |
+| R58-EL10-SN-RESIZE | Resize small→medium→small, verify effective cgroup limits and data, pause/reactivate, then remove. | Effective limits changed 512→768→512 MiB; SQL marker and HTTP 200 survived transitions; pause stopped the instance and reactivation converged healthy/available; cleanup succeeded. | PASS on all three; `*-resize-reactivation.log` |
+| R58-EL10-SN-PROCESS-RECOVERY | Kill app container, `admirald`, and Fleet while no task is active; require systemd recovery, no duplicate operation, HTTP 200 and cleanup. | All three components recovered on each OS; the operation remained unique and workload became healthy/available. | PASS on all three; `*-process-recovery.log`. Active-task crash/lease behavior is not covered. |
+| R58-EL10-SN-PODMAN-DELETE-ERROR | Inject Podman remove errors; operation must report failure and preserve retryable state; restore Podman and retry. | Initial removal returned failure and resources remained; original Podman binary hash was restored exactly; retry removed resources. | PASS on all three; `*-podman-delete-failure.log`, `*-podman-injected-commands.log`. |
+| R58-EL10-SN-ISOLATION | Compare two workloads' namespaces, privilege flags, secret separation, volume sources, socket mounts and host-published port reachability. | Distinct network/PID namespaces, distinct DB password bytes (values withheld), distinct volume sources, `NoNewPrivs=1`, no privileged containers/socket mounts; cross-workload published app port was refused. | PARTIAL PASS on all three; `*-same-host-isolation-secret-check.log`. Direct DB-IP probe, filesystem/secret read, capability escalation and host escape were NOT TESTED. |
+| R58-EL10-SN-AUTH | Send unauthenticated and invalid-token requests to selected fleet, heartbeat and admin endpoints. | All eight probes per OS returned HTTP 401. TLS verification was disabled for this auth-only probe. | PASS for selected endpoints on all three; `*-auth-negative.log`. Does not establish complete authorization or TLS identity behavior. |
+| R58-EL10-SN-CONFIG | Start installed daemon in production mode with the shipped placeholder config; it must reject before startup. | Installed R58 daemon exited nonzero with `admin_token must be configured with a real value; __REQUIRED__ is a template placeholder`. | PASS on all three; `*-config-placeholder-negative.log`. This is the fixed #212 regression; #212 is closed upstream. |
+| R58-EL10-SN-CGROUP | Check effective cgroup-v2 CPU/memory limits against the `small` tier. | Both app and DB processes were under the pod cgroup with `memory.max=536870912` and `cpu.max=100000 100000`. | PASS on Rocky only; `rocky-cgroup-limits.log`. Not run on Alma/CentOS in this execution. |
+| R58-ROCKY-SN-UPDATE-DELETE | Race a resize against deprovision and verify terminal state and no runtime containers. | The operation intervals overlapped; resize and deprovision completed; final instance was deprovisioned and no matching containers remained. | PASS on Rocky only; `rocky-concurrent-update-delete-final.log`. Other OSes and concurrent updates from independent clients are NOT TESTED. |
+
+The open issues #227, #228, #246 and #256 have relevant targeted Release 58 regression evidence in these rows, but remain open for broader release-matrix verification. No issue was closed by this execution. Issue #212 is already closed and its installed-binary regression passed here.
+
+## Not executed in this checkpoint
+
+No complete Single-Node cell has run: configuration/secret lifecycle, network and volume management beyond the named PostgreSQL fixture, concurrent independent updates, deletion during active writes, database outage/recovery, systemd manager failure, external S3 restore, disk/memory exhaustion, sustained load, controlled performance percentiles, broad negative authorization, and full orphan inventory across every operation remain pending. Fedora Rawhide is not installed with R58. No R58 Multi-Node topology was run; node discovery/placement, cross-node concurrency, partitions, worker/hub restart, and three-guest recovery remain untested on this candidate.
+
+## Disposition
+
+The exact R58 candidate has targeted runtime evidence on three EL10 Single-Node guests, including a reproduced intermittent false-availability failure; **R58 is invalidated for release validation**. Overall completion remains **0/8**; Single-Node and Multi-Node remain **NOT VALIDATED**. The other scoped results are retained as R58 diagnostics and do not establish absence of defects or production readiness. The candidate is local and unpublished. Fedora, all Multi-Node scenarios, full Single-Node coverage, clean COPR build, and the RPM `%check` path remain outstanding.

@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 57%{?dist}
+Release: 59%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -250,6 +250,12 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-59
+- Rebuild the coordinated package set for rootless manager health recovery
+
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-58
+- Rebuild the coordinated RC5 package set for dependency-pinned validation
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-57
 - Rebuild the coordinated RC5 package set with validation-seed update mode
 - Pin the common installer and Ansible payload to the tested root commit

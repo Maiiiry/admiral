@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: Release 55's Fedora reboot reproduced #256 and invalidated that candidate. The boot-ID fix sends Linux boot ID with Fleet heartbeats and health reports, stores it with each runtime observation, and derives effective availability only when the observation matches the node's current boot; migration 19 preserves historical health data. The fix is included in Release 56, built from root `042e578` with all six package `%check` stages passing. Targeted R56 guest reboot behavior was observed on Fedora and Rocky; both remained unavailable until current-boot health arrived, then recovered all containers and PostgreSQL. This does not complete a cell; clean Flask/Mistune dependency resolution failed and the matrix remains 0/8. Candidate and package evidence are in `evidence/release56-candidate.md`; R55 failure evidence is in `evidence/release55-invalidation-reboot-health.md`.
+Latest audit run: Admiral RC5 Release 58 is the latest local candidate, pinned to root `321e968` and component SHAs in `evidence/release58-candidate.md`. Targeted runtime checks ran on fresh Rocky 10.2, AlmaLinux 10.2 and CentOS Stream 10 Single-Node guests. One intermittent stale `healthy/available` result during rootless user-systemd manager restart invalidated R58 for release validation (#259). The evidence remains diagnostic; matrix completion is 0/8. Fedora Rawhide and all Multi-Node cells remain untested. The local repo remains unpublished, and the Admiral RPM build skipped `%check`.
 
 ## Scope and evidence rules
 

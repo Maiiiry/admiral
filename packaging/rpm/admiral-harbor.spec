@@ -3,7 +3,7 @@
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 57%{?dist}
+Release: 59%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -24,30 +24,30 @@ BuildArch: noarch
 BuildRequires: python3
 BuildRequires: python3-argon2-cffi
 BuildRequires: python3-cryptography
-BuildRequires: python3-flask >= 3.1.3
+BuildRequires: python3-flask = 1:3.1.3-3%{?dist}
 BuildRequires: python3-werkzeug >= 3.0.6
-BuildRequires: python3-flask-alembic
-BuildRequires: python3-flask-login
-BuildRequires: python3-flask-sqlalchemy
+BuildRequires: python3-flask-alembic = 3.3.0-2%{?dist}
+BuildRequires: python3-flask-login = 0.6.3-8%{?dist}
+BuildRequires: python3-flask-sqlalchemy = 3.1.1-8%{?dist}
 BuildRequires: python3-gunicorn
-BuildRequires: python3-mistune >= 3.3.0
+BuildRequires: python3-mistune = 3.4.0-1%{?dist}
 BuildRequires: python3-pytest
 BuildRequires: python3-pyyaml
 BuildRequires: python3-requests
 BuildRequires: systemd
 
 Requires: admiral-common
-Requires: python3-flask >= 3.1.3
+Requires: python3-flask = 1:3.1.3-3%{?dist}
 Requires: python3-werkzeug >= 3.0.6
-Requires: python3-flask-login
-Requires: python3-flask-sqlalchemy
-Requires: python3-flask-alembic
+Requires: python3-flask-login = 0.6.3-8%{?dist}
+Requires: python3-flask-sqlalchemy = 3.1.1-8%{?dist}
+Requires: python3-flask-alembic = 3.3.0-2%{?dist}
 Requires: python3-gunicorn
 Requires: python3-requests
 Requires: python3-pyyaml
 Requires: python3-argon2-cffi
 Requires: python3-cryptography
-Requires: python3-mistune >= 3.3.0
+Requires: python3-mistune = 3.4.0-1%{?dist}
 Requires: python3-psycopg2
 Requires: systemd
 Recommends: cockpit-bridge
@@ -126,6 +126,12 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-59
+- Rebuild the coordinated package set for rootless manager health recovery
+
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-58
+- Pin the Flask application stack to the validated Python RPM versions
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-57
 - Rebuild the coordinated RC5 package set with validation-seed update mode
 - Pin the common installer and Ansible payload to the tested root commit

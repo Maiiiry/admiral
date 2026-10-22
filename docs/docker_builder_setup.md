@@ -35,7 +35,8 @@ docker run --rm \
       golang python3 python3-devel python3-pip python3-wheel \
       python3-setuptools python3-requests python3-flask python3-werkzeug \
       python3-gunicorn python3-pytest python3-flask-sqlalchemy \
-      python3-flask-alembic python3-flask-login python3-mistune \
+      python3-flask-alembic python3-flask-login python3-sqlalchemy \
+      python3-mistune \
       python3-psycopg2 python3-yaml python3-cryptography \
       python3-argon2-cffi caddy certbot podman postgresql-server shadow-utils
     rpmdev-setuptree

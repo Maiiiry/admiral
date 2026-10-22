@@ -2,7 +2,7 @@ SHELL := /bin/bash
 VERSION := 0.0.1rc5
 ADMIRAL_COMMON_COMMIT := f7118329c23a75ef36b0cd6067f30a82617d9ac9
 ADMIRALD_COMMIT := 9b8f1299fe43d0540442b4bc05cdbe0c5f4611aa
-FLEET_COMMIT := 74e8b0fe3d8278c31d07638f7650b13869e81360
+FLEET_COMMIT := cc9bbc46f4b5474c58541fd60c749dc91340fab5
 ADMIRALCTL_COMMIT := 49cf2428c064434c65af9a14f96975c1bb2db637
 FLAGSHIP_COMMIT := b7325bbc71fc474a521496e593b2967e4d555ac1
 HARBOR_COMMIT := dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
@@ -24,6 +24,7 @@ FLASK_ALEMBIC_VERSION := 3.3.0
 FLASK_LOGIN_VERSION := 0.6.3
 MISTUNE_VERSION := 3.4.0
 FLASK_VERSION := 3.1.3
+SQLALCHEMY_VERSION := 2.0.55
 ALEMBIC_SHA256 := c2982961a193cca5ea19ff541637f002bb568a9bd1f45ae141216e86eb45e5e5
 TYPING_EXTENSIONS_SHA256 := 4d569f4d4bcd3d26345e0d92cfd14ce1f1302cac2f62a5a7e337c06fb0fdc1ea
 FLASK_SQLALCHEMY_SHA256 := 1989afdf046a935bd1ab98dbd9a2d68e5ba1c69d0cd3e3646df0876bf8d997d3
@@ -31,8 +32,9 @@ FLASK_ALEMBIC_SHA256 := 487c20d93e5ce1da1f9cf18d7b4e5c8d420e5588cf1ec6ca5eddbaab
 FLASK_LOGIN_SHA256 := 3b2489f46d854b5f1d7a55007271d2eae9f744e0935ca7b88ab584c770a7e4d2
 MISTUNE_SHA256 := 121828b8bb4b9b8f0ace26e7574dab4d9a3f391e97e7f07b30aa3d34b9f5690a
 FLASK_WHEEL_SHA256 := f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c
+SQLALCHEMY_SHA256 := ae40c563bc10a8d56f1fd1f39f069aeb5eb85ca26913b2314dd8d190139258fa
 
-.PHONY: all clean rpm rpm-admiral rpmlint validate-release-refs test-admiralctl-local all-sources \
+.PHONY: all clean rpm rpm-admiral rpmlint validate-release-refs test-admiralctl-local local-rpm-repo all-sources \
 	source-superproject source-admiral-flagship source-admiral-harbor \
 	srpm srpms \
 	rpm-admiral-common rpm-admirald rpm-admiral-fleet \
@@ -41,7 +43,8 @@ FLASK_WHEEL_SHA256 := f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a2070
 	srpm-admiral-common srpm-admirald srpm-admiral-fleet \
 	srpm-admiralctl srpm-admiral-flagship srpm-admiral-harbor \
 	rpm-python-flask rpm-python-flask-sqlalchemy rpm-python-flask-alembic rpm-python-flask-login \
-	rpm-python-mistune srpm-python-mistune srpm-python-flask
+	rpm-python-mistune rpm-python-sqlalchemy srpm-python-mistune srpm-python-flask \
+	srpm-python-sqlalchemy
 
 all: rpm
 
@@ -50,6 +53,9 @@ validate-release-refs:
 
 test-admiralctl-local:
 	scripts/test-admiralctl-local.sh
+
+local-rpm-repo:
+	scripts/create-local-rpm-repo.sh
 
 clean:
 	rm -rf $(RPMDIR)
@@ -124,11 +130,15 @@ source-python-mistune: | $(SOURCEDIR)
 source-python-flask: | $(SOURCEDIR)
 	$(call download_checked,$(SOURCEDIR)/flask-$(FLASK_VERSION)-py3-none-any.whl,https://files.pythonhosted.org/packages/7f/9c/34f6962f9b9e9c71f6e5ed806e0d0ff03c9d1b0b2340088a0cf4bce09b18/flask-$(FLASK_VERSION)-py3-none-any.whl,$(FLASK_WHEEL_SHA256))
 
+source-python-sqlalchemy: | $(SOURCEDIR)
+	$(call download_checked,$(SOURCEDIR)/sqlalchemy-$(SQLALCHEMY_VERSION).tar.gz,https://files.pythonhosted.org/packages/a5/bd/08864ddfffbb8914ee13b0c887d84b4b13bc8dd8da3077c0dace5a87699c/sqlalchemy-$(SQLALCHEMY_VERSION).tar.gz,$(SQLALCHEMY_SHA256))
+
 all-sources: source-superproject \
 	source-admiral-flagship source-admiral-harbor \
 	source-python-alembic source-python-typing-extensions \
 	source-python-flask-sqlalchemy source-python-flask-alembic \
-	source-python-flask-login source-python-mistune source-python-flask
+	source-python-flask-login source-python-mistune source-python-flask \
+	source-python-sqlalchemy
 
 # -- Copy packaging support files to SOURCES -----------------------------
 
@@ -164,6 +174,7 @@ RPMFLAGS := --target $(RPM_ARCH) \
             --define '_rpmdir $(RPMTOPDIR)/RPMS' \
             --define '_srcrpmdir $(RPMTOPDIR)/SRPMS' \
             --define '_tmppath $(RPMTOPDIR)/tmp'
+RPMFLAGS += $(RPMFLAGS_EXTRA)
 
 # -- RPM targets ---------------------------------------------------------
 
@@ -219,6 +230,10 @@ rpm-python-flask: source-python-flask
 	cp $(SPECSDIR)/python-flask.spec $(RPMTOPDIR)/SPECS/
 	rpmbuild -ba $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-flask.spec
 
+rpm-python-sqlalchemy: source-python-sqlalchemy
+	cp $(SPECSDIR)/python-sqlalchemy.spec $(RPMTOPDIR)/SPECS/
+	rpmbuild -ba $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-sqlalchemy.spec
+
 # -- SRPM targets --------------------------------------------------------
 
 srpm-admiral-common: source-superproject source-support-files
@@ -273,6 +288,10 @@ srpm-python-flask: source-python-flask
 	cp $(SPECSDIR)/python-flask.spec $(RPMTOPDIR)/SPECS/
 	rpmbuild -bs $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-flask.spec
 
+srpm-python-sqlalchemy: source-python-sqlalchemy
+	cp $(SPECSDIR)/python-sqlalchemy.spec $(RPMTOPDIR)/SPECS/
+	rpmbuild -bs $(RPMFLAGS) $(RPMTOPDIR)/SPECS/python-sqlalchemy.spec
+
 # -- Build all RPMs in dependency order ----------------------------------
 
 rpm: validate-release-refs all-sources source-support-files
@@ -288,6 +307,8 @@ rpm: validate-release-refs all-sources source-support-files
 	$(MAKE) rpm-admiral-flagship
 	@echo "=== Building python-typing-extensions ==="
 	$(MAKE) rpm-python-typing-extensions
+	@echo "=== Building python-sqlalchemy ==="
+	$(MAKE) rpm-python-sqlalchemy
 	@echo "=== Building python-alembic ==="
 	$(MAKE) rpm-python-alembic
 	@echo "=== Building python-flask-sqlalchemy ==="
@@ -350,6 +371,8 @@ srpms: all-sources source-support-files
 	$(MAKE) srpm-admiral-flagship
 	@echo "=== Building python-flask-sqlalchemy SRPM ==="
 	$(MAKE) srpm-python-flask-sqlalchemy
+	@echo "=== Building python-sqlalchemy SRPM ==="
+	$(MAKE) srpm-python-sqlalchemy
 	@echo "=== Building python-typing-extensions SRPM ==="
 	$(MAKE) srpm-python-typing-extensions
 	@echo "=== Building python-flask-alembic SRPM ==="

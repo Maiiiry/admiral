@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 56 built; performance execution pending.** No controlled latency, load, resource-pressure or Multi-Node throughput measurements exist for the active candidate. R55 installer and operation timings are retained as invalidated-candidate diagnostics only and are not controlled performance samples. Matrix remains 0/8.
+Current status: **NOT VALIDATED — no controlled Release 58 performance run.** R58 functional runs on Rocky, Alma and CentOS include individual operation timings in raw logs, but no fixed sample set, controlled cache/load profile, repeated concurrency sweep or p50/p95/p99 calculation was made. These observations are not performance results. Resource-pressure and Multi-Node throughput measurements remain NOT TESTED; matrix remains 0/8.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
@@ -11,7 +11,7 @@ For provision, update, pause/resume, backup, restore and deprovision, record ope
 
 ## Current evidence
 
-Release 47 diagnostic measurements (invalidated; not performance validation): Fedora Rawhide 46 Single-Node secure install took 8m50s and its cold workload provision took 43.54s; Rocky Linux 10.2 install took 16m02s and provision took 30.06s. Rocky's installer applied a newer kernel and regenerated normal and rescue initramfs images despite the refreshed seed (#235). These are one-off startup observations under a 2-vCPU/2-GiB guest and an 8-GiB host; no controlled repeated workload samples or p50/p95/p99 values were collected. Full details and log hashes are in `evidence/release47-invalidated-single-node.md`.
+Release 58 targeted runs record single request/test elapsed times in protected raw logs. No R58 numbers are reported here as benchmark samples because cache state, host load and repetitions were not controlled. Prior Release 47 and Release 46 timings remain historical diagnostics only; no p50/p95/p99 values are available and none are inferred.
 
 Release 46 functional probes provide historical provision-to-terminal timings of 138.1s on AlmaLinux 10.2, 94.9s on CentOS Stream 10, 11.3s on Fedora Rawhide 46, and 37.6s on Rocky Linux 10.2 (8.7s deprovision). Rocky remains in the active Release 49 matrix; none of these Release 46 figures validate any R49 cell. None are controlled performance samples: image-cache state was not held constant, the AlmaLinux and CentOS runs showed database startup delays during cold image/service startup, and only one sample exists per tested OS. Release 46 deprovision samples were 11.9s, 9.9s, 9.6s and 8.7s respectively. They provide historical functional timing observations only. No repeatable sample distribution, latency percentiles or concurrent load profile was captured for this audit. Therefore no p50/p95/p99 values are available and none are inferred.
 

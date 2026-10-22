@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest built RPM set: Admiral RC5 Release 56, built from root candidate source `042e578efe0470124f47c905ddf493aa335d56d0`. All six package `%check` stages passed; root and all five component CI runs are green. Exact package hashes and component pins are in `evidence/release56-candidate.md`. R55 is **INVALIDATED** by #256, and no R55 observation counts toward a matrix cell. Fresh Fedora and Rocky Single-Node guests installed R56 and passed a targeted reboot regression; their full cells are incomplete.<br>
-The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. Fedora and Rocky Single-Node have partial scenario evidence; AlmaLinux and CentOS Stream Single-Node and all four Multi-Node cells are NOT TESTED on R56. Clean DNF resolution failed for Flask/Mistune availability (#201, #257), and other runtime acceptance checks remain open. No issue was closed. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
+Latest local RPM set: Admiral RC5 Release 58, built from root candidate source `321e968` and the five component SHAs listed in `evidence/release58-candidate.md`. Local DNF install and BuildRequires transactions resolve the pinned Python stack; Flagship, Harbor and all three Go unit suites passed. The Admiral RPM build skipped `%check` and bypassed host BuildRequires, so this is not evidence of a clean COPR build. The local repository is unpublished. Exact R58 RPMs were installed on fresh Rocky Linux 10.2, AlmaLinux 10.2 and CentOS Stream 10 Single-Node overlays for targeted scenarios; a false-availability observation during a user-systemd restart invalidated R58 for release validation (#259). See `evidence/release58-el10-single-node-execution.md`.<br>
+The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. Rocky, Alma and CentOS Single-Node have partial diagnostic evidence from invalidated R58, but no complete cell passed. Fedora Single-Node and all four Multi-Node cells remain NOT TESTED on R58. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | Fedora and Rocky have partial fresh R56 install/reboot evidence, but fail the clean repository dependency gate; AlmaLinux and CentOS Stream R56 runs remain. No full cell passes. Lifecycle, safety, recovery, load and performance coverage remain. |
-| Multi-Node | **NOT VALIDATED** | No R56 three-guest topology ran. All four cells remain NOT TESTED. |
+| Single-Node | **NOT VALIDATED** | Targeted R58 install, lifecycle, recovery, selected security and fault-injection scenarios ran on three EL10 guests, but no complete cell passed. Fedora, full Single-Node coverage, controlled load/performance and several security/resilience scenarios remain untested. |
+| Multi-Node | **NOT VALIDATED** | No R58 three-guest topology ran. All four cells remain NOT TESTED. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 
@@ -35,4 +35,4 @@ The target matrix is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS St
 
 ## Current answer to the audit question
 
-The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. Release 55 was built and invalidated by #256 after real Fedora Single-Node reboot testing found a transient false-availability window. The source fix is pushed but has not been packaged or validated. No complete cell has passed on the latest candidate. Cross-workload isolation negatives, conflicting update/delete, active-task crash windows, resource exhaustion, latency, external storage, database outage recovery, controlled performance and all Multi-Node full-cell scenarios remain outstanding. No production readiness claim is made.
+The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. The exact R58 candidate has partial targeted Single-Node evidence on three EL10 guests; no full cell has passed. Fedora, active-task crash windows, most cross-workload isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance and all R58 Multi-Node full-cell scenarios remain outstanding. No production readiness claim is made.

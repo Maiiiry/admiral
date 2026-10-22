@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 %global debug_package %{nil}
-%global commit 74e8b0fe3d8278c31d07638f7650b13869e81360
+%global commit cc9bbc46f4b5474c58541fd60c749dc91340fab5
 
 %ifarch x86_64
 %global admiral_goarch amd64
@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release: 57%{?dist}
+Release: 59%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -112,6 +112,12 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-59
+- Invalidate workload health when the rootless systemd manager restarts
+
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-58
+- Rebuild the coordinated RC5 package set for dependency-pinned validation
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-57
 - Rebuild the coordinated RC5 package set with validation-seed update mode
 - Pin the common installer and Ansible payload to the tested root commit

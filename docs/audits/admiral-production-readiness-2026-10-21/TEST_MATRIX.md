@@ -1,17 +1,35 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Active candidate status — 2026-10-22:** Release 55 is **INVALIDATED** by the Fedora reboot false-availability finding #256; none of its observations count toward a cell. Release 56 includes the boot-ID fix; root and all five component CI runs are green, and all six RPM `%check` stages passed. Fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests installed R56 and passed the targeted reboot regression, but the clean repository dependency query failed for Flask/Mistune availability. See #201 and #257 plus the restricted local log hashes in `evidence/release56-runtime-log-sha256.txt`. These are partial scenarios, not full cells.<br>
-**Current matrix completion: 0/8.** Fedora and Rocky Single-Node have partial Release 56 scenario evidence; six cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
+**Latest local candidate status — 2026-10-22:** Release 58 is built locally with pinned Python RPM requirements and staged in `packaging/build/repos/el10-rc5-r58-x86_64/`. Local DNF install and BuildRequires resolution succeeded; Flagship passed 266 tests, Harbor 350, and all three Go module suites passed. The Admiral RPM build skipped `%check` because the builder has older installed Python RPMs; the suites ran separately against staged RPM contents. Exact Release 58 RPMs were installed on fresh disposable Rocky 10.2, AlmaLinux 10.2 and CentOS Stream 10 Single-Node guests. One intermittent false-availability observation after a rootless systemd manager restart invalidated R58 for release validation; see issue #259 and `evidence/release58-el10-single-node-execution.md`. R58 remains unpublished; no clean COPR build is claimed.<br>
+**Current matrix completion: 0/8.** Rocky, Alma and CentOS have partial R58 scenario diagnostics, invalidated for release validation; no full-cell result exists. Fedora Rawhide Single-Node and all four Multi-Node cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidates do not count toward a future candidate.
 
-| Target OS (x86_64) | Single-Node — Release 56 | Multi-Node — Release 56 |
+| Target OS (x86_64) | Single-Node — Release 58 | Multi-Node — Release 58 |
 | --- | --- | --- |
-| Fedora Rawhide | PARTIAL — fresh R56 install and reboot regression; repository dependency gate FAIL; full cell incomplete | NOT TESTED — fresh three-guest run pending |
-| Rocky Linux 10 | PARTIAL — fresh R56 install and reboot regression; repository dependency gate FAIL; full cell incomplete | NOT TESTED — fresh three-guest run pending |
-| AlmaLinux 10 | NOT TESTED — fresh guest run pending | NOT TESTED — fresh three-guest run pending |
-| CentOS Stream 10 | NOT TESTED — fresh guest run pending | NOT TESTED — fresh three-guest run pending |
+| Fedora Rawhide | NOT TESTED — no R58 guest run | NOT TESTED — fresh three-guest run pending |
+| Rocky Linux 10 | INVALIDATED — partial R58 scenarios; false-availability finding #259 | NOT TESTED — fresh three-guest run pending |
+| AlmaLinux 10 | INVALIDATED — partial R58 scenarios; candidate R58 invalidated by #259 | NOT TESTED — fresh three-guest run pending |
+| CentOS Stream 10 | INVALIDATED — partial R58 scenarios; candidate R58 invalidated by #259 | NOT TESTED — fresh three-guest run pending |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R55 observations are invalidated by #256. R56 Fedora/Rocky install and reboot probes passed as named scenarios only; their clean public-repository dependency check failed for Flask and Mistune (#201, #257), so neither cell passes. No issue was closed. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R58's EL10 named scenarios are retained as diagnostic evidence but are invalidated for release validation by #259; raw logs and SHA-256 values are in `evidence/release58-el10-single-node-execution.md` and its manifest. Local R58 repo and runtime probes do not replace a clean COPR build or the complete required scenario set. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+
+## Release 58 named runtime scenarios — partial EL10 Single-Node evidence
+
+These results are scenario-scoped only; none completes a matrix cell. Exact procedures, expectations, limits and per-test log names are in `evidence/release58-el10-single-node-execution.md`.
+
+| R58 coverage | Rocky Linux 10 | AlmaLinux 10 | CentOS Stream 10 |
+|---|---|---|---|
+| Fresh install / service baseline | PASS (install subset) | PASS (install subset) | PASS (install subset) |
+| Same-key concurrent provision, failed declared DB service, local DB backup/restore | PASS | PASS | PASS |
+| Guest reboot, app/daemon/Fleet process recovery with no active task | PASS | PASS | PASS |
+| Resize / pause / reactivate / SQL persistence | PASS | PASS | PASS |
+| Injected Podman removal error and successful retry | PASS | PASS | PASS |
+| PostgreSQL service outage and recovery / SQL persistence | PASS | PASS | PASS |
+| `admiral-apps` user systemd manager restart | FAIL — one transient false `healthy/available` sample; not repeated | PASS — stayed non-healthy until readiness | PASS — stayed non-healthy until readiness |
+| Selected auth and installed-binary placeholder negative checks | PASS | PASS | PASS |
+| Same-host isolation checks | PARTIAL — direct DB IP/read attempts not tested | PARTIAL — direct DB IP/read attempts not tested | PARTIAL — direct DB IP/read attempts not tested |
+| Effective `small` cgroup limits | PASS | NOT TESTED | NOT TESTED |
+| Concurrent resize versus deprovision | PASS | NOT TESTED | NOT TESTED |
 
 ## Release 56 executed scenarios — partial results, no complete cell
 

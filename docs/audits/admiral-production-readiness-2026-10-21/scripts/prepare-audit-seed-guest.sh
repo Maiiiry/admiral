@@ -59,7 +59,8 @@ fi
 
 # Refresh the OS and enabled EPEL/Admiral repositories once while building the
 # seed. These package names are the union of explicit Requires in the six
-# Admiral RPM specs; admiral-common itself is installed later by the installer.
+# Admiral RPM specs plus SQLAlchemy's versioned Flask-Alembic dependency;
+# admiral-common itself is installed later by the installer.
 dnf -y update --refresh --allowerasing
 
 packages=(
@@ -68,6 +69,7 @@ packages=(
   postgresql postgresql-server python3 python3-argon2-cffi python3-cryptography
   python3-flask python3-flask-alembic python3-flask-login
   python3-flask-sqlalchemy python3-gunicorn python3-mistune python3-psycopg2
+  python3-sqlalchemy
   python3-pyyaml python3-requests python3-werkzeug shadow-utils systemd
   systemd-container wireguard-tools
 )
@@ -94,7 +96,8 @@ rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' "${packages[@]}"
 if ((${#candidate_python_rpms[@]})); then
   rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' \
     python3-alembic python3-flask python3-flask-alembic python3-flask-login \
-    python3-flask-sqlalchemy python3-mistune python3-typing-extensions
+    python3-flask-sqlalchemy python3-mistune python3-sqlalchemy \
+    python3-typing-extensions
 fi
 if [[ "$os_id" == rocky || "$os_id" == almalinux ]]; then
   rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' python3-pyOpenSSL
