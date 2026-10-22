@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 52%{?dist}
+Release: 53%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -23,7 +23,7 @@ ExclusiveArch: x86_64 aarch64
 URL:     https://github.com/admiral-project/admiralctl
 Source0: https://github.com/admiral-project/admiralctl/archive/%{commit}.tar.gz
 Source1: admiralctl.yaml
-Source2: https://github.com/admiral-project/admirald/archive/0baf488353386fdb67f995ef3e72cfe6cfc6de07.tar.gz
+Source2: https://github.com/admiral-project/admirald/archive/b4b125ee293ac65a863256666faa22199720de0f.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -87,6 +87,9 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-53
+- Rebuild coordinated Admiral RC5 package set with the resize secret fix
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-52
 - Rebuild coordinated Admiral RC5 package set with the lifecycle availability correction
 

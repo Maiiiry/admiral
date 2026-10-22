@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release: 52%{?dist}
+Release: 53%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -24,7 +24,7 @@ URL:     https://github.com/admiral-project/admiral-fleet
 Source0: https://github.com/admiral-project/admiral-fleet/archive/%{commit}.tar.gz
 Source1: admiral-fleet.service
 Source2: fleet.env
-Source3: https://github.com/admiral-project/admirald/archive/0baf488353386fdb67f995ef3e72cfe6cfc6de07.tar.gz
+Source3: https://github.com/admiral-project/admirald/archive/b4b125ee293ac65a863256666faa22199720de0f.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-53
+- Rebuild coordinated Admiral RC5 package set with the resize secret fix
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-52
 - Rebuild coordinated Admiral RC5 package set with the lifecycle availability correction
 

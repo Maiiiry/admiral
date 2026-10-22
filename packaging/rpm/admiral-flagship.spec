@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release: 52%{?dist}
+Release: 53%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -81,6 +81,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-53
+- Rebuild coordinated Admiral RC5 package set with the resize secret fix
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-52
 - Rebuild coordinated Admiral RC5 package set with the lifecycle availability correction
 

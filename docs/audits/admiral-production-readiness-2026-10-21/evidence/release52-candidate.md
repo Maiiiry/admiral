@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`  
 Candidate: Admiral RC5 Release 52, x86_64 RPM set.  
-Disposition: **BUILT; not yet runtime-tested.** All six RPMs built with their six `%check` stages passing. Both isolated local repositories returned the same six Admiral NEVRAs. No VM has installed R52; matrix completion remains **0/8**.
+Disposition: **BUILT, installed, partially exercised, then INVALIDATED by #246.** All six RPMs built with their six `%check` stages passing and both isolated local repositories returned the same six Admiral NEVRAs. Fresh Fedora Rawhide and Rocky Linux 10.2 Single-Node guests installed R52 and completed scoped probes; a secret-loss defect during resize invalidated the candidate. No complete matrix cell passed; matrix completion remains **0/8**. See [`release52-initial-single-node-execution.md`](release52-initial-single-node-execution.md) for scenario results and evidence hashes.
 
 ## Build identity and host
 
@@ -58,4 +58,4 @@ Both repositories returned the same six Release 52 NEVRAs. Per-repository checks
 
 ## Runtime status
 
-No VM has installed R52 yet. R51 was invalidated by #245, and none of its observations count toward the matrix. Release 52 is the active candidate; matrix completion is **0/8**. Begin again from fresh overlays of the preserved updated seeds, starting with Fedora Rawhide and Rocky Linux 10 Single-Node in parallel, then complete all eight full scenario sets. Rocky uses the recorded EPEL pyOpenSSL 25.0.0 seed pin. Any newly confirmed defect requiring a fix invalidates R52 and requires another coordinated six-RPM build.
+R52 was installed on fresh Fedora Rawhide and Rocky Linux 10.2 Single-Node overlays and exercised with the scoped probes in `release52-initial-single-node-execution.md`. Both guests reproduced #246: resize returned success but the recreated database service lost its generated secret references. Release 52 is **invalidated**; none of its observations count toward matrix completion. The proposed `admirald@b4b125e` source fix has green component CI [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015), but it is not in R52. Build a coordinated new six-RPM candidate from current `origin/main`, then repeat on fresh overlays. Matrix completion remains **0/8**. Rocky uses the recorded EPEL pyOpenSSL 25.0.0 seed pin. No issue was closed.

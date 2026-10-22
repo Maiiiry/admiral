@@ -1,8 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R51 is invalidated by #245; R52 is built but matrix remains 0/8.** No security or isolation scenario has been run on a candidate that can count.<br>
-R49 observations and the partial R51 install/lifecycle record are historical only. R52 must exercise isolation, sockets, secrets, tenant boundaries and Multi-Node trust on fresh guests; open security findings remain required. Build identity and package checksums are in `evidence/release52-candidate.md`.
+Current status: **NOT VALIDATED — R52 is invalidated by #246; matrix remains 0/8.** R52 received partial runtime inspection of container privileges, namespace separation, socket mounts, secrets and ports on Fedora and Rocky Single-Node guests. Cross-workload reachability, tenant boundaries and Multi-Node trust were not validated.<br>
+R49–R52 observations are candidate-specific history only. The #246 secret-loss defect is fixed in source but needs a rebuilt candidate and fresh isolation/security regressions. Build identity and runtime evidence are in `evidence/release52-candidate.md` and `evidence/release52-initial-single-node-execution.md`.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging

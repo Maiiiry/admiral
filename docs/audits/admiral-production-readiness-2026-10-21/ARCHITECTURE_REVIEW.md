@@ -2,7 +2,7 @@
 
 Audit started: 2026-10-21 UTC<br>
 Release 49 exploratory Single-Node tests found #240 and invalidated that candidate. Release 50 was built and repository-queried, but no VM used it; build review found the missing `admiral-common` `%check` tracked by #244, so R50 was superseded before runtime testing. Matrix completion remains 0/8. R49 exploratory evidence and the R50 build record are candidate-specific history.<br>
-The #240 fix, #239 harness fix and #244 common-package check are committed to `main` with green CI. Release 51 built from `59e6eeb553ac38d7fa995863202a1180f50c02c5`, and its six package checks and repository queries passed. Fresh Fedora and Rocky Single-Node guests installed R51; Fedora runtime probes exposed #245, because `effective_availability` stayed `available` while the app was paused or deprovisioned. The source correction is pushed as `admirald@0baf488` with green CI and is included in the six Release 52 RPMs. R51 is invalidated. R52 build checks and local repository queries passed, but no R52 guest has run; matrix completion remains 0/8. Candidate identity, refs, checksums and repo evidence are in `evidence/release52-candidate.md`.
+The #240 fix, #239 harness fix and #244 package check are on main with green CI. R51 was installed on fresh Fedora/Rocky guests and Fedora exposed #245; its fix was included in R52. R52 built and passed package checks, then fresh Fedora and Rocky guests reproduced #246: resize regenerated PostgreSQL without secret references. Fix b4b125e is pushed with green CI; R52 is invalidated and a new candidate is required. Matrix remains 0/8. Candidate identity and runtime evidence are in evidence/release52-candidate.md and evidence/release52-initial-single-node-execution.md.
 
 ## Scope and evidence rules
 
