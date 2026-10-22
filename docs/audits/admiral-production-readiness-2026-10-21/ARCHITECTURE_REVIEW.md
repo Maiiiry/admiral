@@ -1,8 +1,8 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Current proposed common RPM payload source: `admiral-commons@d68dfa0a82ae6c2035c566260e0be2be27c0e200` (`origin/main`). Release 47 pins in the Makefile/specs are historical; its six RPMs were built and partially exercised on Fedora Rawhide and Rocky Linux 10 before #237 invalidated the candidate.<br>
-The #237 availability fix is included in the built R48 packages at `admirald@d50523f7a75b0a1606c761423de9d1cdc844425e`, with GitHub CI green. The coordinated package commit is root `5bb18b17cddce3c1a50e3bd19fe6b0ac4cae36b7`, with root CI green; the six RPMs are staged locally. No R48 VM test has run; matrix completion remains 0/8. Issue #238 tracks a separate audit-helper stale-release default found before guest execution. R47 identity and diagnostics are in its candidate and invalidation evidence files.<br>
+Current common-package source proposed for Release 49: root `be2054559a4835f8860e067345224b9dbe2c705f` (`origin/main`), containing the #234 Ansible-facts compatibility fix. The R48 RPM set used the earlier root source `d68dfa0` and was superseded before guest execution because it lacked this fix.<br>
+Release 48's six RPMs remain staged locally but do not count as a validation candidate. The #237 availability fix and #238 audit-helper fix are pushed with green CI; #234's root fix is pushed at `be20545` with root CI green. Release 49 pins/specs and helper defaults are prepared locally; no R49 RPM has been built. Matrix completion remains 0/8. R47 and R48 identities and historical observations are recorded in their candidate evidence files.<br>
 Release 46 and earlier guest results are historical. The Release 45 HIGH stale-task replay (`ADM-F-009` / #229) invalidated that candidate; see `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Scope and evidence rules

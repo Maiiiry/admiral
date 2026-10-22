@@ -17,7 +17,7 @@ The package-preparation commit is root `5bb18b17cddce3c1a50e3bd19fe6b0ac4cae36b7
 | `admiral-flagship` | `3911eb784aef732f0bbe4662d1dbc6a5947eb659` | [run 39654771764](https://github.com/admiral-project/admiral-flagship/actions/runs/39654771764) — success |
 | `admiral-harbor` | `92c5ccac6a647cb85da36b056cb3352f391ab8c9` | [run 39705906726](https://github.com/admiral-project/admiral-harbor/actions/runs/39705906726) — success |
 
-The local `python3 scripts/validate-release-refs.py` check passed before commit and during each package target. A follow-up root-only audit-helper fix for #238 is being prepared after the package build; it changes no RPM source pin or payload. Its CI must pass before any R48 VM run.
+The local `python3 scripts/validate-release-refs.py` check passed before commit and during each package target. After the build, the root-only audit-helper fix for #238 was pushed in `11c6c6861e81293148d4220c266305d6146375c`; CI passed in [run 39713868071](https://github.com/admiral-project/admiral/actions/runs/39713868071). This did not alter the R48 RPM payload.
 
 ## Build host and package checks
 
@@ -48,4 +48,4 @@ The per-repository SHA-256 lists, including the seven support RPMs, and generate
 
 ## Validation status
 
-Release 48 is built and staged, but no VM has installed it and no matrix scenario has run. The matrix remains **0/8**. Release 47 remains invalidated by #237; its runtime observations do not count. Issue #238 was found before the first R48 guest run: the existing-node bootstrap helper had a stale default. Its local fix and regression test are in the follow-up working tree; commit and CI must be green before validation starts. Issues remain open; no issue was closed.
+Release 48 is built and staged, but no VM has installed it and no matrix scenario has run. The set was superseded before testing because issue #234's Ansible facts fix is absent from its pinned common payload (`d68dfa0`). The fix is pushed at root `be2054559a4835f8860e067345224b9dbe2c705f`, with CI success in [run 39714180234](https://github.com/admiral-project/admiral/actions/runs/39714180234). Release 49 package preparation is in progress; its RPMs are not built. The matrix remains **0/8**. Release 47 remains invalidated by #237; neither R47 nor R48 runtime observations count toward R49. Issues remain open; no issue was closed.

@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 47 was installed and partially exercised on Fedora Rawhide and Rocky Linux 10 Single-Node guests, but is invalidated by the new MEDIUM finding `ADM-F-010` / #237. Release 48 is built and staged; no VM test has started and completion remains 0/8. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. R46 and R47 probes are historical until rerun on R48. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and the other findings remain open pending exact-candidate regressions. Harness issue #238 is also open; its fix awaits a root commit and CI before guest execution.
+Release 47 was installed and partially exercised on Fedora Rawhide and Rocky Linux 10 Single-Node guests, but is invalidated by `ADM-F-010` / #237. Release 48 was built and staged but superseded before guest execution because its `admiral-common` pin lacked the #234 facts-compatibility fix. That fix is pushed at root `be20545` with CI green; Release 49 packaging is in progress. Completion remains 0/8. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. R46–R48 evidence does not pass any R49 cell. Rocky's pinned EPEL package is a visible seed exception, not a product fix. Findings remain open pending exact-candidate regressions; #238's harness fix is pushed and CI green.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -138,20 +138,33 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Root cause:** Confirmed in `admirald/internal/database/instances.go`: the shared SQL expression derived effective availability only from assigned node status, heartbeat and health; it did not check whether instance health had ever been reported, was currently nonhealthy, or was older than the 30-second Fleet health interval.
 * **Recommendation:** Treat no health report as unknown, nonhealthy workload observations as unavailable, and an observation older than two health-check intervals (60 seconds) as stale/unavailable while preserving last-known runtime fields.
 * **Regression test:** Cover unknown-before-first-report, stale healthy, fresh stopped/unhealthy, node outage precedence, and fresh healthy recovery without changing placement or the last observation. Reboot a workload guest on the rebuilt candidate and require unavailable/unknown until a fresh healthy report; repeat on a Multi-Node worker.
-* **Fix status:** Implemented and pushed as `admirald@d50523f7a75b0a1606c761423de9d1cdc844425e`; focused regression passed 10/10, full Go tests, `go vet` and `go build` passed locally, and GitHub CI is green. Issue remains open until Release 48 runtime regression.
+* **Fix status:** Implemented and pushed as `admirald@d50523f7a75b0a1606c761423de9d1cdc844425e`; focused regression passed 10/10, full Go tests, `go vet` and `go build` passed locally, and GitHub CI is green. R48 contains the fix but was superseded before VM testing; issue remains open until the R49 runtime regression.
 
 ## ADM-F-011 — Existing-node bootstrap helper selects a stale RPM release ([#238](https://github.com/admiral-project/admiral/issues/238))
 
 * **Severity:** LOW (validation integrity).
 * **Component:** Release-validation audit scripts.
-* **Environment:** Root `main`, with Release 48 as the coordinated candidate.
+* **Environment:** Root `main`, before coordinated Release 49 preparation.
 * **Reproduction:** Run `docs/audits/admiral-production-readiness-2026-10-21/scripts/bootstrap-candidate-node.sh el10 ...` without setting `ADMIRAL_RC_RELEASE`; inspect the selected `rc5-r${release}` repository path and requested package NEVRAs.
 * **Expected:** Both Single-Node install and existing-node bootstrap helpers default to the same coordinated Release as all six Admiral RPM specs.
 * **Observed:** The Single-Node helper defaulted to 48 while the bootstrap helper defaulted to 46, which would select an old repository and request old package versions. Static inspection caught this before an R48 guest run; no VM was misdirected.
 * **Evidence:** `scripts/bootstrap-candidate-node.sh` had a stale literal default. `scripts/test_audit_release_defaults.py` now compares both helper defaults against all six RPM spec `Release` values; the root script suite passed 112 tests locally.
 * **Root cause:** Candidate release was duplicated as independent hard-coded values in two helpers, with no synchronization check.
 * **Recommendation:** Keep the release defaults aligned and retain the regression check so a coordinated spec bump cannot leave either helper stale.
-* **Regression test:** Run the root script test suite and `bash -n` on both helpers; verify default selection points to the active staged candidate. The regression test passed locally; the follow-up root commit and CI are pending. Keep #238 open until CI passes and the exact-candidate helper path is verified.
+* **Regression test:** Run the root script test suite and `bash -n` on both helpers; verify default selection points to the active staged candidate. The regression test passed locally in root commit `11c6c6861e81293148d4220c266305d6146375c`, and GitHub CI passed in run 39713868071. Both helpers now default to Release 49 in the pending package-preparation tree. Keep #238 open until the exact-candidate helper path is verified.
+
+## ADM-F-012 — Ansible roles use deprecated injected fact variables ([#234](https://github.com/admiral-project/admiral/issues/234))
+
+* **Severity:** LOW (future compatibility).
+* **Component:** `admiral-common` installation tasks and other Ansible role/playbook fact references.
+* **Environment:** Observed during Release 47 install on Fedora Rawhide 46; fixed source is root `be2054559a4835f8860e067345224b9dbe2c705f`. R48 was built from an older root payload pin and was superseded before VM execution.
+* **Reproduction:** Run a clean secure Fedora install and observe the `Disable LLMNR on Fedora secure installs` task; before the fix, Ansible warned that `INJECT_FACTS_AS_VARS` and direct `ansible_distribution` access are deprecated. Related direct facts appeared in common, firewall, Fleet, Harbor, SELinux, WireGuard and site playbooks.
+* **Expected:** Distribution, version, hostname, FQDN, primary IPv4 and SELinux facts are read from `ansible_facts`; no injected-facts deprecation warning is emitted.
+* **Observed:** The installer continued, but direct top-level fact access emitted a compatibility warning and left the playbooks exposed to removal of fact injection.
+* **Evidence:** Issue #234 records the R47 warning and restricted raw log. The root diff replaces injected facts across the playbooks/roles. `python3 -m pytest -q scripts/test_*.py` passed 113 tests, both main Ansible playbooks passed `--syntax-check`, the local gathered-facts assertion passed, and root CI passed in run 39714180234.
+* **Root cause:** Ansible fact-injection compatibility variables were used instead of keys in the `ansible_facts` mapping.
+* **Recommendation:** Keep all role conditions and templates on the explicit fact map.
+* **Regression test:** Assert no deprecated top-level fact variable names remain in Ansible sources; syntax-check the installer playbooks; run a clean Fedora and EL10 install from the next package candidate and verify the warning is absent. Source fix and CI are complete; keep #234 open pending exact-RPM install evidence.
 
 ## Additional open source-review findings
 

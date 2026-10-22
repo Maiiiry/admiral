@@ -1,18 +1,18 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 47 was built and installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests. The reboot probes found stale `effective_availability` (#237), so Release 47 is invalidated; none of its partial results count toward a cell. Release 48 is built and staged from root package commit `5bb18b1`; its exact identity is recorded in `evidence/release48-candidate.md`. The #237 fix is included at `admirald@d50523f` with CI green. A separate audit-helper default issue #238 was found before any R48 guest run; its proposed fix and regression test await a root commit and CI. See `evidence/release47-invalidated-single-node.md` for the R47 failure.<br>
-**Current matrix completion is 0/8; no complete cell has passed.** No R48 VM scenario has run. The Fedora/Rocky Single-Node subsets are invalidated R47 evidence; the other six cells were not run on R47. Release 46 targeted probes and all older-candidate results are historical and do not count. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception.<br>
+Release 47 was built and installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests; reboot probes found stale `effective_availability` (#237), invalidating R47. Release 48 was built from root package commit `5bb18b1` and staged, but no VM run began. Before guest testing, issue #234 identified deprecated fact injection in its `admiral-common` pin (`d68dfa0`); R48 was superseded because it did not contain the fix. The source fix is pushed at root `be20545` with CI green. Release 49 pins/specs and helper defaults are prepared locally; the build is pending. R48 identity is recorded in `evidence/release48-candidate.md`; R47 failure details are in `evidence/release47-invalidated-single-node.md`.<br>
+**Current matrix completion is 0/8; no complete cell has passed.** No R48 VM scenario ran, and no R49 scenario has started. The Fedora/Rocky Single-Node subsets are invalidated R47 evidence; all eight R49 cells are NOT TESTED. Release 46 targeted probes and all older-candidate results are historical and do not count. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
-| Target OS (x86_64) | Single-Node — Release 48 | Multi-Node — Release 48 |
+| Target OS (x86_64) | Single-Node — Release 49 | Multi-Node — Release 49 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED on R48 | NOT TESTED on R48 |
-| Rocky Linux 10 | NOT TESTED on R48 | NOT TESTED on R48 |
-| AlmaLinux 10 | NOT TESTED on R48 | NOT TESTED on R48 |
-| CentOS Stream 10 | NOT TESTED on R48 | NOT TESTED on R48 |
+| Fedora Rawhide | NOT TESTED on R49 | NOT TESTED on R49 |
+| Rocky Linux 10 | NOT TESTED on R49 | NOT TESTED on R49 |
+| AlmaLinux 10 | NOT TESTED on R49 | NOT TESTED on R49 |
+| CentOS Stream 10 | NOT TESTED on R49 | NOT TESTED on R49 |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. Fedora/Rocky R47 subsets reproduced stale availability after reboot and are explicitly invalidated. All eight R48 cells require fresh exact-candidate execution.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. Fedora/Rocky R47 subsets reproduced stale availability after reboot and are explicitly invalidated. R48 was superseded before testing by the #234 source fix. All eight R49 cells require fresh exact-candidate execution.
 
 Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **INVALIDATED** means a later defect requiring a fix voided that candidate's evidence; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
 
@@ -25,7 +25,7 @@ Status vocabulary: **PASS** means the exact scenario was run and evidence exists
 | ROCKY-R47-SN-INSTALL-001 | Fresh exact-R47 packages and secure Single-Node install | Rocky Linux 10.2 x86_64 | PASS (install subset only) | Installer recap `ok=232 changed=97 failed=0`; pinned pyOpenSSL 25.0.0 present; services/API healthy. Reboot issue #237 invalidated the candidate. |
 | ROCKY-R47-SN-REBOOT-001 | Reboot with workload and SQL marker | Same guest | FAIL — MEDIUM #237 | API returned stale `healthy/available` while app/DB containers were absent or starting; data marker persisted and status converged. |
 
-Both partial R47 runs are described in `evidence/release47-invalidated-single-node.md`. No R47 full-cell pass was achieved. The availability fix is included in R48 at `admirald@d50523f` with CI green. R48 remains untested until the audit-helper fix for #238 is pushed and root CI passes; then rerun the reboot regression before counting any cell.
+Both partial R47 runs are described in `evidence/release47-invalidated-single-node.md`. No R47 full-cell pass was achieved. The availability fix is in R48 at `admirald@d50523f`, but that package set was superseded before any VM run because it lacked the #234 facts migration. The #238 helper fix is pushed with CI green. R49 must include #234 and rerun the reboot regression before any cell is counted.
 
 ## Historical Release 46 targeted execution checkpoint — not full cell passes
 
@@ -36,7 +36,7 @@ Both partial R47 runs are described in `evidence/release47-invalidated-single-no
 | CENTOS-R46-SN-E2E-001 | Fresh install, provision whoami + PostgreSQL, idempotent replay, HTTP request, deprovision and cleanup | CentOS Stream 10 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe; cold DB startup observed) | `evidence/release46-followup-single-node-execution.md`; full-cell scenarios remain NOT TESTED. |
 | FEDORA-R46-SN-E2E-002 | Post-reboot install check, provision whoami + PostgreSQL, idempotent replay, effective host-port HTTP request, deprovision and cleanup | Fedora Rawhide 46 x86_64, fresh Release 46 Single-Node guest | PASS (targeted lifecycle probe) | `evidence/release46-followup-single-node-execution.md`; port was read from Podman (`127.0.0.1:40001`). |
 
-These rows document named Release 46 probes only and do not count toward Release 48. The complete R48 matrix remains **0/8** until fresh exact-candidate execution.
+These rows document named Release 46 probes only and do not count toward Release 49. The complete R49 matrix remains **0/8** until fresh exact-candidate execution.
 
 ## Release 45 limited Single-Node execution — invalidated
 

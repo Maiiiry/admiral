@@ -2,8 +2,8 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest built candidate: Release 48; it includes the #237 fix at `admirald@d50523f`, and its six RPMs are staged locally. The package-preparation commit and its root CI are green. No R48 VM execution has started; issue #238's audit-helper fix and root CI must pass before starting guest validation.<br>
-The active matrix is four x86_64 distributions (Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10) in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R46 and R47 evidence does not count toward the rebuilt candidate. Rocky's EPEL pyOpenSSL pin is only a validation-seed exception.
+Latest built RPM set: Release 48; it includes #237 but was superseded before VM execution because its common-package pin predates the #234 fix. Release 49 is in package preparation with root source `be20545`; the source commit and root CI are green, but the coordinated RPM build has not run.<br>
+The active matrix is four x86_64 distributions (Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10) in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R46–R48 evidence does not count toward R49. Rocky's EPEL pyOpenSSL pin is only a validation-seed exception.
 
 ## Current decision by topology
 
@@ -31,8 +31,8 @@ The Release 46 reference check, exact NEVRAs, hashes and targeted observations a
 
 ## What would change this decision
 
-The target matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64 in both topologies (eight cells). Complete every required Single-Node scenario on fresh guests and every Multi-Node scenario on isolated three-guest topologies. Re-run applicable regressions from #207–#212 and #227–#230 before disposition; do not close findings because the code or unit tests changed. Include high-impact isolation, integrity, recovery, concurrency and false-completion scenarios. Performance measurements must include sample counts and percentiles, without invented SLOs. Any newly discovered defect requiring a fix invalidates the current candidate evidence and requires a new coordinated six-RPM Release plus reruns on the new candidate.
+The target matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64 in both topologies (eight cells). Complete every required Single-Node scenario on fresh guests and every Multi-Node scenario on isolated three-guest topologies. Re-run applicable regressions from #207–#212, #227–#230 and #234–#238 before disposition; do not close findings because the code or unit tests changed. Include high-impact isolation, integrity, recovery, concurrency and false-completion scenarios. Performance measurements must include sample counts and percentiles, without invented SLOs. Any newly discovered defect requiring a fix invalidates the current candidate evidence and requires a new coordinated six-RPM Release plus reruns on the new candidate.
 
 ## Current answer to the audit question
 
-The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. Release 48 RPMs are built and staged, but no VM has installed them or run a matrix scenario. R47 was invalidated by stale post-reboot availability (#237), so its probes do not pass any R48 cell. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.
+The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. R48 RPMs were built and staged but never installed; the set was superseded before testing because it lacked the #234 facts migration. R47 runtime probes were invalidated by #237. The R49 RPM set must be built from the corrected common source before any matrix scenario counts. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.
