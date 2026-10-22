@@ -19,10 +19,22 @@ CREATE_SCRIPT = (
     ROOT
     / "docs/audits/admiral-production-readiness-2026-10-21/scripts/create-audit-vm.sh"
 )
+LEASE_HELPER = (
+    ROOT
+    / "docs/audits/admiral-production-readiness-2026-10-21/scripts/verify-audit-vm-lease.py"
+)
+R53_REBOOT_SCRIPT = (
+    ROOT
+    / "docs/audits/admiral-production-readiness-2026-10-21/scripts/r53/r53-host-reboot.sh"
+)
 SPEC = importlib.util.spec_from_file_location("prepare_audit_cloud_init", HELPER)
 assert SPEC and SPEC.loader
 prepare_audit_cloud_init = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(prepare_audit_cloud_init)
+LEASE_SPEC = importlib.util.spec_from_file_location("verify_audit_vm_lease", LEASE_HELPER)
+assert LEASE_SPEC and LEASE_SPEC.loader
+verify_audit_vm_lease = importlib.util.module_from_spec(LEASE_SPEC)
+LEASE_SPEC.loader.exec_module(verify_audit_vm_lease)
 
 
 def generate_validator_key(directory: Path) -> Path:
@@ -165,3 +177,50 @@ def test_cloud_init_iso_keeps_private_source_modes():
 
     assert " -r " not in f" {iso_command} "
     assert 'chmod 0600 "$iso"' in script
+
+
+def test_create_helper_checks_the_actual_dhcp_lease_before_reporting_success():
+    script = CREATE_SCRIPT.read_text(encoding="utf-8")
+    assert "verify-audit-vm-lease.py" in script
+    assert script.index("virt-install") < script.index("verify-audit-vm-lease.py")
+    assert script.index("verify-audit-vm-lease.py") < script.index("printf 'Created")
+
+
+def test_expected_static_dhcp_lease_is_accepted():
+    output = """Expiry Time MAC address Protocol IP address Hostname Client ID
+2026-10-22 13:28:15 52:54:00:53:00:01 ipv4 192.168.122.252/24 adm-r53-fedora-single 01:52:54:00:53:00:01
+"""
+    assert verify_audit_vm_lease.verify_lease(
+        output, "52:54:00:53:00:01", "192.168.122.252"
+    ) == (True, "DHCP lease verified: 52:54:00:53:00:01 -> 192.168.122.252")
+
+
+def test_conflicting_stale_lease_is_rejected_with_actual_address():
+    output = """Expiry Time MAC address Protocol IP address Hostname Client ID
+2026-10-22 13:28:15 52:54:00:53:00:01 ipv4 192.168.122.233/24 adm-r53-fedora-single 01:52:54:00:53:00:01
+"""
+    valid, message = verify_audit_vm_lease.verify_lease(
+        output, "52:54:00:53:00:01", "192.168.122.252"
+    )
+    assert not valid
+    assert message == (
+        "DHCP address mismatch for MAC 52:54:00:53:00:01: "
+        "requested 192.168.122.252, actual 192.168.122.233"
+    )
+
+
+def test_missing_dhcp_lease_does_not_become_a_false_success():
+    valid, message = verify_audit_vm_lease.verify_lease(
+        "No leases found", "52:54:00:53:00:01", "192.168.122.252"
+    )
+    assert not valid
+    assert message == "no DHCP lease found for MAC 52:54:00:53:00:01"
+
+
+def test_reboot_harness_uses_accessible_working_directory_before_rootless_commands():
+    script = R53_REBOOT_SCRIPT.read_text(encoding="utf-8")
+    assert script.count("cd /") == 2
+    assert script.index("cd /") < script.index("runuser -u admiral-apps")
+    assert "systemctl reboot --no-block" in script
+    assert 'previous_boot_id=$(ssh_guest' in script
+    assert 'current_boot_id != "$previous_boot_id"' in script

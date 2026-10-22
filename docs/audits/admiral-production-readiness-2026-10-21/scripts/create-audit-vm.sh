@@ -70,6 +70,8 @@ virt-install --name "$name" --memory 2048 --vcpus 2 --osinfo "$osinfo" --import 
   --disk "path=$overlay,format=qcow2,bus=virtio" \
   --disk "path=$iso,device=cdrom" "${networks[@]}" \
   --graphics none --noautoconsole
+python3 "$(dirname "$0")/verify-audit-vm-lease.py" \
+  --network default --mac "$nat_mac" --requested-ip "$nat_ip" --timeout 90
 printf 'Created %s from %s at NAT %s%s.\n' \
   "$name" "$(basename "$base")" "$nat_ip" "${wg_ip:+ and private $wg_ip}"
 printf 'known_hosts_file=%s/known_hosts\n' "$seed_dir"

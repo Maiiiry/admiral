@@ -1,0 +1,6 @@
+7dec4deb08a1a38e69078183886865a8e27847ffe0519d6cb2d1ca3925bfca01  admiral-common-0.0.1rc5-53.el10.noarch.rpm
+8cb69f785f6d2bd9afcde464abeb9bbe364567138d534690208f8f7e9b86022c  admirald-0.0.1rc5-53.el10.x86_64.rpm
+35c8eeae92320fa3fe15f7a17a9e264d06c197c89af1cf18916c0ea3ef77f913  admiral-fleet-0.0.1rc5-53.el10.x86_64.rpm
+335deea3af9a5bba8cd4e3502b02048d97e14453bcd00457e4438ccfa86553ff  admiralctl-0.0.1rc5-53.el10.x86_64.rpm
+edeefbbbc4604d90365b2643255bcb33c4f3b3e28739ebf2fc6b08ed716920f7  admiral-flagship-0.0.1rc5-53.el10.noarch.rpm
+6dfee94a61dee065f57ec5945829d3caa7ad95dc51ad917af44217f51bb68274  admiral-harbor-0.0.1rc5-53.el10.noarch.rpm

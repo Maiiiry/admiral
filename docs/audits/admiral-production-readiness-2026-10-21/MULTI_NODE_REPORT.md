@@ -1,8 +1,8 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no R52 three-guest run occurred; R52 was invalidated by #246 during Fedora/Rocky Single-Node testing.** Matrix completion remains 0/8. Build a new exact RPM candidate and run fresh three-guest topologies (one admin/portal hub and two workers) on all four OSes.<br>
-The #246 source correction is pushed as `admirald@b4b125e` with green CI [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015), but is not present in R52. Root package preparation [c22d05e](https://github.com/admiral-project/admiral/commit/c22d05ef23dce9c693af8e46bf53f3e19955979b) is green in CI [39731120097](https://github.com/admiral-project/admiral/actions/runs/39731120097). Older Release 42–50 Multi-Node evidence and partial R51/R52 Single-Node evidence are historical only. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
+Current status: **NOT VALIDATED — Release 53 is built, but no R53 three-guest run has occurred.** Matrix completion remains 0/8. Run fresh three-guest topologies (one admin/portal hub and two workers) on all four OSes using exact R53 RPMs.<br>
+The #246 source correction is included as `admirald@b4b125e` with green CI [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015). Root package preparation [`e149571`](https://github.com/admiral-project/admiral/commit/e149571e6124d1e4223f2c868a2a1c1f685f8d58) is green in CI [39738673606](https://github.com/admiral-project/admiral/actions/runs/39738673606). Release 53 package evidence is in `evidence/release53-candidate.md`. Older Release 42–52 Multi-Node evidence and partial Single-Node evidence are historical only. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
 
 ## Observed architecture and guarantees
 

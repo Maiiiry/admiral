@@ -28,6 +28,13 @@ services:
       POSTGRES_PASSWORD:
         generate: password
         expose: true
+    healthcheck:
+      type: command
+      command:
+        - sh
+        - -c
+        - pg_isready -h 127.0.0.1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+    healthcheck_wait_timeout: 120
 
 tiers:
   small:

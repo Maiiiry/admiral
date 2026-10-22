@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R52 is invalidated by #246; matrix remains 0/8.** No controlled latency, load, resource-pressure or Multi-Node throughput measurements ran. The scoped R52 cgroup checks verified effective tier limits but are not performance results. R52 identity and its invalidated VM execution are in `evidence/release52-candidate.md` and `evidence/release52-initial-single-node-execution.md`.
+Current status: **NOT VALIDATED — R53 is built; matrix remains 0/8.** No controlled latency, load, resource-pressure or Multi-Node throughput measurements ran. The scoped R52 cgroup checks verified effective tier limits but are not performance results and do not carry forward after #246 invalidated R52. Active package identity is in `evidence/release53-candidate.md`; R52 execution is historical in `evidence/release52-initial-single-node-execution.md`.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
