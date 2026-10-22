@@ -1,8 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R51 is invalidated by #245; matrix remains 0/8.** No security or isolation scenario has been run on a candidate that can count.<br>
-R49 observations and the partial R51 install/lifecycle record are historical only. Release 52 must exercise isolation, sockets, secrets, tenant boundaries and Multi-Node trust on fresh guests; open security findings remain required.
+Current status: **NOT VALIDATED — R51 is invalidated by #245; R52 is built but matrix remains 0/8.** No security or isolation scenario has been run on a candidate that can count.<br>
+R49 observations and the partial R51 install/lifecycle record are historical only. R52 must exercise isolation, sockets, secrets, tenant boundaries and Multi-Node trust on fresh guests; open security findings remain required. Build identity and package checksums are in `evidence/release52-candidate.md`.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging

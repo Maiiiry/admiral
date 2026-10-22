@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest built RPM set: Admiral RC5 Release 51, built from package-preparation commit `59e6eeb553ac38d7fa995863202a1180f50c02c5`. All six RPMs built with passing `%check`, and both local repositories returned exactly the six Release 51 NEVRAs. Fresh Fedora Rawhide and Rocky Linux 10.2 Single-Node guests installed R51. Fedora lifecycle testing found #245: API availability remained `available` while a paused or deprovisioned workload was not serving. R51 is invalidated and its observations contribute no matrix passes. The fix is pushed as `admirald@0baf488` with green CI [39730492772](https://github.com/admiral-project/admirald/actions/runs/39730492772); Release 52 preparation has updated the six RPM Releases and source pins, but root CI and the RPM build remain pending.<br>
+Latest built RPM set: Admiral RC5 Release 52, built from signed package-preparation commit `c22d05ef23dce9c693af8e46bf53f3e19955979b`. All six RPMs built with passing `%check`; both local repositories returned the same six Release 52 NEVRAs. The package-preparation commit has green root CI [39731120097](https://github.com/admiral-project/admiral/actions/runs/39731120097), and component CI for the five selected SHAs is green. R52 has not been installed on a VM yet. R51 was invalidated after fresh Fedora Rawhide and Rocky Linux 10.2 Single-Node guests exposed #245: API availability remained `available` while a paused or deprovisioned workload was not serving. R51 observations contribute no matrix passes. The #245 fix is pushed as `admirald@0baf488` with green CI [39730492772](https://github.com/admiral-project/admirald/actions/runs/39730492772) and is included in R52. Build identities, hashes and repository evidence are in `evidence/release52-candidate.md`.<br>
 The active matrix is four x86_64 distributions (Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10) in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R49–R51 observations do not count toward the corrected candidate. #240, #239, #233, #244 and #245 have source fixes proposed/committed with green component/root CI; #241–#243 remain LOW workflow/maintenance follow-ups. No issue was closed. Rocky's EPEL pyOpenSSL pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | R49 exploratory subsets ran on all four operating systems but were invalidated for final validation by #240; no complete cell passed. |
-| Multi-Node | **NOT VALIDATED** | No R49 three-guest runs occurred; all four topology cells remain untested on the next candidate. |
+| Single-Node | **NOT VALIDATED** | R51 exploratory installs and targeted lifecycle probes were invalidated by #245; R52 has not run on a VM and no complete cell passed. |
+| Multi-Node | **NOT VALIDATED** | No R51 three-guest runs occurred; all four topology cells remain untested on R52. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 
@@ -35,4 +35,4 @@ The target matrix is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS St
 
 ## Current answer to the audit question
 
-The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. R49 was invalidated by #240; R50 was superseded before VM testing by #244; R51 was invalidated after fresh Fedora/Rocky installs when Fedora's pause/deprovision lifecycle probe reproduced #245. The #245 source fix is pushed and green, and Release 52 is in coordinated package preparation. No R51 or earlier observation counts toward the new candidate. No Multi-Node run has occurred on R51. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance and all complete-cell scenario sets remain outstanding. No production readiness claim is made.
+The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. R49 was invalidated by #240; R50 was superseded before VM testing by #244; R51 was invalidated after fresh Fedora/Rocky installs when Fedora's pause/deprovision lifecycle probe reproduced #245. The #245 source fix is pushed and green, and Release 52 is built with all six package checks and local repository queries passing. No R51 or earlier observation counts toward R52, and no R52 guest has run. No Multi-Node run occurred on R51. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance and all complete-cell scenario sets remain outstanding. No production readiness claim is made.

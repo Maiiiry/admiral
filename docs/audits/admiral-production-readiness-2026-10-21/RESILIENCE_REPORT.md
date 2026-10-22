@@ -1,8 +1,8 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R51 is invalidated by #245; matrix remains 0/8.** No R51 fault-injection scenario ran; only install and targeted lifecycle probes were performed.<br>
-R49 details and raw-log checksums are in `evidence/release49-exploratory-single-node.md`. No R49 or R50 Multi-Node fault test ran. All older-candidate results are history only.
+Current status: **NOT VALIDATED — R51 is invalidated by #245; R52 is built but matrix remains 0/8.** No fault-injection scenario has run on R52; R51 had only installation and targeted lifecycle probes.<br>
+R49 details and raw-log checksums are in `evidence/release49-exploratory-single-node.md`. No R49 or R50 Multi-Node fault test ran. All older-candidate results are history only. R52 package identity and checks are in `evidence/release52-candidate.md`.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.
 

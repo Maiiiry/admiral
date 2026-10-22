@@ -1,0 +1,8 @@
+# SHA-256 manifest for Admiral RC5 Release 52 x86_64 RPMs.
+# Staged copies in both local repositories match these digests.
+9970c5a44af91703f8813b5ca167259128830ca0fd60c45dd0f05527ffa31004  admiral-common-0.0.1rc5-52.el10.noarch.rpm
+2ebb05305bc6307da9c2385dcb9fb29660b808328868c6dc03bda8d57d2f3237  admirald-0.0.1rc5-52.el10.x86_64.rpm
+14efb811f9b4745d12c2d5465307303443df08a8042012be4632d3ed6edca636  admiral-fleet-0.0.1rc5-52.el10.x86_64.rpm
+04435b96ce9e86268cfd1cc75a65e1971023b25d1f9f94f183ef45e01679dddc  admiralctl-0.0.1rc5-52.el10.x86_64.rpm
+3cfdab4fc40ba3b689f30b6f9b94e890651f6d4e0f54e9f59e9605d3f577a662  admiral-flagship-0.0.1rc5-52.el10.noarch.rpm
+10f84cd6ee3ad6c7f607060fb4d9c3d458606bc7912dd8bf31509d34bc9e3f20  admiral-harbor-0.0.1rc5-52.el10.noarch.rpm
