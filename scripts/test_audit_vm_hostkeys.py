@@ -247,8 +247,13 @@ def test_reboot_harness_uses_accessible_working_directory_before_rootless_comman
 def test_worker_bootstrap_uses_both_pinned_hosts_and_a_temporary_revoked_key():
     script = WORKER_INSTALL_SCRIPT.read_text(encoding="utf-8")
 
-    assert "[[ $# -eq 9 ]]" in script
-    assert "ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS" in script
+    assert "[[ $# -eq 10 ]]" in script
+    assert "HUB_UNDERLAY_IP HUB_WIREGUARD_IP WORKER_UNDERLAY_IP" in script
+    assert "--admin-endpoint '$hub_underlay_ip'" in script
+    assert 'ssh_to "$hub_underlay_ip" "$hub_known_hosts"' in script
+    assert 'ssh_to "$hub_ip" "$hub_known_hosts"' not in script
+    assert "ADMIRAL_API_URL=https://$hub_wg_ip:8080" in script
+    assert "ADMIRAL_LOCAL_REPO_CONFIG" in script
     assert "StrictHostKeyChecking=yes" in script
     assert "UserKnownHostsFile=$known_hosts" in script
     assert "ssh-keygen -q -t ed25519 -N ''" in script
@@ -275,7 +280,7 @@ def test_worker_bootstrap_rejects_old_argument_shape_without_mutation():
     )
 
     assert result.returncode == 2
-    assert "ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS" in result.stderr
+    assert "HUB_UNDERLAY_IP HUB_WIREGUARD_IP WORKER_UNDERLAY_IP" in result.stderr
 
 
 def test_worker_bootstrap_never_overwrites_existing_evidence(tmp_path):
@@ -295,6 +300,7 @@ def test_worker_bootstrap_never_overwrites_existing_evidence(tmp_path):
             str(hub_known_hosts),
             str(worker_known_hosts),
             "10.77.0.10",
+            "10.99.0.1",
             "10.77.0.11",
             "r53-test-worker",
             "10.99.0.2",

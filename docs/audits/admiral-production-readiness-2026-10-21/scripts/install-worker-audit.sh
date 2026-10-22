@@ -2,15 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # Run the supported worker bootstrap from an installed admin-portal node.
 set -euo pipefail
-[[ $# -eq 9 ]] || {
-  echo "usage: $0 ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS HUB_IP WORKER_IP NODE_ID WIREGUARD_IP HOST_FINGERPRINT OUTPUT_LOG" >&2
+[[ $# -eq 10 ]] || {
+  echo "usage: $0 ADMIN_SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS HUB_UNDERLAY_IP HUB_WIREGUARD_IP WORKER_UNDERLAY_IP NODE_ID WORKER_WIREGUARD_IP HOST_FINGERPRINT OUTPUT_LOG" >&2
   exit 2
 }
-admin_key=$1 hub_known_hosts=$2 worker_known_hosts=$3 hub_ip=$4 worker_ip=$5
-node_id=$6 wg_ip=$7 fingerprint=$8 output=$9
+admin_key=$1 hub_known_hosts=$2 worker_known_hosts=$3 hub_underlay_ip=$4 hub_wg_ip=$5 worker_ip=$6
+node_id=$7 wg_ip=$8 fingerprint=$9 output=${10}
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
-[[ $hub_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ && $worker_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid IPv4 address" >&2; exit 2; }
-[[ $wg_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid WireGuard address" >&2; exit 2; }
+[[ $hub_underlay_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ && $hub_wg_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ && $worker_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid IPv4 address" >&2; exit 2; }
+[[ $wg_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid worker WireGuard address" >&2; exit 2; }
 [[ $fingerprint =~ ^SHA256:[A-Za-z0-9+/]+$ ]] || { echo "invalid SSH fingerprint" >&2; exit 2; }
 [[ -r $admin_key && -r $hub_known_hosts && -r $worker_known_hosts ]] || {
   echo "admin SSH identity or pinned known-hosts file is unreadable" >&2
@@ -43,6 +43,18 @@ ssh_to() {
     "validator@$ip" "$@"
 }
 
+if [[ -n ${ADMIRAL_LOCAL_REPO_CONFIG:-} ]]; then
+  [[ -r $ADMIRAL_LOCAL_REPO_CONFIG ]] || {
+    echo "candidate repository configuration is unreadable: $ADMIRAL_LOCAL_REPO_CONFIG" >&2
+    exit 1
+  }
+  scp -i "$admin_key" -o IdentitiesOnly=yes -o BatchMode=yes \
+    -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$worker_known_hosts" \
+    "$ADMIRAL_LOCAL_REPO_CONFIG" "validator@$worker_ip:/tmp/admiral-local.repo"
+  ssh_to "$worker_ip" "$worker_known_hosts" \
+    'sudo install -o root -g root -m 0644 /tmp/admiral-local.repo /etc/yum.repos.d/admiral-local.repo'
+fi
+
 capture_rpm_manifest() {
   local ip=$1 known_hosts=$2
   ssh_to "$ip" "$known_hosts" \
@@ -62,7 +74,7 @@ cleanup() {
   local saved_rc=$?
   trap - EXIT
   if [[ -n $hub_bootstrap_key ]]; then
-    ssh_to "$hub_ip" "$hub_known_hosts" "rm -f -- '$hub_bootstrap_key'" >/dev/null 2>&1 || {
+    ssh_to "$hub_underlay_ip" "$hub_known_hosts" "rm -f -- '$hub_bootstrap_key'" >/dev/null 2>&1 || {
       echo "warning: could not remove temporary private key from the hub: $hub_bootstrap_key" >&2
       [[ $saved_rc -ne 0 ]] || saved_rc=1
     }
@@ -89,29 +101,32 @@ ssh_to "$worker_ip" "$worker_known_hosts" \
   "python3 -c 'import base64,os,pathlib,stat,sys,tempfile; p=pathlib.Path.home()/\".ssh\"; a=p/\"authorized_keys\"; key=base64.b64decode(sys.argv[1]).decode(); p.mkdir(mode=0o700,exist_ok=True); os.chmod(p,0o700); s=a.lstat() if a.exists() or a.is_symlink() else None; (s is None or (stat.S_ISREG(s.st_mode) and not stat.S_ISLNK(s.st_mode))) or sys.exit(3); lines=a.read_text().splitlines() if s else []; (key in lines) or lines.append(key); fd,tmp=tempfile.mkstemp(prefix=\".authorized_keys.audit-\",dir=p); os.close(fd); pathlib.Path(tmp).write_text(\"\\n\".join(lines)+\"\\n\"); os.chmod(tmp,0o600); os.replace(tmp,a)' '$bootstrap_public_key_b64'"
 worker_bootstrap_installed=1
 
-hub_bootstrap_key=$(ssh_to "$hub_ip" "$hub_known_hosts" \
+hub_bootstrap_key=$(ssh_to "$hub_underlay_ip" "$hub_known_hosts" \
   'umask 077; install -d -m 0700 /home/validator/.ssh; mktemp /home/validator/.ssh/.admiral-bootstrap.XXXXXXXX')
 [[ $hub_bootstrap_key =~ ^/home/validator/\.ssh/\.admiral-bootstrap\.[A-Za-z0-9]+$ ]] || {
   echo "hub returned an unexpected temporary key path" >&2
   exit 1
 }
-ssh_to "$hub_ip" "$hub_known_hosts" "cat > '$hub_bootstrap_key' && chmod 0600 '$hub_bootstrap_key'" \
+ssh_to "$hub_underlay_ip" "$hub_known_hosts" "cat > '$hub_bootstrap_key' && chmod 0600 '$hub_bootstrap_key'" \
   <"$bootstrap_private_key"
 
-hub_rpm_before=$(capture_rpm_manifest "$hub_ip" "$hub_known_hosts")
+hub_rpm_before=$(capture_rpm_manifest "$hub_underlay_ip" "$hub_known_hosts")
 worker_rpm_before=$(capture_rpm_manifest "$worker_ip" "$worker_known_hosts")
 install_start_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 install_started=$SECONDS
 set +e
-ssh_to "$hub_ip" "$hub_known_hosts" \
-  "sudo -n admiral-install --worker-node --validation-seed --yes --node-id '$node_id' --public-ip '$worker_ip' --wireguard-ip '$wg_ip' --admin-endpoint '$hub_ip' --ssh-user validator --ssh-key '$hub_bootstrap_key' --ssh-fingerprint '$fingerprint'" \
+# The admin endpoint is the hub's reachable underlay address. The installer
+# derives the overlay address separately from the configured WireGuard subnet
+# and must render that overlay address in the Fleet API URL.
+ssh_to "$hub_underlay_ip" "$hub_known_hosts" \
+  "sudo -n admiral-install --worker-node --validation-seed --yes --node-id '$node_id' --public-ip '$worker_ip' --wireguard-ip '$wg_ip' --admin-endpoint '$hub_underlay_ip' --ssh-user validator --ssh-key '$hub_bootstrap_key' --ssh-fingerprint '$fingerprint'" \
   >"$output" 2>&1
 rc=$?
 set -e
 install_elapsed=$((SECONDS - install_started))
 install_end_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 set +e
-hub_rpm_after=$(capture_rpm_manifest "$hub_ip" "$hub_known_hosts")
+hub_rpm_after=$(capture_rpm_manifest "$hub_underlay_ip" "$hub_known_hosts")
 hub_rpm_status=$?
 worker_rpm_after=$(capture_rpm_manifest "$worker_ip" "$worker_known_hosts")
 worker_rpm_status=$?
@@ -134,6 +149,14 @@ set -e
   fi
   printf 'worker_package_nevra_delta_end\n'
 } >>"$output"
+
+if [[ $rc -eq 0 ]]; then
+  if ! ssh_to "$worker_ip" "$worker_known_hosts" \
+    "sudo grep -Fx 'ADMIRAL_API_URL=https://$hub_wg_ip:8080' /etc/admiral/fleet.env" >/dev/null; then
+    echo "worker Fleet API URL does not use the expected hub WireGuard overlay $hub_wg_ip" >&2
+    rc=1
+  fi
+fi
 
 if [[ $rc -eq 0 ]]; then
   if ! ssh_to "$worker_ip" "$worker_known_hosts" true >/dev/null 2>&1; then
