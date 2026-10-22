@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest candidate: Release 47 source refs are prepared; the coordinated six-RPM build and all guest validation are pending.<br>
+Latest candidate: six coordinated Release 47 Admiral RPMs are built and available through the isolated local repository; guest validation is pending.<br>
 The active matrix is four x86_64 distributions (Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10) in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. Release 46 and older evidence does not count for this candidate. Rocky's EPEL pyOpenSSL pin is only a validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | Release 47 RPMs have not been built or installed; all four OS cells are untested. |
-| Multi-Node | **NOT VALIDATED** | Release 47 RPMs have not been built or installed; all four three-guest cells are untested. |
+| Single-Node | **NOT VALIDATED** | Release 47 RPMs have not been installed; all four OS cells are untested. |
+| Multi-Node | **NOT VALIDATED** | Release 47 RPMs have not been installed; all four three-guest cells are untested. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 
@@ -35,4 +35,4 @@ The target matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Str
 
 ## Current answer to the audit question
 
-The Release 47 production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. The six Release 47 RPMs have not yet been built, so no Release 47 guest run has started. Release 46 Single-Node probes and older Multi-Node runs are historical, candidate-specific observations and do not pass any Release 47 cell. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.
+The Release 47 production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. The six Release 47 RPMs are built and published to the isolated local validation repository, but no Release 47 guest run has started. Release 46 Single-Node probes and older Multi-Node runs are historical, candidate-specific observations and do not pass any Release 47 cell. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.

@@ -1,8 +1,8 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 47 status: **NOT VALIDATED — no Release 47 three-guest cell has run; the RPM build is pending.** Current matrix: 0/8. Rocky Linux 10 is in scope; its earlier dependency failure is historical and the seed compatibility pin must be recorded for every Rocky guest.<br>
-Current source pins: root common payload `e0ca76e5c9a5e22fc62becc7d40ef6ff71686f8d`; component SHAs are recorded in the Makefile/specs and will be copied to the candidate manifest.<br>
+Current Release 47 status: **NOT VALIDATED — the RPM set is built, but no Release 47 three-guest cell has run.** Current matrix: 0/8. Rocky Linux 10 is in scope; its earlier dependency failure is historical and the seed compatibility pin must be recorded for every Rocky guest.<br>
+Current source pins and exact RPM hashes are in `evidence/release47-candidate.md` and `evidence/release47-rpm-sha256.txt`.<br>
 All Release 42–46 Multi-Node observations are historical and do not validate Release 47. Findings remain open pending exact-candidate three-guest regression runs.
 
 ## Observed architecture and guarantees

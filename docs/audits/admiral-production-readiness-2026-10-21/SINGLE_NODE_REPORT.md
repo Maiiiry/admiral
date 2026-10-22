@@ -1,8 +1,8 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 47 status: **NOT VALIDATED — no Release 47 Single-Node cell has run; the RPM build is pending.** The full matrix is 0/8.<br>
-Current source pins: root common payload `e0ca76e5c9a5e22fc62becc7d40ef6ff71686f8d`; component SHAs are recorded in the Makefile/specs and will be copied to the candidate manifest.<br>
+Current Release 47 status: **NOT VALIDATED — the RPM set is built, but no Release 47 Single-Node cell has run.** The full matrix is 0/8.<br>
+Current source pins and exact RPM hashes are in `evidence/release47-candidate.md` and `evidence/release47-rpm-sha256.txt`.<br>
 Release 46 Single-Node probes are historical and do not count toward Release 47. The Release 45 stale-task replay after reboot (`ADM-F-009` / #229) remains a prior-candidate finding; see `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Historical Release 46 targeted execution — not full cell passes

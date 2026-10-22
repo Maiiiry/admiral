@@ -1,0 +1,7 @@
+# SHA-256 for the six coordinated Admiral Release 47 RPMs.
+d84b6b9d6091dc96c286e0540aa90972056862203d8fcf2d692c99d682db7a59  noarch/admiral-common-0.0.1rc5-47.el10.noarch.rpm
+9913b52bc786d984efd3c716c5cd85bf768b9b19f41590c23d297e736f68d392  noarch/admiral-flagship-0.0.1rc5-47.el10.noarch.rpm
+29e4d4a6529dafc39869227a4b5b5f4bad061685228a285c93171b52094d43bc  noarch/admiral-harbor-0.0.1rc5-47.el10.noarch.rpm
+ef0702caa927bfaea2f0b4e7e3474ab3b90877b3280518f7e56854f65bb2fe7b  x86_64/admiral-fleet-0.0.1rc5-47.el10.x86_64.rpm
+0a68d86b6b65d1e9576fcb633f97efc938acbea09660afbaceeef8785c9efb10  x86_64/admiralctl-0.0.1rc5-47.el10.x86_64.rpm
+c3d0eef6184e2b1c222006d329805263dbc4bf5a800db225099805fe483b1f49  x86_64/admirald-0.0.1rc5-47.el10.x86_64.rpm

@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: Release 47 source pins and package fields are prepared, but RPM build and guest validation have not run; current matrix is 0/8. Target OS are Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. Release 46 probes and fixes are historical until rerun against Release 47. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and other findings remain open pending exact-candidate regressions.
+Current candidate: the six Release 47 Admiral RPMs are built and staged locally, but guest validation has not run; current matrix is 0/8. Target OS are Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. Release 46 probes and fixes are historical until rerun against Release 47. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and other findings remain open pending exact-candidate regressions.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 

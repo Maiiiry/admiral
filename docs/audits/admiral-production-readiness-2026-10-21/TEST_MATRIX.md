@@ -1,7 +1,7 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current candidate: Release 47 source refs are pinned to the latest fetched component `origin/main` commits; all six Admiral specs increment to Release 47. RPM build and fresh guest execution are pending.<br>
+Current candidate: Release 47 source refs are pinned to the fetched component `origin/main` commits; all six Admiral specs are Release 47. The six RPMs are built, staged and queryable from both local repository endpoints; fresh guest execution is pending. See `evidence/release47-candidate.md`.<br>
 **Current-candidate completion is 0/8; no Release 47 cell has been run.** Release 46 targeted probes and all older-candidate results are historical and do not count. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 

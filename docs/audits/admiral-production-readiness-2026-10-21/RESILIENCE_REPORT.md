@@ -1,7 +1,7 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current Release 47 status: **NOT TESTED — candidate RPMs are not built and no Release 47 fault injection has run.** Current matrix: 0/8.<br>
+Current Release 47 status: **NOT TESTED — candidate RPMs are built, but no Release 47 fault injection has run.** Current matrix: 0/8.<br>
 All Release 45/46 resilience results are historical and do not validate Release 47. The Release 45 stale-task replay remains finding `ADM-F-009` / #229; it must be rerun on the exact new package set, including Multi-Node.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.

@@ -2,7 +2,7 @@
 
 Audit started: 2026-10-21 UTC<br>
 Current source root for the common RPM payload: `e0ca76e5c9a5e22fc62becc7d40ef6ff71686f8d` (`main`); component pins are the fetched `origin/main` SHAs in the Release 47 Makefile/specs.<br>
-Current candidate: Release 47 source refs are prepared; the six-RPM build and all eight x86_64 guest cells are pending. Current matrix is 0/8.<br>
+Current candidate: Release 47's six Admiral RPMs are built and staged in the isolated local repositories; all eight x86_64 guest cells are pending. Current matrix is 0/8. Exact package identity is in `evidence/release47-candidate.md`.<br>
 Release 46 and earlier guest results are historical. The Release 45 HIGH stale-task replay (`ADM-F-009` / #229) invalidated that candidate; see `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Scope and evidence rules
