@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 47 was installed and partially exercised on Fedora Rawhide and Rocky Linux 10 Single-Node guests, but is invalidated by `ADM-F-010` / #237. Release 48 was built and staged but superseded before guest execution because its `admiral-common` pin lacked the #234 facts-compatibility fix. That fix is pushed at root `be20545` with CI green; Release 49 packaging is in progress. Completion remains 0/8. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. R46–R48 evidence does not pass any R49 cell. Rocky's pinned EPEL package is a visible seed exception, not a product fix. Findings remain open pending exact-candidate regressions; #238's harness fix is pushed and CI green.
+Release 49 was built and explored on fresh Single-Node guests for Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10. A real concurrent capacity rejection exposed #240, invalidating R49 for final validation. Matrix completion remains 0/8; no Release 49 Multi-Node test ran. Its scenario-level results are recorded in `evidence/release49-exploratory-single-node.md` and do not pass any cell on the next candidate. The complete local test suites passed on 2026-10-22. The #240 fix is committed and pushed to `admiralctl@5ed381d`, and GitHub CI run [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667) is green. The #233 cleanup-helper fix remains in the root working tree pending signed commit, push and green CI. The active target is the four x86_64 OSes in both topologies. Rocky's pinned EPEL package is a visible seed exception, not a product fix. Findings remain open pending exact-candidate regressions; #238's harness fix is pushed and CI green.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -165,6 +165,58 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Root cause:** Ansible fact-injection compatibility variables were used instead of keys in the `ansible_facts` mapping.
 * **Recommendation:** Keep all role conditions and templates on the explicit fact map.
 * **Regression test:** Assert no deprecated top-level fact variable names remain in Ansible sources; syntax-check the installer playbooks; run a clean Fedora and EL10 install from the next package candidate and verify the warning is absent. Source fix and CI are complete; keep #234 open pending exact-RPM install evidence.
+
+## ADM-F-013 — Structured capacity-policy rejection is retried by `admiralctl` ([#240](https://github.com/admiral-project/admiral/issues/240))
+
+* **Severity:** MEDIUM.
+* **Component:** `admiralctl` HTTP retry and provision-rejection handling.
+* **Environment:** Reproduced with exact Release 49 RPMs on Rocky Linux 10 x86_64 Single-Node during a concurrent capacity test. The shared CLI request path affects both topologies.
+* **Reproduction:** Fill the disposable node to its configured capacity, then submit a provision request for another workload. Inspect the structured HTTP 503 response and count resulting operation/task records. In the R49 Rocky probe, one capacity rejection was retried three times.
+* **Expected:** A structured `ProvisioningRejectedResponse` with a policy code such as `no_node_available_for_requested_tier` is returned as a terminal policy rejection to the caller and is not retried as a transient server failure.
+* **Observed:** `admiralctl` retried the structured HTTP 503 three times, producing four failed operations/tasks for one request and obscuring the policy rejection. No workload or capacity reservation leaked.
+* **Evidence:** `TEST_MATRIX.md` row `R49-SN-CAPACITY-REJECTION`, `evidence/release49-exploratory-single-node.md`, and the restricted raw diagnostic `packaging/build/validation/rc5-r49/evidence/rocky-single-concurrency-diagnostic.log` (mode 0600; SHA-256 recorded in `evidence/release49-exploratory-single-node-sha256.txt`).
+* **Root cause:** Confirmed in `admiralctl/internal/client/client.go`: generic retry handling treated all HTTP 5xx responses as transient before the provisioning-specific parser could classify a structured capacity-policy rejection.
+* **Recommendation:** Detect a structured policy rejection in the shared response path and return it immediately, preserving its code and operation ID; continue retrying unstructured transient server errors.
+* **Regression test:** The fix adds `TestProvisionPolicyRejectionIsNotRetried`, asserting one HTTP attempt and preservation of the typed rejection and operation ID. `GOTOOLCHAIN=auto go test ./...`, `go vet ./...`, and `go build ./...` passed locally. Commit `admiralctl@5ed381d7d152e1606e78fafe332587cca09bc989` is pushed and CI run [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667) is green. Keep #240 open until the capacity rejection is revalidated on the next exact RPM candidate in Single-Node and Multi-Node with one policy operation/task and no leaked capacity/workload resources.
+
+## ADM-F-014 — Local `admiralctl` Go tests need RPM-style dependency staging ([#241](https://github.com/admiral-project/admiral/issues/241))
+
+* **Severity:** LOW (developer/test reproducibility; no observed RPM runtime impact).
+* **Component:** `admiralctl` Go module replacement and local test workflow.
+* **Environment:** Monorepo checkout where `admiralctl` and `admirald` are sibling submodules.
+* **Reproduction:** From the root checkout, run `cd admiralctl && GOTOOLCHAIN=auto go test ./...` or `go mod tidy`. The replacement path `./admirald` does not exist in the ordinary checkout, so Go exits before running tests. The RPM spec creates the expected nested source directory during `%prep`.
+* **Expected:** A documented, reproducible local command stages the exact pinned `admirald` source or otherwise sets up the module workspace, then runs the Go checks without manual filesystem changes.
+* **Observed:** The first isolated `go test` invocation failed at dependency resolution. A temporary symlink matching the RPM-preparation layout allowed `go mod tidy`, `go test ./...`, `go vet ./...` and `go build ./...` to pass; it was removed and no tracked module files changed.
+* **Evidence:** `evidence/unit-test-results.md`, release-fix validation run dated 2026-10-22; `packaging/rpm/admiralctl.spec` `%prep` stages the sibling module explicitly.
+* **Root cause:** Confirmed local `replace github.com/admiral-project/admiral/admirald => ./admirald` assumes an RPM-prepared nested directory, while the ordinary submodule checkout keeps `admirald` as a sibling.
+* **Recommendation:** Add a safe local staging/test helper or document a repository-level command that mirrors `%prep` and cleans up the staged dependency.
+* **Regression test:** On a fresh checkout with no pre-created nested dependency directory, run the documented local workflow and require `go mod tidy`, `go test ./...`, `go vet ./...` and `go build ./...` to pass; verify tracked files remain unchanged after cleanup. This is a LOW tooling follow-up and does not block runtime validation.
+
+## ADM-F-015 — Harbor suite retains dependency deprecation warnings ([#242](https://github.com/admiral-project/admiral/issues/242))
+
+* **Severity:** LOW (maintenance and forward compatibility).
+* **Component:** `admiral-harbor` Alembic configuration and SQLAlchemy query calls.
+* **Environment:** Local Harbor component suite on the 2026-10-22 release-fix validation run.
+* **Reproduction:** Run `python3 -m pytest tests/ -x --tb=short` in `admiral-harbor` and inspect pytest's warning summary.
+* **Expected:** Configure Alembic's `path_separator` explicitly and avoid the legacy Flask-SQLAlchemy `Query.get()` method so these deprecations do not accumulate during the suite.
+* **Observed:** All 350 tests passed in 202.03 seconds with 307 non-fatal warnings. The warnings include Alembic's legacy `version_locations` splitting behavior and SQLAlchemy's deprecation of `Query.get()`.
+* **Evidence:** `evidence/unit-test-results.md`; no test failure or product runtime error was observed.
+* **Root cause:** Confirmed older configuration/API usage in Harbor migration and query paths; individual call sites have not yet been narrowed down.
+* **Recommendation:** Set the appropriate Alembic `path_separator` and replace legacy query access with equivalent session lookups where semantics permit.
+* **Regression test:** Run the full Harbor suite and require zero warnings from these deprecations; run RPM `%check` and a clean migration/app startup to check compatibility. This LOW maintenance issue does not block the current runtime matrix.
+
+## ADM-F-016 — GitHub Actions reports runner and Node runtime migration notices ([#243](https://github.com/admiral-project/admiral/issues/243))
+
+* **Severity:** LOW (CI maintenance; current workflow is green).
+* **Component:** `admiralctl` GitHub Actions workflow and runner selection.
+* **Environment:** Push CI run 39724553667 for commit `admiralctl@5ed381d7d152e1606e78fafe332587cca09bc989`.
+* **Reproduction:** Inspect the completed run's annotations after pushing to `main`.
+* **Expected:** The workflow uses action/runtime versions and a runner image with an explicit, tested support window and produces no matching migration warnings.
+* **Observed:** CI passed, while GitHub announced Node.js 20 deprecation for `actions/checkout@v4` and `actions/setup-go@v5`, and the upcoming `ubuntu-latest` migration to Ubuntu 26.
+* **Evidence:** [GitHub Actions run 39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667); no failed CI step or product defect occurred.
+* **Root cause:** Confirmed workflow action majors and runner label rely on GitHub-managed runtime/image transitions.
+* **Recommendation:** Review action majors and either select a tested explicit runner image or document a deliberate migration plan; check all configured Admiral workflows for the same notices.
+* **Regression test:** Run each affected workflow on the selected runner and confirm its test/security steps pass without the deprecation/migration annotations. This LOW maintenance finding does not block the runtime matrix while CI remains green.
 
 ## Additional open source-review findings
 

@@ -1,9 +1,8 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 49 is being prepared; no R49 RPM or three-guest run exists.** Release 47 is invalidated and R48 was superseded before VM execution because it lacked the #234 facts fix; matrix completion remains 0/8. Rocky Linux 10 is in scope; its earlier dependency failure is historical and the seed compatibility pin must be recorded for every Rocky guest.<br>
-R48 source pins and hashes are retained in `evidence/release48-candidate.md`; R47 diagnostic Single-Node evidence is in `evidence/release47-invalidated-single-node.md`. The #237 fix is in R48. The #234 root fix and #238 audit-helper fix are pushed with CI green; Release 49 must be built before three-guest regressions.<br>
-All Release 42–48 Multi-Node observations are historical or not run and do not validate R49. Findings remain open pending exact-candidate three-guest regression runs.
+Current status: **NOT VALIDATED — no Release 49 three-guest run was made.** R49 was installed and explored in Single-Node on all four OSes, but #240 invalidated it for final validation; matrix completion remains 0/8. The next exact six-RPM candidate must use fresh three-guest topologies (one admin/portal hub and two workers) for all four OSes.<br>
+R49's capacity-rejection issue is locally fixed but still needs commit/push and green CI before its coordinated rebuild. All Release 42–48 Multi-Node observations remain historical and do not validate the next candidate. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
 
 ## Observed architecture and guarantees
 

@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`  
 Candidate: Admiral RC5 Release 49, x86_64; RPM payload architectures are x86_64 and noarch.  
-Build result: **six coordinated Admiral RPMs built with package `%check` enabled, staged in isolated EL10 and Fedora Rawhide local repositories, and queried from both endpoints.** Both DNF queries returned exactly the same six R49 Admiral NEVRAs. No Release 49 VM execution has started; matrix completion remains **0/8**.  
+Build result: **six coordinated Admiral RPMs built with package `%check` enabled, staged in isolated EL10 and Fedora Rawhide local repositories, and queried from both endpoints.** Both DNF queries returned exactly the same six R49 Admiral NEVRAs. Release 49 was later installed on fresh Single-Node guests for all four target OSes and received scoped exploratory runtime tests. A capacity-rejection defect (#240) invalidates R49 for final validation; no matrix cell is accepted and completion remains **0/8**.
 Build date: 2026-10-22 UTC. RPM build timestamps: 03:20:52–03:22:21 UTC.
 
 ## Source and CI identity
@@ -17,7 +17,7 @@ The package-preparation commit is root `6661bb779dd197d24cf565e7e5bb85c99ef809ed
 | `admiral-flagship` | `3911eb784aef732f0bbe4662d1dbc6a5947eb659` | [run 39654771764](https://github.com/admiral-project/admiral-flagship/actions/runs/39654771764) — success |
 | `admiral-harbor` | `92c5ccac6a647cb85da36b056cb3352f391ab8c9` | [run 39705906726](https://github.com/admiral-project/admiral-harbor/actions/runs/39705906726) — success |
 
-`python3 scripts/validate-release-refs.py` passed before the build and during the RPM targets. The open #234 Ansible facts fix is in common source commit `be20545`; the #238 bootstrap-helper fix is present in root commit `6661bb7`. Both issues remain open for exact-candidate verification and retain the `fix-proposed` label. #235 and #236 remain open for measurement during fresh guest runs. No issue was closed, and no new product defect was found while preparing this candidate.
+`python3 scripts/validate-release-refs.py` passed before the build and during the RPM targets. The open #234 Ansible facts fix is in common source commit `be20545`; the #238 bootstrap-helper fix is present in root commit `6661bb7`. Both issues remain open for exact-candidate verification and retain the `fix-proposed` label. Subsequent exploratory guest execution measured #235/#236 and found #240, which invalidates this candidate for final validation. No issue was closed.
 
 ## Build host and checks
 
@@ -48,4 +48,4 @@ The local per-repository checksums and generated `.repo` files are in ignored `p
 
 ## Validation status
 
-Release 49 is the active candidate. Its package build and local repository checks passed. No R49 VM has installed it and no R49 runtime scenario has run; matrix completion remains **0/8**. Start with fresh Fedora Rawhide and Rocky Linux 10 Single-Node overlays in parallel, then continue through all four x86_64 OSes and both topologies. R47 and R48 runtime evidence remains invalidated/superseded and does not count toward R49. Issues stay open until the candidate-specific verification is complete.
+Release 49's package build and repository checks passed, and all four x86_64 Single-Node OSes installed it for exploratory scenarios. The real capacity-policy rejection reproduced on Rocky Linux opened #240; its fix is local and absent from these RPMs. Release 49 is therefore **invalidated for final validation** and matrix completion remains **0/8**. The local candidate repo remains available for diagnosis only. Commit/push the pending fixes, confirm green CI, then build the next coordinated six-RPM Release and rerun every required scenario on fresh overlays. R47 and R48 runtime evidence remains invalidated/superseded; Release 49 observations are recorded in [`release49-exploratory-single-node.md`](release49-exploratory-single-node.md) and do not count toward the next matrix run.

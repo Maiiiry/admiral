@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest built RPM set: Release 48; it includes #237 but was superseded before VM execution because its common-package pin predates the #234 fix. Release 49 is in package preparation with root source `be20545`; the source commit and root CI are green, but the coordinated RPM build has not run.<br>
-The active matrix is four x86_64 distributions (Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10) in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R46–R48 evidence does not count toward R49. Rocky's EPEL pyOpenSSL pin is only a validation-seed exception.
+Latest built RPM set: Admiral RC5 Release 49, built from package-preparation commit `6661bb779dd197d24cf565e7e5bb85c99ef809ed`. It passed package `%check` and exploratory Single-Node probes on all four target operating systems. Those probes found #240: `admiralctl` retried a structured capacity-policy rejection and created four failed operations/tasks for one request. R49 is invalidated for final release validation; no Release 50 has been built.<br>
+The active matrix is four x86_64 distributions (Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10) in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R49 exploratory evidence is candidate-specific and does not count toward the next candidate. The local fixes for #240 and #233 passed the complete local suites on 2026-10-22. #240 is committed/pushed as `admiralctl@5ed381d` and CI run [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667) is green; #233 still needs a signed root commit, push and green CI before rebuilding. #241, #242 and #243 track LOW-severity test-workflow and CI-maintenance follow-ups, none of which demonstrated a product runtime failure. Rocky's EPEL pyOpenSSL pin is only a validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | R47 install and reboot subsets ran on Fedora and Rocky, then were invalidated by #237; no complete cell passed. AlmaLinux and CentOS Stream have no R47 runs. |
-| Multi-Node | **NOT VALIDATED** | No R47 three-guest runs; all four topology cells remain untested. |
+| Single-Node | **NOT VALIDATED** | R49 exploratory subsets ran on all four operating systems but were invalidated for final validation by #240; no complete cell passed. |
+| Multi-Node | **NOT VALIDATED** | No R49 three-guest runs occurred; all four topology cells remain untested on the next candidate. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 
@@ -35,4 +35,4 @@ The target matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Str
 
 ## Current answer to the audit question
 
-The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. R48 RPMs were built and staged but never installed; the set was superseded before testing because it lacked the #234 facts migration. R47 runtime probes were invalidated by #237. The R49 RPM set must be built from the corrected common source before any matrix scenario counts. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance, and all full-cell scenario sets remain outstanding. No production readiness claim is made.
+The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. R49 was built and explored on Single-Node guests for all four operating systems, then invalidated by #240. Its scenario observations remain useful diagnostic history but do not pass any cell. The local #240 fix and #233 cleanup-helper change passed the complete local suite; signed commits, push and green CI are required before a coordinated Release 50 build. No R49 Multi-Node tests ran. Concurrency, comprehensive isolation negatives, resource exhaustion, latency, external storage, database outage recovery, controlled performance and all complete-cell scenario sets remain outstanding. No production readiness claim is made.

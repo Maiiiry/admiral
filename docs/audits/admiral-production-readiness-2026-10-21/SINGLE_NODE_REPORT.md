@@ -1,9 +1,8 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 49 is being prepared; no R49 RPM or guest test exists yet.** The R47 Fedora Rawhide and Rocky Linux 10 Single-Node diagnostic subsets reproduced stale post-reboot availability (#237); those results are invalidated. R48 was superseded before any VM test because its `admiral-common` pin lacked the #234 facts fix. Matrix completion remains 0/8.<br>
-R48 package pins and hashes remain in `evidence/release48-candidate.md` and `evidence/release48-rpm-sha256.txt`, but do not count. R47 guest results are in `evidence/release47-invalidated-single-node.md`. The #237 fix is in R48; #234's root fix is pushed at `be20545` with CI green, and #238's helper fix is pushed with CI green. R49 must be built before runtime validation.<br>
-Release 46 Single-Node probes and Release 47 diagnostic subsets do not count toward the next candidate. The Release 45 stale-task replay after reboot (`ADM-F-009` / #229) remains a prior-candidate finding; see `evidence/fedora-r45-stale-task-replay.md`.
+Current status: **NOT VALIDATED — Release 49 exploratory subsets ran on all four OSes, then #240 invalidated that package set for final validation.** The R49 install, workload, local backup/restore, reboot, service-recovery and targeted #227/#228/#229 observations are documented in `evidence/release49-exploratory-single-node.md`; none completes a full cell or counts toward the next candidate. Matrix completion remains 0/8.<br>
+Issue #240's client fix passed the full local CLI suite, vet and build, and is pushed as `admiralctl@5ed381d`; CI run [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667) is green. A rebuilt six-RPM candidate is still required. The next candidate must start from fresh overlays and repeat all required Single-Node scenarios. Older R46–R48 observations remain candidate-specific history. The Release 45 stale-task replay is documented in `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Historical Release 47 diagnostic execution — invalidated, not cell passes
 

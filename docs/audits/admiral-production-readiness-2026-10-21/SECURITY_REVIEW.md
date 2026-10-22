@@ -1,8 +1,8 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 49 is being prepared; no R49 RPM has been built.** R47 installation baselines confirmed SELinux Enforcing, but no R48 or R49 dedicated authorization, isolation, socket, or secret-negative tests were run. Matrix: 0/8.<br>
-Release 45/46 security probes, R47 installation checks and the uninstalled R48 package set do not validate R49. Findings, including source fixes, remain open until retested against its exact package set. The active systems are four x86_64 distributions.
+Current status: **NOT VALIDATED — R49 has scoped security observations on four Single-Node installs, then was invalidated by #240.** All four guests retained SELinux enforcing, services bound the control-plane/API listeners to loopback, and anonymous `/api/v1/status` requests returned 401. Fedora/Rocky also have scoped isolation negatives. This does not complete isolation, socket, secret, tenant or Multi-Node trust testing; matrix is 0/8.<br>
+The complete R49 exploratory record is in `evidence/release49-exploratory-single-node.md`. These candidate-specific observations do not validate the next package set. Open security findings and the next-candidate regressions remain required.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 
 ## Controls observed in source and packaging

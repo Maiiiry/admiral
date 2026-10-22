@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 49 is being prepared; no R49 RPM has been built.** R47 provided two install elapsed times and one provision sample on each of Fedora and Rocky, but no controlled workload series or latency percentiles. These invalidated diagnostic numbers and the uninstalled R48 package set do not validate R49 performance or a matrix cell; completion remains 0/8.
+Current status: **NOT VALIDATED — Release 49 exploratory installs and provisions ran on four Single-Node guests, then #240 invalidated the candidate.** The one-off startup and operation durations are not a controlled performance series. No progressive load, resource-pressure, sample-percentile or Multi-Node throughput test has been run on the next candidate; matrix remains 0/8.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 

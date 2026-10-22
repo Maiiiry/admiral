@@ -1,20 +1,30 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 47 was built and installed on fresh Fedora Rawhide and Rocky Linux 10 Single-Node guests; reboot probes found stale `effective_availability` (#237), invalidating R47. Release 48 was built from root package commit `5bb18b1` and staged, but no VM run began. Before guest testing, issue #234 identified deprecated fact injection in its `admiral-common` pin (`d68dfa0`); R48 was superseded because it did not contain the fix. The source fix is pushed at root `be20545` with CI green. Release 49 pins/specs and helper defaults are prepared locally; the build is pending. R48 identity is recorded in `evidence/release48-candidate.md`; R47 failure details are in `evidence/release47-invalidated-single-node.md`.<br>
-**Current matrix completion is 0/8; no complete cell has passed.** No R48 VM scenario ran, and no R49 scenario has started. The Fedora/Rocky Single-Node subsets are invalidated R47 evidence; all eight R49 cells are NOT TESTED. Release 46 targeted probes and all older-candidate results are historical and do not count. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception.<br>
+Release 47 was invalidated by stale `effective_availability` (#237). Release 48 was superseded before VM testing because its `admiral-common` pin lacked the #234 facts fix. Release 49 was built and installed on fresh Single-Node guests for all four target OSes, but exploratory concurrency testing exposed #240: one structured capacity rejection was retried and produced four failed operations/tasks. R49 is invalidated for final validation. Details and raw-log hashes are in `evidence/release49-exploratory-single-node.md` and `evidence/release49-exploratory-single-node-sha256.txt`.<br>
+**Current matrix completion is 0/8; no complete cell has passed.** R49's four Single-Node runs are scenario-level evidence only and are invalidated for the next candidate; no R49 Multi-Node run occurred. All eight next-candidate cells remain **NOT TESTED**. Rocky Linux 10 is in scope with the separately documented EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` seed exception. #240's local fix and regression test passed with the complete local suites on 2026-10-22 and were pushed as `admiralctl@5ed381d`; green upstream CI is confirmed in run [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667). A rebuilt six-RPM candidate is still required.<br>
 Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, all x86_64, each in Single-Node and Multi-Node (8 cells). Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers.
 
-| Target OS (x86_64) | Single-Node — Release 49 | Multi-Node — Release 49 |
+| Target OS (x86_64) | Single-Node — next exact candidate | Multi-Node — next exact candidate |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED on R49 | NOT TESTED on R49 |
-| Rocky Linux 10 | NOT TESTED on R49 | NOT TESTED on R49 |
-| AlmaLinux 10 | NOT TESTED on R49 | NOT TESTED on R49 |
-| CentOS Stream 10 | NOT TESTED on R49 | NOT TESTED on R49 |
+| Fedora Rawhide | NOT TESTED on next candidate | NOT TESTED on next candidate |
+| Rocky Linux 10 | NOT TESTED on next candidate | NOT TESTED on next candidate |
+| AlmaLinux 10 | NOT TESTED on next candidate | NOT TESTED on next candidate |
+| CentOS Stream 10 | NOT TESTED on next candidate | NOT TESTED on next candidate |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. Fedora/Rocky R47 subsets reproduced stale availability after reboot and are explicitly invalidated. R48 was superseded before testing by the #234 source fix. All eight R49 cells require fresh exact-candidate execution.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R49 exploratory Single-Node subsets include positive install/lifecycle/recovery observations on all four OSes, but the later #240 defect invalidates them for the next candidate. No R49 Multi-Node cell ran. All eight next-candidate cells require fresh exact-package execution.
 
 Status vocabulary: **PASS** means the exact scenario was run and evidence exists; **FAIL** means it ran and violated its expected result; **BLOCKED** means a required resource or prerequisite was unavailable; **INVALIDATED** means a later defect requiring a fix voided that candidate's evidence; **NOT TESTED** means no execution evidence exists. “PASS (prior RC)” is scoped to the named prior test and does not validate the full audit cell.
+
+## Release 49 exploratory Single-Node subset — invalidated, not cell passes
+
+| Test ID | OS coverage | Result | Evidence |
+|---|---|---|---|
+| R49-SN-INSTALL / PROVISION / RETRY / HTTP | Fedora Rawhide, Rocky Linux 10, AlmaLinux 10, CentOS Stream 10 | PASS for each named scenario only: exact six RPM install, setup, same-key replay, actual app HTTP 200, unauthenticated API 401. | `evidence/release49-exploratory-single-node.md`; restricted raw logs and checksums alongside it. |
+| R49-SN-BACKUP / RESTART / REBOOT | All four OSes | PASS for local DB backup/restore, service restart and workload recovery, host reboot with SQL marker persistence. Reboot state briefly reported unavailable/stopped until fresh health reports arrived. | Same report; no S3 or volume-backup assertion. |
+| R49-SN-FAILED-SERVICE / DEPROVISION-FAULT | All four OSes | PASS for targeted #227/#228 regressions: failed required service returned failed/unhealthy/unavailable; injected Podman cleanup error returned failed with residue; retry after restoring Podman removed residue. | Same report; scenario-level only. |
+| R49-SN-TERMINAL-TASK | All four OSes | PASS for this targeted #229 check: after `admirald` restart, no additional provision operation appeared, three containers remained and the SQL marker persisted. | Same report; no in-flight lease/callback or Multi-Node queue replay test. |
+| R49-SN-CAPACITY-REJECTION | Rocky Linux 10 | **FAIL / candidate invalidated — #240:** one capacity rejection was retried three times, resulting in four failed operation/task records. No workload or capacity reservation leaked. | Issue #240 reproduction and restricted `rocky-single-concurrency-diagnostic.log`. |
 
 ## Release 47 diagnostic subsets — invalidated, not cell passes
 
