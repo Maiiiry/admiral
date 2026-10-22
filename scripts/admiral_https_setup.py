@@ -93,24 +93,6 @@ def detect_public_ip():
     return None
 
 
-def get_local_ips():
-    import fcntl
-    import struct
-
-    ips = set()
-    for iface in os.listdir("/sys/class/net/"):
-        if iface == "lo":
-            continue
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            ifr = struct.pack("256s", iface[:15].encode())
-            raw = fcntl.ioctl(sock, 0x8915, ifr)
-            ips.add(socket.inet_ntoa(raw[20:24]))
-        except Exception:
-            continue
-    return ips
-
-
 def normalize_domain_input(value):
     if not value:
         fail("Base domain cannot be empty.")
@@ -170,7 +152,6 @@ def validate_domain(domain):
     apps_domain = f"apps.{domain}"
 
     public_ip = detect_public_ip()
-    local_ips = get_local_ips()
 
     info(f"Base domain:    {domain}")
     info(f"Apps domain:    {apps_domain}")
