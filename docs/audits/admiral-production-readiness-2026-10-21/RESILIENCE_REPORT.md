@@ -1,8 +1,8 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 47 is invalidated by #237; Release 48 is not built.** A controlled host reboot ran on the two R47 Single-Node guests and exposed stale availability; no other R47 fault injection ran. Current matrix: 0/8.<br>
-Release 45/46 resilience results and the R47 reboot observations do not validate the next candidate. The Release 45 stale-task replay remains finding `ADM-F-009` / #229; it must be rerun on the exact new package set, including Multi-Node.
+Current status: **NOT VALIDATED — Release 48 is built and staged but has not been installed.** A controlled host reboot ran on the two R47 Single-Node guests and exposed stale availability; no other R47 fault injection ran. Current matrix: 0/8.<br>
+Release 45/46 resilience results and the R47 reboot observations do not validate R48. The Release 45 stale-task replay remains finding `ADM-F-009` / #229; it must be rerun on the exact R48 package set, including Multi-Node.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.
 

@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 47 was installed and partially exercised on Fedora Rawhide and Rocky Linux 10 Single-Node guests, but is invalidated by the new MEDIUM finding `ADM-F-010` / #237. The next coordinated candidate has not been built; completion remains 0/8. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. R46 and R47 probes are historical until rerun on the rebuilt candidate. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and the other findings remain open pending exact-candidate regressions.
+Release 47 was installed and partially exercised on Fedora Rawhide and Rocky Linux 10 Single-Node guests, but is invalidated by the new MEDIUM finding `ADM-F-010` / #237. Release 48 is built and staged; no VM test has started and completion remains 0/8. The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node. R46 and R47 probes are historical until rerun on R48. Rocky's pinned EPEL package is a visible seed exception, not a product fix. #229 and the other findings remain open pending exact-candidate regressions. Harness issue #238 is also open; its fix awaits a root commit and CI before guest execution.
 
 Severity follows the audit criteria. These findings remain open; a source change or passing component test does not close a live-system finding. Each has a proposed regression check and remains open until a fix is revalidated in the affected topologies.
 
@@ -139,6 +139,19 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Recommendation:** Treat no health report as unknown, nonhealthy workload observations as unavailable, and an observation older than two health-check intervals (60 seconds) as stale/unavailable while preserving last-known runtime fields.
 * **Regression test:** Cover unknown-before-first-report, stale healthy, fresh stopped/unhealthy, node outage precedence, and fresh healthy recovery without changing placement or the last observation. Reboot a workload guest on the rebuilt candidate and require unavailable/unknown until a fresh healthy report; repeat on a Multi-Node worker.
 * **Fix status:** Implemented and pushed as `admirald@d50523f7a75b0a1606c761423de9d1cdc844425e`; focused regression passed 10/10, full Go tests, `go vet` and `go build` passed locally, and GitHub CI is green. Issue remains open until Release 48 runtime regression.
+
+## ADM-F-011 — Existing-node bootstrap helper selects a stale RPM release ([#238](https://github.com/admiral-project/admiral/issues/238))
+
+* **Severity:** LOW (validation integrity).
+* **Component:** Release-validation audit scripts.
+* **Environment:** Root `main`, with Release 48 as the coordinated candidate.
+* **Reproduction:** Run `docs/audits/admiral-production-readiness-2026-10-21/scripts/bootstrap-candidate-node.sh el10 ...` without setting `ADMIRAL_RC_RELEASE`; inspect the selected `rc5-r${release}` repository path and requested package NEVRAs.
+* **Expected:** Both Single-Node install and existing-node bootstrap helpers default to the same coordinated Release as all six Admiral RPM specs.
+* **Observed:** The Single-Node helper defaulted to 48 while the bootstrap helper defaulted to 46, which would select an old repository and request old package versions. Static inspection caught this before an R48 guest run; no VM was misdirected.
+* **Evidence:** `scripts/bootstrap-candidate-node.sh` had a stale literal default. `scripts/test_audit_release_defaults.py` now compares both helper defaults against all six RPM spec `Release` values; the root script suite passed 112 tests locally.
+* **Root cause:** Candidate release was duplicated as independent hard-coded values in two helpers, with no synchronization check.
+* **Recommendation:** Keep the release defaults aligned and retain the regression check so a coordinated spec bump cannot leave either helper stale.
+* **Regression test:** Run the root script test suite and `bash -n` on both helpers; verify default selection points to the active staged candidate. The regression test passed locally; the follow-up root commit and CI are pending. Keep #238 open until CI passes and the exact-candidate helper path is verified.
 
 ## Additional open source-review findings
 

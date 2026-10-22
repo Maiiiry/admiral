@@ -1,9 +1,9 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — Release 47 is invalidated and no Release 48 RPM has been built.** No Release 47 three-guest cell ran; matrix completion is 0/8. Rocky Linux 10 is in scope; its earlier dependency failure is historical and the seed compatibility pin must be recorded for every Rocky guest.<br>
-R47 source pins and exact RPM hashes are in `evidence/release47-candidate.md`; diagnostic Single-Node evidence and invalidation are in `evidence/release47-invalidated-single-node.md`. The fix is pushed at `admirald@d50523f` with CI green. R48 root pins and spec bumps are prepared locally; root CI, the Release 48 build, and all three-guest regressions remain pending.<br>
-All Release 42–47 Multi-Node observations are historical or not run and do not validate the next candidate. Findings remain open pending exact-candidate three-guest regression runs.
+Current status: **NOT VALIDATED — Release 48 is built and staged, but no R48 three-guest cell has run.** Release 47 is invalidated; matrix completion is 0/8. Rocky Linux 10 is in scope; its earlier dependency failure is historical and the seed compatibility pin must be recorded for every Rocky guest.<br>
+R48 source pins and exact RPM hashes are in `evidence/release48-candidate.md`; R47 diagnostic Single-Node evidence and invalidation are in `evidence/release47-invalidated-single-node.md`. The #237 fix is included at `admirald@d50523f` with CI green. The audit-helper issue #238 must be committed and root CI green before R48 three-guest runs.<br>
+All Release 42–47 Multi-Node observations are historical or not run and do not validate R48. Findings remain open pending exact-candidate three-guest regression runs.
 
 ## Observed architecture and guarantees
 
@@ -106,4 +106,4 @@ Loss of the hub or central database blocks new control-plane operations and call
 
 ## Target matrix status and next executions
 
-The target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). No R47 three-guest execution has run, and R47 is invalidated by #237. Historical three-node installs, placement, worker outages/rejoins and other probes do not validate the next candidate. Full cell coverage remains incomplete. Required scenarios include node registration, placement, outage/rejoin/removal, hub restart and peer recovery, partitions, database outage, task/callback interruption, authorization negatives, cross-workload isolation and performance measurement. Do not label this hub-and-spoke setup HA.
+The target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). No R48 three-guest execution has run; R47 is invalidated by #237. Historical three-node installs, placement, worker outages/rejoins and other probes do not validate R48. Full cell coverage remains incomplete. Required scenarios include node registration, placement, outage/rejoin/removal, hub restart and peer recovery, partitions, database outage, task/callback interruption, authorization negatives, cross-workload isolation and performance measurement. Do not label this hub-and-spoke setup HA.

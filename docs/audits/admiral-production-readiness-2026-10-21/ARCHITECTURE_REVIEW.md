@@ -2,7 +2,7 @@
 
 Audit started: 2026-10-21 UTC<br>
 Current proposed common RPM payload source: `admiral-commons@d68dfa0a82ae6c2035c566260e0be2be27c0e200` (`origin/main`). Release 47 pins in the Makefile/specs are historical; its six RPMs were built and partially exercised on Fedora Rawhide and Rocky Linux 10 before #237 invalidated the candidate.<br>
-The #237 availability fix is pushed to `admirald/main` at `d50523f7a75b0a1606c761423de9d1cdc844425e`, with GitHub CI green. Release 48 pins and all six package `Release` fields are prepared locally; the root commit and CI remain pending before the build. Current matrix completion remains 0/8. R47 identity is in `evidence/release47-candidate.md`; diagnostic guest observations are in `evidence/release47-invalidated-single-node.md`.<br>
+The #237 availability fix is included in the built R48 packages at `admirald@d50523f7a75b0a1606c761423de9d1cdc844425e`, with GitHub CI green. The coordinated package commit is root `5bb18b17cddce3c1a50e3bd19fe6b0ac4cae36b7`, with root CI green; the six RPMs are staged locally. No R48 VM test has run; matrix completion remains 0/8. Issue #238 tracks a separate audit-helper stale-release default found before guest execution. R47 identity and diagnostics are in its candidate and invalidation evidence files.<br>
 Release 46 and earlier guest results are historical. The Release 45 HIGH stale-task replay (`ADM-F-009` / #229) invalidated that candidate; see `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Scope and evidence rules

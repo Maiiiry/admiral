@@ -6,7 +6,7 @@ Disposition: **historical Release 46 dependency-resolution block; not an Admiral
 
 ## Scope change
 
-At the time of this Release 46 run, the active target matrix had temporarily removed Rocky Linux 10 after its fresh-install EPEL dependency chain could not be satisfied in the tested Rocky Linux 10.2 environment. The current Release 47 target matrix again includes Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each in Single-Node and Multi-Node. Rocky's prepared seed pins the archived EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` RPM to keep the seed's Python dependency set coherent; this historical Release 46 probe remains excluded from matrix evidence.
+At the time of this Release 46 run, the active target matrix had temporarily removed Rocky Linux 10 after its fresh-install EPEL dependency chain could not be satisfied in the tested Rocky Linux 10.2 environment. The current matrix includes Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each in Single-Node and Multi-Node. Rocky's prepared seed pins the archived EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` RPM to keep the seed's Python dependency set coherent; this historical Release 46 probe remains excluded from matrix evidence.
 
 ## Observed dependency conflict
 
