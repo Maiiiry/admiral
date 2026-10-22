@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R49 security probes were exploratory and invalidated by #240; R50 was superseded before VM testing by #244.** No R50 or Release 51 security scenario has run; matrix is 0/8.<br>
+Current status: **NOT VALIDATED — R49 security probes were exploratory and invalidated by #240; R50 was superseded before VM testing by #244.** R51 is built, but no R51 security scenario has run; matrix is 0/8.<br>
 The R49 exploratory record is in `evidence/release49-exploratory-single-node.md`. Those observations are historical only. Release 51 must still exercise isolation, sockets, secrets, tenant boundaries and Multi-Node trust on fresh guests; open security findings remain required.
 Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
 

@@ -2,7 +2,7 @@
 
 Audit started: 2026-10-21 UTC<br>
 Release 49 exploratory Single-Node tests found #240 and invalidated that candidate. Release 50 was built and repository-queried, but no VM used it; build review found the missing `admiral-common` `%check` tracked by #244, so R50 was superseded before runtime testing. Matrix completion remains 0/8. R49 exploratory evidence and the R50 build record are candidate-specific history.<br>
-The #240 fix, #239 harness fix, and proposed #244 common-package check are committed to `main` with green CI. Release 51 preparation now increments all six RPMs, pins the root common source to `012a571f3ffb2f4bfc58eed82c5778a92d07314c`, and points the audit helpers at Release 51. Its package-preparation commit, CI and six-RPM build remain pending. No R50 or older result counts toward the matrix.
+The #240 fix, #239 harness fix and #244 common-package check are committed to `main` with green CI. Release 51 is built from preparation commit `59e6eeb553ac38d7fa995863202a1180f50c02c5`, all six package checks passed, and exact NEVRAs are available through both isolated local repositories. No VM has installed it yet; no R50 or older result counts toward the matrix.
 
 ## Scope and evidence rules
 
