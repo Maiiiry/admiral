@@ -61,7 +61,7 @@
 
 - name: Determine known host inventory lookup key
   set_fact:
-    admiral_known_host_lookup_key: "{{ fleet_node_id | default(fleet_node_id_effective | default(ansible_hostname)) }}"
+    admiral_known_host_lookup_key: "{{ fleet_node_id | default(fleet_node_id_effective | default(ansible_facts['hostname'])) }}"
   when: admiral_known_hosts_file.stat.exists
 
 - name: Resolve current node entry from Admirald-managed inventory

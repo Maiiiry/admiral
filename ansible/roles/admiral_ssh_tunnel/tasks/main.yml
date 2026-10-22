@@ -3,7 +3,7 @@
   command:
     cmd: >
       ssh-keygen -t ed25519 -f /etc/admiral/ssh/id_ed25519
-      -C "admiral-tunnel@{{ ansible_fqdn }}"
+      -C "admiral-tunnel@{{ ansible_facts['fqdn'] }}"
       -N ""
     creates: /etc/admiral/ssh/id_ed25519
 

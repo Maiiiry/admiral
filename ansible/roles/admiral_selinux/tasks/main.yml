@@ -48,7 +48,7 @@
       - httpd_can_network_connect
   register: admiral_httpd_can_network_connect
   changed_when: false
-  when: ansible_selinux.status == 'enabled'
+  when: ansible_facts.get('selinux', {}).get('status', 'disabled') == 'enabled'
 
 - name: Allow the reverse proxy to reach loopback services
   command:
@@ -58,5 +58,5 @@
       - httpd_can_network_connect
       - "on"
   when:
-    - ansible_selinux.status == 'enabled'
+    - ansible_facts.get('selinux', {}).get('status', 'disabled') == 'enabled'
     - "'--> on' not in admiral_httpd_can_network_connect.stdout"

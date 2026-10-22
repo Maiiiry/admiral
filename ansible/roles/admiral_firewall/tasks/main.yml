@@ -26,7 +26,7 @@
     - nf_conntrack
     - nft_ct
     - nft_reject_ipv4
-  when: ansible_distribution in ['AlmaLinux', 'Rocky']
+  when: ansible_facts['distribution'] in ['AlmaLinux', 'Rocky']
 
 - name: Check if firewalld is in failed state
   command: firewall-cmd --state

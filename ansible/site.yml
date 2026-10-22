@@ -192,9 +192,9 @@
     - name: Verify single-node worker and portal registrations
       assert:
         that:
-          - ansible_hostname in ((admiral_single_node_nodes.stdout | from_json) | map(attribute='id') | list)
-          - (ansible_hostname ~ '-portal') in ((admiral_single_node_nodes.stdout | from_json) | map(attribute='id') | list)
+          - ansible_facts['hostname'] in ((admiral_single_node_nodes.stdout | from_json) | map(attribute='id') | list)
+          - (ansible_facts['hostname'] ~ '-portal') in ((admiral_single_node_nodes.stdout | from_json) | map(attribute='id') | list)
         fail_msg: >-
-          Single-node install must register both '{{ ansible_hostname }}'
-          and '{{ ansible_hostname }}-portal' with admirald.
+          Single-node install must register both '{{ ansible_facts['hostname'] }}'
+          and '{{ ansible_facts['hostname'] }}-portal' with admirald.
       when: admiral_install_mode == 'single-node'

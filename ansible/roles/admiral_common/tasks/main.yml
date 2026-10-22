@@ -9,7 +9,7 @@
     path: /usr/lib/systemd/system/systemd-resolved.service
   register: admiral_fedora_systemd_resolved_unit
   when:
-    - ansible_distribution == 'Fedora'
+    - ansible_facts['distribution'] == 'Fedora'
     - not (admiral_dev_mode | default(false) | bool)
 
 - name: Apply Fedora secure resolver policy
@@ -47,29 +47,29 @@
           Secure Fedora installs must keep systemd-resolved unicast DNS
           available without enabling LLMNR listeners.
   when:
-    - ansible_distribution == 'Fedora'
+    - ansible_facts['distribution'] == 'Fedora'
     - not (admiral_dev_mode | default(false) | bool)
     - admiral_fedora_systemd_resolved_unit is defined
     - admiral_fedora_systemd_resolved_unit.stat.exists | default(false)
 
 - name: Install DNF plugins for Admiral COPR
   dnf:
-    name: "{{ 'dnf5-plugins' if ansible_distribution == 'Fedora' else 'dnf-plugins-core' }}"
+    name: "{{ 'dnf5-plugins' if ansible_facts['distribution'] == 'Fedora' else 'dnf-plugins-core' }}"
     state: present
 
 - name: Enable EPEL repository
   dnf:
     name: epel-release
     state: present
-  when: ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']
+  when: ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']
 
 - name: Enable EL10 CRB repository
   command:
     cmd: dnf config-manager --set-enabled crb
   changed_when: false
   when:
-    - ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']
-    - ansible_distribution_major_version | int == 10
+    - ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']
+    - ansible_facts['distribution_major_version'] | int == 10
 
 - name: Remove obsolete Caddy COPR repository
   file:
@@ -110,22 +110,22 @@
   when:
     - not (admiral_dev_mode | default(false) | bool)
     - >-
-      (ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
-      (ansible_distribution_major_version | int) == 10) or
-      (ansible_distribution == 'Fedora' and
-      (ansible_distribution_major_version | int) >= 44)
+      (ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
+      (ansible_facts['distribution_major_version'] | int) == 10) or
+      (ansible_facts['distribution'] == 'Fedora' and
+      (ansible_facts['distribution_major_version'] | int) >= 44)
 
 - name: Install automatic security update support
   dnf:
-    name: "{{ 'dnf5-plugin-automatic' if ansible_distribution == 'Fedora' else 'dnf-automatic' }}"
+    name: "{{ 'dnf5-plugin-automatic' if ansible_facts['distribution'] == 'Fedora' else 'dnf-automatic' }}"
     state: present
   when:
     - not (admiral_dev_mode | default(false) | bool)
     - >-
-      (ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
-      (ansible_distribution_major_version | int) == 10) or
-      (ansible_distribution == 'Fedora' and
-      (ansible_distribution_major_version | int) >= 44)
+      (ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
+      (ansible_facts['distribution_major_version'] | int) == 10) or
+      (ansible_facts['distribution'] == 'Fedora' and
+      (ansible_facts['distribution_major_version'] | int) >= 44)
 
 - name: Configure automatic security updates
   lineinfile:
@@ -142,24 +142,24 @@
   when:
     - not (admiral_dev_mode | default(false) | bool)
     - >-
-      (ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
-      (ansible_distribution_major_version | int) == 10) or
-      (ansible_distribution == 'Fedora' and
-      (ansible_distribution_major_version | int) >= 44)
+      (ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
+      (ansible_facts['distribution_major_version'] | int) == 10) or
+      (ansible_facts['distribution'] == 'Fedora' and
+      (ansible_facts['distribution_major_version'] | int) >= 44)
 
 - name: Enable automatic security updates
   systemd:
-    name: "{{ 'dnf5-automatic.timer' if ansible_distribution == 'Fedora' else 'dnf-automatic.timer' }}"
+    name: "{{ 'dnf5-automatic.timer' if ansible_facts['distribution'] == 'Fedora' else 'dnf-automatic.timer' }}"
     enabled: true
     state: started
     daemon_reload: true
   when:
     - not (admiral_dev_mode | default(false) | bool)
     - >-
-      (ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
-      (ansible_distribution_major_version | int) == 10) or
-      (ansible_distribution == 'Fedora' and
-      (ansible_distribution_major_version | int) >= 44)
+      (ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux'] and
+      (ansible_facts['distribution_major_version'] | int) == 10) or
+      (ansible_facts['distribution'] == 'Fedora' and
+      (ansible_facts['distribution_major_version'] | int) >= 44)
 
 - name: Install production time synchronization
   dnf:
@@ -210,11 +210,11 @@
   register: admiral_caddy_selinux_context
   changed_when: false
   when:
-    - ansible_distribution == 'Fedora'
-    - ansible_distribution_major_version | int >= 45
+    - ansible_facts['distribution'] == 'Fedora'
+    - ansible_facts['distribution_major_version'] | int >= 45
     - admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node']
     - not (admiral_dev_mode | default(false) | bool)
-    - ansible_selinux.status | default('disabled') == 'enabled'
+    - ansible_facts.get('selinux', {}).get('status', 'disabled') | default('disabled') == 'enabled'
 
 - name: Read SELinux port mappings when Fedora confines Caddy
   command:
@@ -644,7 +644,7 @@
     - name: Determine stable SSH delivery identifier
       set_fact:
         admiral_ssh_delivery_id: >-
-          {{ (fleet_node_id | default(harbor_node_id | default(ansible_hostname)))
+          {{ (fleet_node_id | default(harbor_node_id | default(ansible_facts['hostname'])))
              | regex_replace('[^A-Za-z0-9_.-]', '_') }}
       when: admiral_install_mode in ['single-node', 'admin-node', 'admin-portal-node', 'worker-node', 'portal-node']
 
@@ -829,7 +829,7 @@
     - name: Determine spoke SSH delivery identifier
       set_fact:
         admiral_ssh_delivery_id: >-
-          {{ (fleet_node_id | default(harbor_node_id | default(ansible_hostname)))
+          {{ (fleet_node_id | default(harbor_node_id | default(ansible_facts['hostname'])))
              | regex_replace('[^A-Za-z0-9_.-]', '_') }}
 
     - name: Generate spoke administrative SSH identity on the Admin controller

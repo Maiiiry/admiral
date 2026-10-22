@@ -29,12 +29,12 @@
   set_fact:
     harbor_node_id_effective: >-
       {{
-        (ansible_hostname ~ '-portal')
+        (ansible_facts['hostname'] ~ '-portal')
         if admiral_install_mode in ['single-node', 'admin-portal-node']
         else (
           fleet_node_id
           | default((admiral_known_hosts_inventory.next.portal.node_id | default('')), true)
-          | default(ansible_hostname)
+          | default(ansible_facts['hostname'])
         )
       }}
 
@@ -260,12 +260,12 @@
   command: >
     /usr/bin/admiralctl nodes register
     --id "{{ harbor_node_id_effective }}"
-    --hostname "{{ ansible_fqdn }}"
-    --ip "{{ ansible_default_ipv4.address }}"
+    --hostname "{{ ansible_facts['fqdn'] }}"
+    --ip "{{ ansible_facts['default_ipv4']['address'] }}"
     --wireguard-ip "{{ admiral_wireguard_ip | default('') }}"
     --public-ip "{{ fleet_public_ip | default('') }}"
     --role portal
-    --os "{{ ansible_distribution ~ ' ' ~ ansible_distribution_version }}"
+    --os "{{ ansible_facts['distribution'] ~ ' ' ~ ansible_facts['distribution_version'] }}"
   delegate_to: localhost
   environment:
     ADMIRAL_SERVER_URL: "{{ admiral_control_plane_url }}"

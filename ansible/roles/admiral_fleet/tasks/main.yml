@@ -15,7 +15,7 @@
       - container_manage_cgroup
   register: admiral_container_manage_cgroup
   changed_when: false
-  when: ansible_selinux.status == 'enabled'
+  when: ansible_facts.get('selinux', {}).get('status', 'disabled') == 'enabled'
 
 - name: Allow rootless containers to manage delegated cgroups
   command:
@@ -25,7 +25,7 @@
       - container_manage_cgroup
       - "on"
   when:
-    - ansible_selinux.status == 'enabled'
+    - ansible_facts.get('selinux', {}).get('status', 'disabled') == 'enabled'
     - "'--> on' not in admiral_container_manage_cgroup.stdout"
 
 - name: Allocate non-overlapping subordinate IDs for rootless workloads
@@ -106,12 +106,12 @@
   set_fact:
     fleet_node_id_effective: >-
       {{
-        ansible_hostname
+        ansible_facts['hostname']
         if admiral_install_mode == 'single-node'
         else (
           fleet_node_id
           | default((admiral_known_hosts_inventory.next.worker.node_id | default('')), true)
-          | default(ansible_hostname)
+          | default(ansible_facts['hostname'])
         )
       }}
 
@@ -176,7 +176,7 @@
   copy:
     dest: /etc/admiral/fleet.env
     content: |
-      ADMIRAL_FLEET_NODE_ID={{ ansible_hostname if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname))) }}
+      ADMIRAL_FLEET_NODE_ID={{ ansible_facts['hostname'] if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_facts['hostname']))) }}
       ADMIRAL_FLEET_TOKEN={{ fleet_node_token_value }}
       ADMIRAL_API_URL={{ admiral_fleet_api_url | default(admiral_control_plane_url) }}
       ADMIRAL_API_CA_FILE=/etc/admiral/tls/ca.pem
@@ -232,13 +232,13 @@
 - name: Register node with admirald before starting Fleet
   command: >
     /usr/bin/admiralctl nodes register
-    --id "{{ ansible_hostname if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname))) }}"
-    --hostname "{{ ansible_fqdn }}"
-    --ip "{{ ansible_default_ipv4.address }}"
+    --id "{{ ansible_facts['hostname'] if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_facts['hostname']))) }}"
+    --hostname "{{ ansible_facts['fqdn'] }}"
+    --ip "{{ ansible_facts['default_ipv4']['address'] }}"
     --role "{{ fleet_node_role | default('worker') }}"
     --wireguard-ip "{{ admiral_wireguard_ip | default('') }}"
     --public-ip "{{ fleet_public_ip | default('') }}"
-    --os "{{ ansible_distribution ~ ' ' ~ ansible_distribution_version }}"
+    --os "{{ ansible_facts['distribution'] ~ ' ' ~ ansible_facts['distribution_version'] }}"
   delegate_to: localhost
   environment:
     ADMIRAL_SERVER_URL: "{{ admiral_control_plane_url }}"
@@ -298,7 +298,7 @@
       PublicKey = {{ admiral_wg_public_key.stdout | trim }}
       AllowedIPs = {{ admiral_wireguard_ip }}/32
     dest: >-
-      /etc/wireguard/peers.d/{{ (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname)))
+      /etc/wireguard/peers.d/{{ (fleet_node_id_effective | default(fleet_node_id | default(ansible_facts['hostname'])))
       | regex_replace('[^A-Za-z0-9_.-]', '_') }}.conf
     owner: root
     group: root
@@ -324,7 +324,7 @@
 - name: Persist the registered worker's WireGuard peer in the hub boot configuration
   blockinfile:
     path: /etc/wireguard/wg-admiral.conf
-    marker: "# {mark} ADMIRAL WORKER PEER {{ (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname))) | regex_replace('[^A-Za-z0-9_.-]', '_') }}"
+    marker: "# {mark} ADMIRAL WORKER PEER {{ (fleet_node_id_effective | default(fleet_node_id | default(ansible_facts['hostname']))) | regex_replace('[^A-Za-z0-9_.-]', '_') }}"
     block: |
       [Peer]
       PublicKey = {{ admiral_wg_public_key.stdout | trim }}
@@ -357,7 +357,7 @@
           - /usr/bin/admiralctl
           - nodes
           - show
-          - "{{ ansible_hostname if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname))) }}"
+          - "{{ ansible_facts['hostname'] if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_facts['hostname']))) }}"
       delegate_to: localhost
       environment:
         ADMIRAL_SERVER_URL: "{{ admiral_control_plane_url }}"
@@ -406,7 +406,7 @@
     - name: Fail installation when the worker heartbeat is missing
       fail:
         msg: >-
-          Fleet worker '{{ ansible_hostname if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_hostname))) }}'
+          Fleet worker '{{ ansible_facts['hostname'] if admiral_install_mode == 'single-node' else (fleet_node_id_effective | default(fleet_node_id | default(ansible_facts['hostname']))) }}'
           did not report a healthy heartbeat within 120 seconds. Service state:
           {{ admiral_fleet_service_state.stdout | default('unavailable') }}.
           Recent Fleet journal:

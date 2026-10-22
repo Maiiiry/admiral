@@ -159,7 +159,10 @@ done
         self.assertGreater(boolean_position, install_position)
         self.assertIn("container_manage_cgroup", fleet_tasks)
         self.assertIn("- setsebool", fleet_tasks)
-        self.assertIn("ansible_selinux.status == 'enabled'", fleet_tasks)
+        self.assertIn(
+            "ansible_facts.get('selinux', {}).get('status', 'disabled') == 'enabled'",
+            fleet_tasks,
+        )
 
     def test_cgroup_selinux_check_only_applies_to_workload_nodes(self) -> None:
         content = INSTALLER.read_text(encoding="utf-8")
@@ -960,16 +963,16 @@ done
         self.assertIn("else 'dnf-automatic' }}", common)
         self.assertIn("else 'dnf-automatic.timer' }}", common)
         self.assertIn(
-            "'dnf5-plugin-automatic' if ansible_distribution == 'Fedora' else 'dnf-automatic'",
+            "'dnf5-plugin-automatic' if ansible_facts['distribution'] == 'Fedora' else 'dnf-automatic'",
             common,
         )
         self.assertIn(
-            "'dnf5-automatic.timer' if ansible_distribution == 'Fedora' else 'dnf-automatic.timer'",
+            "'dnf5-automatic.timer' if ansible_facts['distribution'] == 'Fedora' else 'dnf-automatic.timer'",
             common,
         )
-        self.assertIn("ansible_distribution in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']", common)
-        self.assertIn("(ansible_distribution_major_version | int) == 10", common)
-        self.assertIn("(ansible_distribution_major_version | int) >= 44", common)
+        self.assertIn("ansible_facts['distribution'] in ['RedHat', 'CentOS', 'Rocky', 'AlmaLinux']", common)
+        self.assertIn("(ansible_facts['distribution_major_version'] | int) == 10", common)
+        self.assertIn("(ansible_facts['distribution_major_version'] | int) >= 44", common)
         self.assertIn("not (admiral_dev_mode | default(false) | bool)", common)
         self.assertIn("name: chrony", common)
         self.assertIn("name: chronyd", common)
@@ -981,6 +984,26 @@ done
         self.assertIn("Exercise Fail2ban nftables enforcement", fail2ban)
         self.assertIn("nft list ruleset", fail2ban)
         self.assertIn("gpgcheck", installer)
+
+    def test_ansible_facts_are_not_injected_as_top_level_variables(self) -> None:
+        fact_variables = (
+            "ansible_default_ipv4",
+            "ansible_distribution",
+            "ansible_distribution_major_version",
+            "ansible_distribution_version",
+            "ansible_fqdn",
+            "ansible_hostname",
+            "ansible_selinux",
+        )
+        ansible_files = tuple((ROOT / "ansible").rglob("*.yml")) + tuple(
+            (ROOT / "ansible").rglob("*.yaml")
+        ) + tuple((ROOT / "ansible").rglob("*.j2"))
+
+        for path in ansible_files:
+            contents = path.read_text(encoding="utf-8")
+            for fact_variable in fact_variables:
+                with self.subTest(path=path, fact_variable=fact_variable):
+                    self.assertNotIn(fact_variable, contents)
 
     def test_cockpit_bridge_is_installed_without_web_service(self) -> None:
         cockpit = (
