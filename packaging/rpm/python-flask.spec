@@ -7,7 +7,7 @@
 Name:           python3-flask
 Epoch:          1
 Version:        3.1.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A lightweight WSGI web application framework
 
 License:        BSD-3-Clause
@@ -17,12 +17,14 @@ Source0:        https://files.pythonhosted.org/packages/7f/9c/34f6962f9b9e9c71f6
 BuildArch:      noarch
 
 BuildRequires:  python3-rpm-macros
+BuildRequires:  python3
 BuildRequires:  unzip
 
 Provides:       python%{python3_version}-flask = 1:%{version}-%{release}
 Provides:       python-flask = 1:%{version}-%{release}
 Provides:       python%{python3_version}dist(flask) = %{version}
 Provides:       python3dist(flask) = %{version}
+Requires:       python3
 Requires:       python3-blinker >= 1.9
 Requires:       python3-click >= 8.1.3
 Requires:       python3-itsdangerous >= 2.2
@@ -51,6 +53,14 @@ find %{buildroot}%{python3_sitelib}/flask \
 %files -f flask.files
 %license %{python3_sitelib}/flask-3.1.3.dist-info/licenses/LICENSE.txt
 
+%check
+test -f %{buildroot}%{python3_sitelib}/flask/__init__.py
+test -f %{buildroot}%{python3_sitelib}/flask-3.1.3.dist-info/METADATA
+
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.1.3-3
+- Install Python before expanding the Python site-packages macro
+- Check that Flask is packaged under the interpreter's import path
+
 * Tue Oct 20 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.1.3-2
 - Package upstream Flask 3.1.3 for EL10 security compatibility
