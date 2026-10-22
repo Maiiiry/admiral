@@ -218,6 +218,19 @@ Severity follows the audit criteria. These findings remain open; a source change
 * **Recommendation:** Review action majors and either select a tested explicit runner image or document a deliberate migration plan; check all configured Admiral workflows for the same notices.
 * **Regression test:** Run each affected workflow on the selected runner and confirm its test/security steps pass without the deprecation/migration annotations. This LOW maintenance finding does not block the runtime matrix while CI remains green.
 
+## ADM-F-017 — Fresh audit guests lacked an authenticated first-contact host-key pin ([#239](https://github.com/admiral-project/admiral/issues/239))
+
+* **Severity:** LOW (audit harness integrity; no Admiral runtime impact).
+* **Component:** Libvirt audit VM creation and SSH evidence-transfer helpers.
+* **Environment:** Fresh Fedora Rawhide and Rocky Linux 10.2 validation guests on the isolated libvirt NAT.
+* **Reproduction:** Create a fresh audit guest, then run the SSH/SCP helpers with `StrictHostKeyChecking=yes`. Before the fix, no preexisting `known_hosts` entry existed; manual `ssh-keyscan` enrollment provided local TOFU but did not authenticate the first host key.
+* **Expected:** A trust anchor for the guest's SSH host key is generated on the trusted KVM host and placed in `known_hosts` before any SSH connection.
+* **Observed:** Release 49 used `ssh-keyscan` over the isolated NAT, then pinned that key for subsequent strict SSH/SCP. This prevented later prompts but did not provide independent first-contact identity proof.
+* **Evidence:** Historical R49 note in issue #239; current targeted test and integration results in `evidence/ssh-host-key-bootstrap.md`.
+* **Root cause:** The VM creator asked cloud-init to generate the host key inside the guest without exporting its public half over an authenticated out-of-band channel.
+* **Recommendation:** Generate the key on the trusted host, provision it through protected cloud-init material, and emit a host-side per-guest `known_hosts` pin. Remove the protected cloud-init artifacts with the guest cleanup helper.
+* **Regression test:** Five local tests pass for key correspondence, address pins, file modes, overwrite refusal and the ISO mode-preserving command. A synthetic ISO inspection confirmed `user-data` and `meta-data` remain `0600`. Fresh Fedora Rawhide and Rocky 10.2 guests accepted strict SSH, and their remote SHA-256 fingerprints matched the host pins. The root source change still requires signed commit, push and green CI; then repeat as part of fresh Release 50 matrix guests. This finding does not count as an Admiral runtime matrix pass.
+
 ## Additional open source-review findings
 
 The following issues were opened against the same Release 42 source and are part of the production-readiness tracker. Their GitHub descriptions contain the full source locations, exact reproduction steps and acceptance tests. Only #212 has the focused parser execution recorded here; do not treat the remaining static observations as runtime validation.
