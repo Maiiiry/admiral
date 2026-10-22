@@ -1,7 +1,7 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R49 fault scenarios were exploratory and invalidated by #240; R50 was superseded before VM testing by #244.** R51 is built but no R51 fault-injection scenario has run; matrix remains 0/8.<br>
+Current status: **NOT VALIDATED — R51 is invalidated by #245; matrix remains 0/8.** No R51 fault-injection scenario ran; only install and targeted lifecycle probes were performed.<br>
 R49 details and raw-log checksums are in `evidence/release49-exploratory-single-node.md`. No R49 or R50 Multi-Node fault test ran. All older-candidate results are history only.
 
 No production infrastructure has been modified. Failure injection is restricted to disposable libvirt guests on the lab host. All exact command lines, timing, state snapshots and recovery actions must be captured under `evidence/` before a scenario is reported PASS or FAIL.

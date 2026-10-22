@@ -2,7 +2,7 @@
 
 Audit: `ADM-AUDIT-2026-10-21`
 Candidate: Admiral RC5 Release 51, x86_64 RPM build.
-Build result: **six coordinated Admiral RPMs built with all six `%check` stages passing, staged in isolated EL10 and Fedora Rawhide repositories, and queried from both endpoints.** No VM has installed R51 yet; matrix completion remains **0/8**.
+Build result: **six coordinated Admiral RPMs built with all six `%check` stages passing, staged in isolated EL10 and Fedora Rawhide repositories, and queried from both endpoints.** Two fresh Single-Node guests installed R51. Fedora lifecycle testing exposed #245, invalidating the candidate; no result counts as a matrix pass and completion remains **0/8**. Runtime detail and raw-log hashes are in [`release51-initial-lifecycle.md`](release51-initial-lifecycle.md).
 
 Build ran 2026-10-22 05:20:38–05:25:20 UTC on the Rocky Linux 10.2 lab host. Preflight recorded 4 vCPU, 8 GiB RAM, 4 GiB swap, KVM available, SELinux enforcing, no active guests, and 89 GiB free disk. Disk remained at 89 GiB after the build and staging.
 
@@ -48,4 +48,4 @@ Machine-readable hashes are in [`release51-rpm-sha256.txt`](release51-rpm-sha256
 
 ## Runtime matrix status
 
-Release 51 is the first candidate eligible for runtime testing after the #244 package-check gap was corrected and verified in `%check`. It is not yet validated: **0/8** cells have started or passed. No Single-Node or Multi-Node VM has installed R51. Begin only with fresh overlays from the preserved updated seeds; any newly discovered defect requiring a fix invalidates this candidate and its runtime evidence.
+Release 51 was eligible for runtime testing after the #244 package-check gap was corrected and verified in `%check`, but the Fedora lifecycle probe exposed #245: `effective_availability` remained `available` when the instance was stopped or deprovisioned. R51 is **INVALIDATED**; no matrix cell passed. The fix is pushed as `admirald@0baf488` with green CI, but a new coordinated six-RPM Release 52 must be built before any validation result can count. Use fresh overlays from the preserved updated seeds.

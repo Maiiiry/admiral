@@ -95,6 +95,9 @@ Campos relacionados en la instancia:
 
 ## Reglas actuales importantes
 
+- `effective_availability` no es `available` en los estados tecnicos
+  `stopped`, `paused_for_storage`, `deprovisioning` y `deprovisioned`, aunque
+  se conserve una observacion de salud previa como `healthy`.
 - el callback de fleet decide la transicion final de la operacion
 - si una tarea falla, la operacion pasa a `failed` y la instancia pasa a `failed`
 - `deprovision_app` exitoso mueve la instancia a `cancelled` / `deprovisioned`

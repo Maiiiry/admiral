@@ -1,8 +1,8 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no Release 49 or Release 50 three-guest run occurred.** R50 was superseded before any VM testing when #244 exposed the missing common-package `%check`; matrix completion remains 0/8. Release 51 must use fresh three-guest topologies (one admin/portal hub and two workers) on all four OSes.<br>
-The #240 capacity-rejection fix, #239 host-key harness fix, and #244 package check are committed with green root/component CI. Release 51's six RPMs and package checks are ready, but no three-guest R51 run has started. All Release 42–50 Multi-Node evidence is historical and does not validate R51. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
+Current status: **NOT VALIDATED — no R51 three-guest run occurred, and R51 was invalidated by #245 during Fedora Single-Node testing.** Matrix completion remains 0/8. Release 52 must use fresh three-guest topologies (one admin/portal hub and two workers) on all four OSes.<br>
+The #245 source correction is pushed as `admirald@0baf488` with green CI [39730492772](https://github.com/admiral-project/admirald/actions/runs/39730492772), but it is not yet in a built RPM. Older Release 42–50 Multi-Node evidence and the partial R51 Single-Node evidence are historical only. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
 
 ## Observed architecture and guarantees
 

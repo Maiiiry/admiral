@@ -1,8 +1,8 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R49 exploratory scenarios were invalidated by #240; R50 was superseded before VM testing by #244.** R50 was never installed. The matrix remains 0/8 and every Single-Node cell is NOT TESTED for the next candidate.<br>
-The #240 fix is pushed as `admiralctl@5ed381d` with green CI [39724553667](https://github.com/admiral-project/admiralctl/actions/runs/39724553667). #239 and #244 are proposed in root `main` with green CI; the R51 package-preparation CI passed, all six RPM checks passed, and local repos have the exact candidate NEVRAs. Start every cell on a fresh Release 51 overlay and repeat all required scenarios. Older R46–R50 observations remain candidate-specific history. The Release 45 stale-task replay is documented in `evidence/fedora-r45-stale-task-replay.md`.
+Current status: **NOT VALIDATED — R51 is invalidated by #245.** Fresh Fedora Rawhide and Rocky Linux 10.2 Single-Node guests installed R51, but a Fedora lifecycle probe found false `available` state while stopped and deprovisioned. No complete cell passed; all four Single-Node cells require fresh Release 52 overlays.<br>
+The #245 correction is pushed as `admirald@0baf488` with green CI [39730492772](https://github.com/admiral-project/admirald/actions/runs/39730492772); full local tests, vet and build passed. Root Release 52 package preparation is in progress. R51 install and lifecycle details are in `evidence/release51-initial-lifecycle.md`; none count toward the matrix. Older R46–R50 observations remain candidate-specific history. The Release 45 stale-task replay is documented in `evidence/fedora-r45-stale-task-replay.md`.
 
 ## Historical Release 47 diagnostic execution — invalidated, not cell passes
 
@@ -82,4 +82,4 @@ The previous RC tests did not cover the full audit's concurrency, negative tenan
 
 ## Required next executions
 
-Release 51 is built and its refs/package identity are checked. Run the reboot availability regression first on all four fresh Single-Node guests. Then complete each cell's lifecycle, concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and progressive load scenarios. Revalidate applicable findings and queue regressions after any fix. Record raw command timings and runtime/database state. Do not change the source candidate mid-matrix without rebuilding and resetting affected cells.
+Release 52 must be built from the exact pushed source refs and pass all six package checks before fresh overlays are created. Run the reboot availability and #245 lifecycle-state regressions first on all four Single-Node guests. Then complete each cell's lifecycle, concurrent create/update/delete, public ingress where a disposable DNS/TLS target exists, Podman/systemd failure injection, secret and cross-workload isolation negatives, persistence/backup-restore, and progressive load scenarios. Revalidate applicable findings and queue regressions after any fix. Record raw command timings and runtime/database state. Do not change the source candidate mid-matrix without rebuilding and resetting affected cells.

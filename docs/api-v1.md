@@ -281,6 +281,10 @@ salud del workload. Es `unavailable` si el nodo no esta activo y sano, si el
 ultimo reporte del workload no es `healthy`, o si han pasado 60 segundos desde
 el ultimo reporte. Fleet comprueba los workloads cada 30 segundos; por eso dos
 comprobaciones perdidas hacen que la disponibilidad se considere obsoleta.
+También es `unavailable` durante los estados técnicos no servibles
+`stopped`, `paused_for_storage`, `deprovisioning` y `deprovisioned`, aunque la
+última observación de Fleet todavía diga `healthy`. En esos casos,
+`availability_reason` identifica el estado del ciclo de vida.
 El estado observado (`health_status`, `health_message` y
 `last_health_checked_at`) conserva el ultimo reporte recibido y no se modifica
 por este calculo.

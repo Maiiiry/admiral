@@ -2,7 +2,7 @@
 
 Audit started: 2026-10-21 UTC<br>
 Release 49 exploratory Single-Node tests found #240 and invalidated that candidate. Release 50 was built and repository-queried, but no VM used it; build review found the missing `admiral-common` `%check` tracked by #244, so R50 was superseded before runtime testing. Matrix completion remains 0/8. R49 exploratory evidence and the R50 build record are candidate-specific history.<br>
-The #240 fix, #239 harness fix and #244 common-package check are committed to `main` with green CI. Release 51 is built from preparation commit `59e6eeb553ac38d7fa995863202a1180f50c02c5`, all six package checks passed, and exact NEVRAs are available through both isolated local repositories. No VM has installed it yet; no R50 or older result counts toward the matrix.
+The #240 fix, #239 harness fix and #244 common-package check are committed to `main` with green CI. Release 51 built from `59e6eeb553ac38d7fa995863202a1180f50c02c5`, and its six package checks and repository queries passed. Fresh Fedora and Rocky Single-Node guests installed R51; Fedora runtime probes exposed #245, because `effective_availability` stayed `available` while the app was paused or deprovisioned. The source correction is pushed as `admirald@0baf488` with green CI, but is not yet in an RPM. R51 is invalidated; Release 52 preparation is underway and matrix completion remains 0/8.
 
 ## Scope and evidence rules
 
