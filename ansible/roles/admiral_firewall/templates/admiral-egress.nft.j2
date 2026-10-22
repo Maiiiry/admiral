@@ -11,7 +11,7 @@ table inet admiral_egress {
         # https://kubernetes.io/docs/concepts/cluster-administration/networking/
         oif lo accept
         ct state { established, related } accept
-        ip daddr 10.99.0.0/24 accept
+        ip daddr {{ admiral_wireguard_subnet }} accept
         # Correct time is security-critical for TLS, tokens, and audit records.
         udp dport 123 accept
 {% if admiral_egress_ipv6_enabled | default(false) | bool %}

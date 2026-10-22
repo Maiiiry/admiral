@@ -4,12 +4,17 @@
   gather_facts: true
   become: true
 
-  vars:
-    # Stable hub address for the current single-hub WireGuard topology.
-    # Override this variable when a future deployment uses another subnet.
-    admiral_wireguard_hub_ip: "10.99.0.1"
-
   pre_tasks:
+    - name: Set the default WireGuard subnet when no custom subnet is configured
+      set_fact:
+        admiral_wireguard_subnet: "10.99.0.0/24"
+      when: admiral_wireguard_subnet is not defined
+
+    - name: Derive the WireGuard hub address when no explicit address is configured
+      set_fact:
+        admiral_wireguard_hub_ip: "{{ admiral_wireguard_subnet | wireguard_hub_ip }}"
+      when: admiral_wireguard_hub_ip is not defined
+
     - name: Map installer mode to persistent node role
       set_fact:
         admiral_node_role: >-

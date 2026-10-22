@@ -1,2 +1,3 @@
 ---
 admiral_wireguard_subnet: "10.99.0.0/24"
+admiral_wireguard_hub_ip: "{{ admiral_wireguard_subnet | wireguard_hub_ip }}"

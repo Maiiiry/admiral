@@ -4,7 +4,7 @@
 set -euo pipefail
 
 usage() {
-  echo "usage: $0 {rocky|fedora|alma|centos} NAME NAT_IP NAT_MAC [WG_IP WG_MAC] PUBKEY_FILE" >&2
+  echo "usage: $0 {fedora|rocky|alma|centos} NAME NAT_IP NAT_MAC [WG_IP WG_MAC] PUBKEY_FILE" >&2
   exit 2
 }
 
@@ -27,12 +27,15 @@ fi
 
 root=/var/lib/libvirt/images/admiral-validation
 case "$os" in
-  rocky)  base="$root/seeds/Rocky-10.2-updated-20261020.x86_64.qcow2"; osinfo=rocky10 ;;
-  fedora) base="$root/seeds/Fedora-Rawhide-updated-20261020.x86_64.qcow2"; osinfo=fedora-rawhide ;;
-  alma)   base="$root/seeds/AlmaLinux-10.2-updated-20261021.x86_64.qcow2"; osinfo=almalinux10 ;;
-  centos) base="$root/seeds/CentOS-Stream-10-updated-20261021.x86_64.qcow2"; osinfo=centos-stream10 ;;
+  fedora) base="$root/seeds/Fedora-Rawhide-seed-20261022.x86_64.qcow2"; osinfo=fedora-rawhide ;;
+  rocky)  base="$root/seeds/Rocky-10.2-seed-20261022.x86_64.qcow2"; osinfo=rocky10 ;;
+  alma)   base="$root/seeds/AlmaLinux-10.2-seed-20261022.x86_64.qcow2"; osinfo=almalinux10 ;;
+  centos) base="$root/seeds/CentOS-Stream-10-seed-20261022.x86_64.qcow2"; osinfo=centos-stream10 ;;
   *) usage ;;
 esac
+if [[ -n ${ADMIRAL_AUDIT_BASE_OVERRIDE:-} ]]; then
+  base=$ADMIRAL_AUDIT_BASE_OVERRIDE
+fi
 [[ -r $base ]] || { echo "seed image not found: $base" >&2; exit 1; }
 overlay="$root/overlays/$name.qcow2"
 iso="$root/cloud-init/$name.iso"

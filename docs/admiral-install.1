@@ -77,8 +77,9 @@ Public IP address of the node being configured. Required for spoke modes
 Optional for single-node and admin modes (defaults to detected IP).
 .TP
 \fB\-\-wireguard-ip\fR \fIIP\fR
-WireGuard tunnel IP for a spoke node. Assigned from 10.99.0.0/24. If omitted,
-the installer assigns the next available address via the admin hub.
+WireGuard tunnel IP for a spoke node. Assigned from the configured WireGuard
+subnet. If omitted, the installer assigns the next available address via the
+admin hub.
 .TP
 \fB\-\-node-id\fR \fIID\fR
 Custom node identifier. Defaults to the hostname. Must be unique within the
@@ -126,6 +127,17 @@ Confirm non-interactive dangerous operations such as
 .TP
 \fB\-h\fR, \fB\-\-help\fR
 Display usage information and exit.
+.SH ENVIRONMENT
+.TP
+.B ADMIRAL_WIREGUARD_SUBNET
+RFC1918 IPv4 subnet used by the cluster WireGuard network. Defaults to
+10.99.0.0/24.
+Set the same value for the admin installation and every spoke installation.
+.TP
+.B ADMIRAL_WIREGUARD_HUB_IP
+Optional admin hub address. By default, the installer uses the first address
+after the subnet's network address. An override must be inside the configured
+WireGuard subnet.
 .SH BOOTSTRAP SSH FLOW
 For spoke modes, the bootstrap SSH sequence is:
 .P

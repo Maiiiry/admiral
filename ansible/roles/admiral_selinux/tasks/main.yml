@@ -4,11 +4,6 @@
   register: selinux_status
   changed_when: false
 
-- name: Fail when SELinux is disabled
-  fail:
-    msg: "SELinux is disabled. Admiral requires SELinux in enforcing or permissive mode. Enable SELinux in /etc/selinux/config and reboot, or set selinux=1 on the kernel cmdline."
-  when: selinux_status.stdout == "Disabled"
-
 - name: Ensure SELinux is enforcing
   command: setenforce 1
   when: selinux_status.stdout == "Permissive"
@@ -16,9 +11,35 @@
 - name: Persist SELinux enforcing mode across reboots
   lineinfile:
     path: /etc/selinux/config
-    regexp: '^SELINUX='
+    regexp: '^\s*SELINUX\s*='
     line: SELINUX=enforcing
     backup: true
+
+- name: Read SELinux enforcing runtime state
+  command: getenforce
+  register: admiral_selinux_runtime_final
+  changed_when: false
+
+- name: Verify SELinux enforcing boot policy
+  command:
+    argv:
+      - grep
+      - -E
+      - '^[[:space:]]*SELINUX[[:space:]]*=[[:space:]]*enforcing[[:space:]]*$'
+      - /etc/selinux/config
+  register: admiral_selinux_config_final
+  changed_when: false
+  failed_when: false
+
+- name: Assert SELinux remains enforcing at runtime and after reboot
+  assert:
+    that:
+      - admiral_selinux_runtime_final.stdout == 'Enforcing'
+      - admiral_selinux_config_final.rc == 0
+    fail_msg: >-
+      SELinux must be Enforcing now and configured as SELINUX=enforcing for the
+      next boot. If SELinux was disabled previously, reboot and relabel before
+      running Admiral workloads.
 
 - name: Read SELinux permission for reverse proxy connections
   command:

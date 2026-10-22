@@ -1031,6 +1031,8 @@
       - verify
       - -CAfile
       - /etc/admiral/tls/ca.pem
+      - -verify_ip
+      - "{{ '127.0.0.1' if admiral_install_mode == 'single-node' else admiral_wireguard_ip }}"
       - /etc/admiral/tls/admirald.pem
   register: admiral_tls_leaf_trust_check
   changed_when: false

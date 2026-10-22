@@ -255,6 +255,7 @@ INSTALL_DEV_MODE="false"
 INSTALL_NODE_ID=""
 INSTALL_PUBLIC_IP=""
 INSTALL_WIREGUARD_IP=""
+INSTALL_WIREGUARD_SUBNET="${ADMIRAL_WIREGUARD_SUBNET:-10.99.0.0/24}"
 INSTALL_ADMIN_ENDPOINT=""
 INSTALL_TARGET_SSH_USER="root"
 INSTALL_TARGET_SSH_USER_EXPLICIT="false"
@@ -273,6 +274,32 @@ EXTRA_VARS_FILE=""
 TMP_INVENTORY=""
 TMP_KNOWN_HOSTS=""
 SSH_OPTIONS=()
+
+wireguard_hub_ip_for_subnet() {
+    python3 - "$1" "${2:-}" <<'PY'
+import ipaddress
+import sys
+
+try:
+    network = ipaddress.ip_network(sys.argv[1], strict=False)
+    if network.version != 4 or network.num_addresses < 2:
+        raise ValueError("must be an IPv4 network with at least two addresses")
+    private_networks = (
+        ipaddress.ip_network("10.0.0.0/8"),
+        ipaddress.ip_network("172.16.0.0/12"),
+        ipaddress.ip_network("192.168.0.0/16"),
+    )
+    if not any(network.subnet_of(private) for private in private_networks):
+        raise ValueError("must be inside an RFC1918 private range")
+    hub = ipaddress.ip_address(sys.argv[2]) if sys.argv[2] else network.network_address + 1
+    if hub.version != 4 or hub not in network:
+        raise ValueError("hub address must be inside the configured subnet")
+except ValueError as exc:
+    raise SystemExit(f"invalid Admiral WireGuard subnet or hub address: {exc}")
+
+print(hub)
+PY
+}
 
 cleanup_installer_temps() {
     [[ -z "$TMP_INVENTORY" ]] || rm -f -- "$TMP_INVENTORY"
@@ -380,6 +407,9 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
+INSTALL_ADMIN_WIREGUARD_IP="$(wireguard_hub_ip_for_subnet "$INSTALL_WIREGUARD_SUBNET" "${ADMIRAL_WIREGUARD_HUB_IP:-}")" ||
+    die "Set ADMIRAL_WIREGUARD_SUBNET to a valid IPv4 subnet and keep the hub address inside it."
+
 S3_ACCESS_KEY_VALUE=""
 S3_SECRET_KEY_VALUE=""
 if [[ -n "$INSTALL_S3_CREDENTIALS_FILE" ]]; then
@@ -479,13 +509,15 @@ if [[ -n "$INSTALL_ADMIN_ENDPOINT" ]]; then
     validate_ipv4_or_hostname "$INSTALL_ADMIN_ENDPOINT" || die "Invalid admin endpoint: $INSTALL_ADMIN_ENDPOINT"
 fi
 if [[ -n "$INSTALL_WIREGUARD_IP" ]]; then
-    if ! python3 - "$INSTALL_WIREGUARD_IP" <<'PY'
+    if ! python3 - "$INSTALL_WIREGUARD_IP" "$INSTALL_WIREGUARD_SUBNET" "$INSTALL_ADMIN_WIREGUARD_IP" <<'PY'
 import ipaddress, sys
 ip = ipaddress.ip_address(sys.argv[1])
-raise SystemExit(0 if ip.version == 4 and ip in ipaddress.ip_network("10.99.0.0/24") else 1)
+network = ipaddress.ip_network(sys.argv[2], strict=False)
+hub = ipaddress.ip_address(sys.argv[3])
+raise SystemExit(0 if ip.version == 4 and ip in network and ip != hub else 1)
 PY
     then
-        die "WireGuard IP must be inside 10.99.0.0/24"
+        die "WireGuard IP must be a non-hub address inside $INSTALL_WIREGUARD_SUBNET"
     fi
 fi
 if [[ -n "$INSTALL_SSH_FINGERPRINT" && ! "$INSTALL_SSH_FINGERPRINT" =~ ^SHA256:[A-Za-z0-9+/]{43}$ ]]; then
@@ -803,13 +835,15 @@ if [[ "$INSTALL_MODE" == "worker-node" || "$INSTALL_MODE" == "portal-node" ]]; t
         die "Invalid node ID resolved for spoke; use 1-63 letters, numbers, dot, underscore, or hyphen"
     fi
     if [[ -n "$INSTALL_WIREGUARD_IP" ]]; then
-        if ! python3 - "$INSTALL_WIREGUARD_IP" <<'PY'
+        if ! python3 - "$INSTALL_WIREGUARD_IP" "$INSTALL_WIREGUARD_SUBNET" "$INSTALL_ADMIN_WIREGUARD_IP" <<'PY'
 import ipaddress, sys
 ip = ipaddress.ip_address(sys.argv[1])
-raise SystemExit(0 if ip.version == 4 and ip in ipaddress.ip_network("10.99.0.0/24") else 1)
+network = ipaddress.ip_network(sys.argv[2], strict=False)
+hub = ipaddress.ip_address(sys.argv[3])
+raise SystemExit(0 if ip.version == 4 and ip in network and ip != hub else 1)
 PY
         then
-            die "WireGuard IP must be inside 10.99.0.0/24"
+            die "WireGuard IP must be a non-hub address inside $INSTALL_WIREGUARD_SUBNET"
         fi
     fi
 fi
@@ -847,8 +881,6 @@ if [[ "$INSTALL_MODE" == "worker-node" ]]; then
     SECRETS_FLEET_CALLBACK_KEY=$(read_admiral_secret "ADMIRAL_FLEET_CALLBACK_KEY") || true
 fi
 
-INSTALL_ADMIN_WIREGUARD_IP="${ADMIRAL_WIREGUARD_HUB_IP:-10.99.0.1}"
-
 # --- 8. build extra-vars as JSON (prevents injection via --node-id) ---
 EXTRA_VARS_JSON=$(
     INSTALL_MODE="$INSTALL_MODE" \
@@ -862,6 +894,7 @@ EXTRA_VARS_JSON=$(
     ADMIRAL_AUDITD_IMMUTABLE="${ADMIRAL_AUDITD_IMMUTABLE:-}" \
     INSTALL_ADMIN_ENDPOINT="$INSTALL_ADMIN_ENDPOINT" \
     INSTALL_ADMIN_WIREGUARD_IP="$INSTALL_ADMIN_WIREGUARD_IP" \
+    ADMIRAL_WIREGUARD_SUBNET="$INSTALL_WIREGUARD_SUBNET" \
     SECRETS_HARBOR_SECRET_KEY="$SECRETS_HARBOR_SECRET_KEY" \
     SECRETS_HARBOR_ENCRYPTION_KEY="$SECRETS_HARBOR_ENCRYPTION_KEY" \
     SECRETS_HARBOR_POSTGRES_PASSWORD="$SECRETS_HARBOR_POSTGRES_PASSWORD" \
@@ -882,6 +915,7 @@ import ipaddress, json, os
 d = {
     "admiral_install_mode": os.environ["INSTALL_MODE"],
     "admiral_wireguard_hub_ip": os.environ["INSTALL_ADMIN_WIREGUARD_IP"],
+    "admiral_wireguard_subnet": os.environ["ADMIRAL_WIREGUARD_SUBNET"],
 }
 
 if os.environ.get("INSTALL_DEV_MODE") == "true":
@@ -990,7 +1024,7 @@ if mode in ("worker-node", "portal-node"):
     d["admiral_bootstrap_from_controller"] = True
 
 if mode in ("admin-node", "admin-portal-node", "single-node"):
-    d["admiral_wireguard_ip"] = "10.99.0.1"
+    d["admiral_wireguard_ip"] = os.environ["INSTALL_ADMIN_WIREGUARD_IP"]
 
 print(json.dumps(d))
 '
@@ -1500,11 +1534,11 @@ if [[ "$INSTALL_DEV_MODE" != "true" ]]; then
         fi
 
         WG_ALLOWED_IPS="$(run_target_cmd "wg show wg-admiral allowed-ips" || true)"
-        if [[ "$WG_ALLOWED_IPS" == *"10.99.0.0/24"* || "$WG_ALLOWED_IPS" == *"0.0.0.0/0"* ]]; then
+        if [[ "$WG_ALLOWED_IPS" == *"$INSTALL_WIREGUARD_SUBNET"* || "$WG_ALLOWED_IPS" == *"0.0.0.0/0"* ]]; then
             SECURITY_WARNINGS+=("WireGuard contains an unexpectedly broad peer route.")
         fi
         if [[ "$INSTALL_MODE" == "worker-node" || "$INSTALL_MODE" == "portal-node" ]] &&
-            [[ "$WG_ALLOWED_IPS" != *"10.99.0.1/32"* ]]; then
+            [[ "$WG_ALLOWED_IPS" != *"$INSTALL_ADMIN_WIREGUARD_IP/32"* ]]; then
             SECURITY_WARNINGS+=("The spoke WireGuard route is not restricted to the admin hub.")
         fi
     fi

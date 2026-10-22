@@ -10,9 +10,9 @@
 - name: Make SSH tunnel key readable by the service account only
   file:
     path: /etc/admiral/ssh/id_ed25519
-    owner: root
+    owner: admiral
     group: admiral
-    mode: "0640"
+    mode: "0600"
 
 - name: Install SSH tunnel systemd service
   template:

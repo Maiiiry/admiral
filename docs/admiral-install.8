@@ -16,7 +16,9 @@ The control plane and customer portal share one host
 Dedicated worker nodes
 .RB ( \-\-worker-node )
 run customer workloads via Podman rootless. Communication between nodes
-uses WireGuard on 10.99.0.0/24.
+uses WireGuard on 10.99.0.0/24 by default; operators can select another IPv4
+subnet with ADMIRAL_WIREGUARD_SUBNET and optionally set the hub address with
+ADMIRAL_WIREGUARD_HUB_IP. Use the same values for every node installation.
 .SS Split admin and portal
 .B \-\-admin-node
 installs only the control plane.

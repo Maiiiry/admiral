@@ -74,6 +74,22 @@ The examples below use documentation addresses:
 Replace every address, node ID, SSH key path, and fingerprint with values from
 the real deployment.
 
+The examples use the default WireGuard subnet `10.99.0.0/24`, whose default
+admin address is `10.99.0.1`. To use another RFC1918 IPv4 subnet, set
+`ADMIRAL_WIREGUARD_SUBNET` for the admin install and every later worker or
+portal install. The installer derives the hub address as the first address
+after the subnet's network address; set `ADMIRAL_WIREGUARD_HUB_IP` only when
+the hub uses another address inside that subnet. Keep both variables consistent
+across all installer runs. For example:
+
+```bash
+export ADMIRAL_WIREGUARD_SUBNET=192.168.44.0/24
+sudo --preserve-env=ADMIRAL_WIREGUARD_SUBNET admiral-install --admin-portal-node --public-ip 203.0.113.10
+```
+
+The same environment must be supplied when adding spokes. `--wireguard-ip`,
+when specified, must be a non-hub address inside the selected subnet.
+
 ### 1. Install the Admin Profile
 
 For a dedicated admin with a separate portal, run on the future admin host:
@@ -234,6 +250,21 @@ from `--dev-node` to `--single-node` on that same host.
 For safety, `--dev-node` requires the operator to type `yes-insecure` when run
 interactively. Automation must pass `--yes` explicitly; without that flag the
 installer aborts when standard input is not a terminal.
+
+To reproduce the supported `--dev-node` to `--single-node` certificate
+reconciliation in an isolated test host, install dev mode, rerun the installer
+in secure single-node mode, then verify trust and the required loopback SAN:
+
+```bash
+sudo admiral-install --dev-node --yes
+sudo admiral-install --single-node
+sudo openssl verify -CAfile /etc/admiral/tls/ca.pem -verify_ip 127.0.0.1 /etc/admiral/tls/admirald.pem
+sudo openssl x509 -in /etc/admiral/tls/admirald.pem -noout -issuer -ext subjectAltName
+```
+
+The expected result is a successful CA verification and a subjectAltName that
+contains `IP Address:127.0.0.1`. This procedure is a manual regression check;
+the release matrix must still record its actual execution result.
 
 ### Manual migration from Admin+Portal to dedicated Portal
 

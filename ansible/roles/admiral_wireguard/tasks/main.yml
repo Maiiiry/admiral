@@ -100,7 +100,7 @@
       {{
         admiral_wireguard_ip
         | default(
-            '10.99.0.1' if admiral_wireguard_role == 'hub'
+            admiral_wireguard_hub_ip if admiral_wireguard_role == 'hub'
             else (
               (admiral_known_host_entry.wireguard_ip | default('')) if (admiral_known_host_entry.wireguard_ip | default('')) != ''
               else (admiral_known_host_next_assignment.wireguard_ip | default(''))
@@ -214,6 +214,22 @@
     - net.ipv4.ip_forward
     - net.ipv6.conf.all.forwarding
 
+- name: Read runtime IP forwarding state after WireGuard start
+  command: "sysctl -n {{ item }}"
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
+  register: admiral_wireguard_forwarding_state
+  changed_when: false
+
+- name: Assert inter-node IP forwarding remains disabled
+  assert:
+    that:
+      - admiral_wireguard_forwarding_state.results | map(attribute='stdout') | list == ['0', '0']
+    fail_msg: >-
+      WireGuard startup enabled IP forwarding. Admiral requires forwarding to
+      remain disabled on both IPv4 and IPv6 interfaces.
+
 - name: Query permanent firewalld zones
   command:
     cmd: firewall-cmd --permanent --get-zones
@@ -279,7 +295,7 @@
       - --permanent
       - --zone=admiral
       - >-
-        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_hub_ip | default('10.99.0.1') }}"
+        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_hub_ip }}"
         port port="{{ item }}" protocol="tcp" accept
   loop:
     - 9099
@@ -295,7 +311,7 @@
       - --permanent
       - --zone=admiral
       - >-
-        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_hub_ip | default('10.99.0.1') }}"
+        --add-rich-rule=rule family="ipv4" source address="{{ admiral_wireguard_hub_ip }}"
         port port="5001" protocol="tcp" accept
   when: admiral_effective_host_profile == 'portal'
   register: firewall_admiral_portal_rule

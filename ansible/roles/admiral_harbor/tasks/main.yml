@@ -40,7 +40,7 @@
 
 - name: Set harbor API URL for portal-node
   set_fact:
-    admiral_api_url_for_harbor: "https://{{ admiral_admin_wireguard_ip | default(admiral_admin_endpoint | default('10.99.0.1')) }}:8080"
+    admiral_api_url_for_harbor: "https://{{ admiral_admin_wireguard_ip | default(admiral_admin_endpoint | default(admiral_wireguard_hub_ip)) }}:8080"
   when: admiral_install_mode == 'portal-node'
 
 - name: Determine admiral-harbor bind address
@@ -145,6 +145,7 @@
       HARBOR_NODE_ID={{ harbor_node_id_effective }}
       HARBOR_NODE_TOKEN={{ harbor_node_token_value }}
       ADMIRAL_API_URL={{ admiral_api_url_for_harbor | default(admiral_control_plane_url) }}
+      ADMIRAL_WIREGUARD_SUBNET={{ admiral_wireguard_subnet }}
       HARBOR_PAYPAL_CLIENT_ID={{ harbor_existing_paypal_client_id | default('') }}
       HARBOR_PAYPAL_CLIENT_SECRET={{ harbor_existing_paypal_client_secret | default('') }}
       HARBOR_PAYPAL_WEBHOOK_ID={{ harbor_existing_paypal_webhook_id | default('') }}

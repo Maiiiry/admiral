@@ -16,6 +16,8 @@ PLAYBOOK = ROOT / "ansible" / "site.yml"
 FIREWALL_TASKS = ROOT / "ansible" / "roles" / "admiral_firewall" / "tasks" / "main.yml"
 FLEET_TASKS = ROOT / "ansible" / "roles" / "admiral_fleet" / "tasks" / "main.yml"
 SELINUX_TASKS = ROOT / "ansible" / "roles" / "admiral_selinux" / "tasks" / "main.yml"
+SSH_TUNNEL_TASKS = ROOT / "ansible" / "roles" / "admiral_ssh_tunnel" / "tasks" / "main.yml"
+WIREGUARD_TASKS = ROOT / "ansible" / "roles" / "admiral_wireguard" / "tasks" / "main.yml"
 HARBOR_TASKS = ROOT / "ansible" / "roles" / "admiral_harbor" / "tasks" / "main.yml"
 AUDIT_TASKS = ROOT / "ansible" / "roles" / "admiral_auditd" / "tasks" / "main.yml"
 COMMON_TASKS = ROOT / "ansible" / "roles" / "admiral_common" / "tasks" / "main.yml"
@@ -187,6 +189,50 @@ done
         self.assertNotIn("failed_when: false", common_boolean_tasks)
         self.assertNotIn("container_manage_cgroup", common_tasks)
         self.assertNotIn("failed_when: false", fleet_boolean_tasks)
+
+    def test_selinux_and_wireguard_security_settings_are_verified_after_setup(self) -> None:
+        selinux_tasks = SELINUX_TASKS.read_text(encoding="utf-8")
+        wireguard_tasks = WIREGUARD_TASKS.read_text(encoding="utf-8")
+
+        self.assertIn("Read SELinux enforcing runtime state", selinux_tasks)
+        self.assertIn("getenforce", selinux_tasks)
+        self.assertIn("SELINUX=enforcing", selinux_tasks)
+        self.assertIn("admiral_selinux_runtime_final.stdout == 'Enforcing'", selinux_tasks)
+        self.assertIn("admiral_selinux_config_final.rc == 0", selinux_tasks)
+        self.assertIn("Read runtime IP forwarding state after WireGuard start", wireguard_tasks)
+        self.assertIn("admiral_wireguard_forwarding_state.results | map(attribute='stdout') | list == ['0', '0']", wireguard_tasks)
+
+    def test_selinux_disabled_boot_is_persistently_corrected_before_runtime_assert(self) -> None:
+        selinux_tasks = SELINUX_TASKS.read_text(encoding="utf-8")
+
+        persist = selinux_tasks.index("- name: Persist SELinux enforcing mode across reboots")
+        runtime_assert = selinux_tasks.index("- name: Assert SELinux remains enforcing at runtime and after reboot")
+        self.assertLess(persist, runtime_assert)
+        self.assertIn("regexp: '^\\s*SELINUX\\s*='", selinux_tasks)
+        self.assertIn("If SELinux was disabled previously, reboot and relabel", selinux_tasks)
+        self.assertNotIn("- name: Fail when SELinux is disabled", selinux_tasks)
+
+    def test_ssh_tunnel_private_key_is_owned_by_service_user_and_private(self) -> None:
+        tasks = SSH_TUNNEL_TASKS.read_text(encoding="utf-8")
+        key_task = tasks.split(
+            "- name: Make SSH tunnel key readable by the service account only", 1
+        )[1].split("\n- name:", 1)[0]
+
+        self.assertIn("owner: admiral", key_task)
+        self.assertIn("group: admiral", key_task)
+        self.assertIn('mode: "0600"', key_task)
+        self.assertNotIn("owner: root", key_task)
+        self.assertNotIn('mode: "0640"', key_task)
+
+    def test_custom_wireguard_subnet_reaches_portal_and_flagship_health_allowlists(self) -> None:
+        harbor_tasks = HARBOR_TASKS.read_text(encoding="utf-8")
+        flagship_tasks = (ROOT / "ansible" / "roles" / "admiral_flagship" / "tasks" / "main.yml").read_text(encoding="utf-8")
+        admirald_tasks = (ROOT / "ansible" / "roles" / "admirald" / "tasks" / "main.yml").read_text(encoding="utf-8")
+
+        self.assertIn("ADMIRAL_WIREGUARD_SUBNET={{ admiral_wireguard_subnet }}", harbor_tasks)
+        self.assertIn("FLAGSHIP_ALLOWED_HEALTH_IPS=127.0.0.1/32,::1/128,{{ admiral_wireguard_subnet }}", flagship_tasks)
+        self.assertIn("wireguard_subnet = {{ admiral_wireguard_subnet }}", admirald_tasks)
+        self.assertIn("wireguard_hub_ip = {{ admiral_wireguard_hub_ip }}", admirald_tasks)
 
     def test_admiral_common_is_reconciled_to_current_repository_version(self) -> None:
         content = INSTALLER.read_text(encoding="utf-8")
@@ -759,8 +805,6 @@ done
         self.assertIn("difference(admiral_allowed_public_ports)", content)
 
     def test_spoke_egress_allows_required_network_endpoints(self) -> None:
-        content = FIREWALL_TASKS.read_text(encoding="utf-8")
-
         template = (ROOT / "ansible" / "roles" / "admiral_firewall" / "templates" / "admiral-egress.nft.j2").read_text(encoding="utf-8")
 
         self.assertIn("tcp dport 53 accept", template)
@@ -768,7 +812,7 @@ done
         self.assertIn("udp dport 123 accept", template)
         self.assertIn("tcp dport { 80, 443, 587, 9000 } accept", template)
         self.assertIn("Kubernetes model", template)
-        self.assertIn("ip daddr 10.99.0.0/24 accept", template)
+        self.assertIn("ip daddr {{ admiral_wireguard_subnet }} accept", template)
 
     def test_wireguard_is_segmented_as_a_hub_and_spoke_vpn(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")
@@ -788,12 +832,13 @@ done
         self.assertIn("creates: /etc/wireguard/admiral.key", wireguard_tasks)
         self.assertIn("Disable inter-node IP forwarding", wireguard_tasks)
         self.assertIn("value: '0'", wireguard_tasks)
-        self.assertIn("default('10.99.0.1') }}/32", wireguard_template)
+        self.assertIn("AllowedIPs = {{ admiral_wireguard_hub_ip }}/32", wireguard_template)
         self.assertNotIn("AllowedIPs = 10.99.0.0/24", wireguard_template)
         self.assertIn("firewall-cmd --permanent --zone=admiral --get-target", installer)
         self.assertIn("firewall-cmd --zone=trusted --list-interfaces", installer)
         self.assertIn("wg show wg-admiral allowed-ips", installer)
-        self.assertIn("10.99.0.1/32", installer)
+        self.assertIn('"$INSTALL_ADMIN_WIREGUARD_IP/32"', installer)
+        self.assertIn("wireguard_hub_ip_for_subnet", installer)
 
     def test_worker_hub_peer_is_installed_before_fleet_heartbeat_gate(self) -> None:
         fleet = FLEET_TASKS.read_text(encoding="utf-8")

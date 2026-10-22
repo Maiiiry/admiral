@@ -4,6 +4,9 @@ PrivateKey = {{ admiral_wg_private_key.stdout }}
 ListenPort = {{ admiral_wireguard_port }}
 PostUp = /usr/sbin/sysctl -w net.ipv4.ip_forward=0
 PostUp = /usr/sbin/sysctl -w net.ipv6.conf.all.forwarding=0
+{% if admiral_wireguard_role == 'hub' %}
+PostUp = /usr/libexec/admiral-wireguard-load-peers %i
+{% endif %}
 
 {% if admiral_wireguard_role == 'hub' %}
 {% set peer_state = namespace(keys=[]) %}
@@ -42,7 +45,7 @@ PresharedKey = {{ peer.preshared_key | trim }}
 [Peer]
 PublicKey = {{ admiral_wireguard_hub_public_key }}
 Endpoint = {{ admiral_wireguard_hub_endpoint }}:{{ admiral_wireguard_port }}
-AllowedIPs = {{ admiral_wireguard_hub_ip | default('10.99.0.1') }}/32
+AllowedIPs = {{ admiral_wireguard_hub_ip }}/32
 {% if admiral_wireguard_preshared_key | default('') | trim %}
 PresharedKey = {{ admiral_wireguard_preshared_key | trim }}
 {% endif %}
