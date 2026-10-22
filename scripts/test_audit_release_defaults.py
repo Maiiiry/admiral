@@ -18,6 +18,8 @@ AUDIT_HELPERS = (
     / "docs/audits/admiral-production-readiness-2026-10-21/scripts/install-single-node-audit.sh",
     ROOT
     / "docs/audits/admiral-production-readiness-2026-10-21/scripts/bootstrap-candidate-node.sh",
+    ROOT
+    / "docs/audits/admiral-production-readiness-2026-10-21/scripts/install-admin-portal-audit.sh",
 )
 
 
