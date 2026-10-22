@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release: 59%{?dist}
+Release: 60%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -250,6 +250,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-60
+- Rebuild coordinated RC5 packages for bounded declared-service health detection
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-59
 - Rebuild the coordinated package set for rootless manager health recovery
 

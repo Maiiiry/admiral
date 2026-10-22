@@ -65,4 +65,5 @@ ecd62a47e766010722bba1fc83cb6497756c9d6f32a71e69c6acfd781b4fe554  packaging/buil
 5f2f1d322cb2b4729f22866fa4f193f74046175708b35a0dc68e657ed5bf4192  packaging/build/validation/rc5-r58/rocky-resize-reactivation.log
 a748b09255dac1e7b14c34c423c399651962486b1507ae67a14b0727b2883fc5  packaging/build/validation/rc5-r58/rocky-same-host-isolation-secret-check.log
 58957038282620d500b93bf18b8b01a39af0e8c3c5c80f00623ca59732524f81  packaging/build/validation/rc5-r58/rocky-same-host-isolation.log
+f0f70f343977ddf07c9e4090fbb0ef268ff52150e04ab400e0375d80e6bc7f88  packaging/build/validation/rc5-r58/rocky-user-systemd-restart-repro.log
 3da0fe5920033fa59a3f31e8243b8b0fc8e066ef4ca9d041bc2ead3bcd5d3ddf  packaging/build/validation/rc5-r58/rocky-user-systemd-restart.log
