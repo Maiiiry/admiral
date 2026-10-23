@@ -188,6 +188,21 @@ followed by restore-and-retry. This is not a completed matrix cell. See
 for package versions, topology, exact IDs, timings, reproducible scripts and
 restricted-log hashes.
 
+## Additional R67 AlmaLinux/CentOS Multi-Node regressions
+
+On the same unchanged `.el10` Release 67 candidate, AlmaLinux and CentOS Stream
+each passed a three-request same-key concurrent provision replay, converging
+on one operation, task, and instance with HTTP 200 after health convergence and
+clean deprovision. Both OSes also passed local PostgreSQL backup/restore on a
+real worker, including checksum verification, the paused-app guard, marker
+recovery, HTTP 200, and cleanup. These are focused passes only; timeout-after-
+commit, conflicting request bodies, cross-worker simultaneous mutations, and
+external S3/R2 and volume restore are not covered. Neither OS cell is complete.
+Details, exact IDs, commands, raw manifest hashes and limitations:
+[`release67-alma-multinode-concurrent-idempotency.md`](release67-alma-multinode-concurrent-idempotency.md),
+[`release67-centos-multinode-concurrent-idempotency.md`](release67-centos-multinode-concurrent-idempotency.md),
+and [`release67-el10-multinode-database-backup-restore.md`](release67-el10-multinode-database-backup-restore.md).
+
 ## Repository helper correction discovered during R67 staging
 
 Reviewing the existing `publish-candidate-repo.sh` exposed a latent cross-distro

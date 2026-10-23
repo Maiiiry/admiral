@@ -1,9 +1,17 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** Fedora and EL10 RPM sets were built with their respective native toolchains and installed from separate local repositories. Fedora guests used only `.fc46` packages; EL10 guests used only `.el10` packages. No EL10 binary was copied or force-installed on Fedora. Three-guest topologies on all four OSes passed fresh secure bootstrap and scoped worker placement/replay. All four OSes also passed scoped central PostgreSQL outage/recovery, WireGuard partition/rejoin, hub reboot recovery, and Podman deletion-failure/retry scenarios. Fedora's first immediate-health assertion failure, AlmaLinux's initial partition-helper usage error and Rocky's incomplete initial Podman harness attempt are retained; corrected runs passed. No OS has a complete Multi-Node cell. Release 66 evidence remains historical and invalidated for matrix credit. Matrix remains 0/8. See the R67 per-OS reports and [`release67-candidate.md`](evidence/release67-candidate.md).
+> **R67 status:** Fedora and EL10 RPM sets were built with their respective native toolchains and installed from separate local repositories. Fedora guests used only `.fc46` packages; EL10 guests used only `.el10` packages. No EL10 binary was copied or force-installed on Fedora. Three-guest topologies on all four OSes passed fresh secure bootstrap and scoped worker placement/replay. All four OSes also passed scoped central PostgreSQL outage/recovery, WireGuard partition/rejoin, hub reboot recovery, and Podman deletion-failure/retry scenarios. AlmaLinux and CentOS additionally passed R67 same-key concurrent-provision and local PostgreSQL backup/restore scenarios. Fedora's first immediate-health assertion failure, AlmaLinux's initial partition-helper usage error and Rocky's incomplete initial Podman harness attempt are retained; corrected runs passed. No OS has a complete Multi-Node cell. Release 66 evidence remains historical and invalidated for matrix credit. Matrix remains 0/8. See the R67 per-OS reports and [`release67-candidate.md`](evidence/release67-candidate.md).
 
 Current R67 execution: **SCOPED BOOTSTRAP/WORKLOAD-LIFECYCLE AND SELECTED RECOVERY PROBES PASSED ON ALL FOUR OSes; Multi-Node remains NOT VALIDATED; matrix 0/8.** The exact candidate installed on fresh three-guest Fedora, Rocky, AlmaLinux and CentOS Stream topologies. All hubs and workers registered with active/healthy state. Placement on both workers, sequential same-key replay, API health convergence, PostgreSQL marker write/read, HTTP 200 over WireGuard, and cleanup passed. Fedora's first immediate-health sample showed `running/stopped/unavailable`, not false availability; the corrected helper waited for health convergence. All four OSes passed controlled central PostgreSQL outage/recovery, W2 WireGuard partition/rejoin, hub reboot with worker rejoin and active workload recovery, and injected Podman deletion failure followed by successful cleanup retry. CentOS Stream also passed a separate real W2 reboot with SQL marker and HTTP recovery; see [`release67-centos-multinode-worker-reboot.md`](evidence/release67-centos-multinode-worker-reboot.md). The initial Alma partition helper stopped at argument validation before changing guest state; the correct run passed. These are targeted results, not cell passes. Conflicting mutations, task interruption/replay, comprehensive isolation/security, resource pressure, broader fault scenarios and performance remain outstanding. R66 logs and reports are historical only; see [`release67-candidate.md`](evidence/release67-candidate.md), [`release67-fedora-multinode-bootstrap.md`](evidence/release67-fedora-multinode-bootstrap.md), [`release67-fedora-multinode-placement-recheck.md`](evidence/release67-fedora-multinode-placement-recheck.md), [`release67-fedora-multinode-targeted.md`](evidence/release67-fedora-multinode-targeted.md), [`release67-rocky-multinode-targeted.md`](evidence/release67-rocky-multinode-targeted.md), [`release67-alma-multinode-targeted.md`](evidence/release67-alma-multinode-targeted.md), [`release67-centos-multinode-targeted.md`](evidence/release67-centos-multinode-targeted.md) and historical R66 reports.
+
+On the exact candidate, AlmaLinux and CentOS Stream also passed three-request
+same-key concurrent provision replay and local PostgreSQL backup/restore on a
+real worker. These results do not complete either cell. Their full evidence,
+reproducers, checksums and limitations are in
+[`release67-alma-multinode-concurrent-idempotency.md`](evidence/release67-alma-multinode-concurrent-idempotency.md),
+[`release67-centos-multinode-concurrent-idempotency.md`](evidence/release67-centos-multinode-concurrent-idempotency.md),
+and [`release67-el10-multinode-database-backup-restore.md`](evidence/release67-el10-multinode-database-backup-restore.md).
 
 ## R67 exact-candidate Fedora placement recheck
 
@@ -38,6 +46,16 @@ by restore-and-retry with empty resource inventories. An initial partition
 helper call stopped at its argument-count check and did not modify a guest; it
 is excluded. This is not a completed cell. Full topology, test IDs, hashes and
 limitations: [`release67-alma-multinode-targeted.md`](evidence/release67-alma-multinode-targeted.md).
+
+On this exact candidate, three concurrent same-key provision requests on the
+AlmaLinux hub converged on one operation/task/instance on W1. The instance
+reached healthy/available and HTTP 200; cleanup left both worker inventories
+empty. See
+[`release67-alma-multinode-concurrent-idempotency.md`](evidence/release67-alma-multinode-concurrent-idempotency.md).
+The W1 local database backup/restore regression verified its checksum,
+recovered the original SQL marker after mutation, returned HTTP 200, enforced
+the paused-app precondition and cleaned all resources. See
+[`release67-el10-multinode-database-backup-restore.md`](evidence/release67-el10-multinode-database-backup-restore.md).
 
 ## R67 exact-candidate CentOS Stream 10 targeted Multi-Node execution
 
@@ -79,6 +97,10 @@ PASS, not the issue's complete retry/concurrency acceptance or a cell PASS.
 The exact procedure, identifiers, timing, protected raw-evidence hashes, and
 remaining gaps are in
 [`release67-centos-multinode-concurrent-idempotency.md`](evidence/release67-centos-multinode-concurrent-idempotency.md).
+The W2 local database backup/restore regression on the same candidate also
+verified its checksum, restored the original SQL marker after mutation,
+returned HTTP 200, enforced the paused-app precondition and left no resources;
+see [`release67-el10-multinode-database-backup-restore.md`](evidence/release67-el10-multinode-database-backup-restore.md).
 
 ## Release 66 Rocky Linux 10 scoped execution
 
@@ -189,4 +211,4 @@ Loss of the hub or central database blocks new control-plane operations and call
 
 ## Historical R65/R66 evidence and remaining R67 executions
 
-The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). ARM64 remains a separate Tier 2 non-blocking track and is not release-gate evidence. Completion remains **0/8**. R65/R66 observations are historical and carry no R67 cell credit. All four OSes now have scoped R67 Multi-Node bootstrap/placement and selected failure/recovery probes; CentOS also passed three concurrent same-key provisions on the exact candidate. Remaining coverage includes backup/restore on all workers and external storage, other conflicting concurrent operation orderings and cross-worker mutations, timeout-after-commit and callback/task interruption, cross-workload isolation negatives, latency injection and performance measurement. Do not label this hub-and-spoke setup HA.
+The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). ARM64 remains a separate Tier 2 non-blocking track and is not release-gate evidence. Completion remains **0/8**. R65/R66 observations are historical and carry no R67 cell credit. All four OSes now have scoped R67 Multi-Node bootstrap/placement and selected failure/recovery probes; AlmaLinux and CentOS also passed three concurrent same-key provisions and local PostgreSQL backup/restore on the exact candidate. Remaining coverage includes external storage, other conflicting concurrent operation orderings and cross-worker mutations, timeout-after-commit and callback/task interruption, cross-workload isolation negatives, latency injection and performance measurement. Do not label this hub-and-spoke setup HA.
