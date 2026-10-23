@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — matrix 0/8.** R66 runtime inspection confirmed SELinux Enforcing and rootless Podman on fresh Rocky/Fedora Single-Node guests; AlmaLinux R66 covered the scoped authenticated database-outage recovery path. These checks do not establish isolation or security readiness. Cross-workload DB network access, cross-tenant filesystem/secret reads, effective capabilities, socket exposure negatives, broad endpoint authorization, systematic secret/log scanning and full dependency triage remain **NOT TESTED**. R65 #264 behavior is corrected in R66 targeted AlmaLinux evidence; issue #264 remains open pending the matrix review.
+Current status: **NOT VALIDATED — matrix 0/8.** R66 runtime inspection confirmed SELinux Enforcing and rootless Podman on fresh Single-Node guests for all four target OSes. AlmaLinux/CentOS Single-Node include partial co-resident workload checks that denied a tested host-alias app-port connection; AlmaLinux Multi-Node covered authenticated database-outage recovery. These checks do not establish isolation or security readiness. Cross-workload DB network access, cross-tenant filesystem/secret reads, full effective capability verification, socket exposure negatives, broad endpoint authorization, systematic secret/log scanning and full dependency triage remain **NOT TESTED**. R65 #264 behavior is corrected in R66 targeted AlmaLinux evidence; issue #264 remains open pending the matrix review.
 
 ## Controls observed in source and packaging
 
@@ -48,4 +48,4 @@ Current status: **NOT VALIDATED — matrix 0/8.** R66 runtime inspection confirm
 
 ## Current security verdict
 
-Historical Release 42–53 findings and selected controls remain documented above. R66 adds only a few scoped runtime checks: SELinux Enforcing and rootless Podman on Rocky/Fedora Single-Node, plus the authenticated Fleet retry behavior during the AlmaLinux hub PostgreSQL outage. Cross-workload traffic and secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and a current full RPM advisory triage remain NOT TESTED. The Release 66 security assessment remains **NOT VALIDATED**; these probes do not establish a production security guarantee.
+Historical Release 42–53 findings and selected controls remain documented above. R66 adds scoped runtime checks: SELinux Enforcing and rootless Podman on all four Single-Node target OSes; partial same-host isolation on AlmaLinux/CentOS Single-Node; and authenticated Fleet retry behavior during the AlmaLinux hub PostgreSQL outage. Cross-workload DB reachability and secret separation, complete effective capabilities, worker identity negatives, external listener exposure, secret canary paths and a current full RPM advisory triage remain NOT TESTED. The Release 66 security assessment remains **NOT VALIDATED**; these probes do not establish a production security guarantee.

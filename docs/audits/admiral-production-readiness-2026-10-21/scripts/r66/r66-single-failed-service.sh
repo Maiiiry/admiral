@@ -3,17 +3,16 @@
 # Run the Release 66 declared-service failure regression on a disposable guest.
 set -uo pipefail
 
-if [[ $# -ne 3 ]]; then
-  echo "Usage: $0 {rocky|fedora} CUSTOMER_ID IDEMPOTENCY_KEY" >&2
+if [[ $# -lt 3 || $# -gt 4 ]]; then
+  echo "Usage: $0 {rocky|fedora|alma|centos} CUSTOMER_ID IDEMPOTENCY_KEY [NODE_ID]" >&2
   exit 2
 fi
 
-os=$1
-customer=$2
-idempotency_key=$3
-[[ $os =~ ^(rocky|fedora)$ ]] || { echo 'unsupported OS key' >&2; exit 2; }
+os=$1 customer=$2 idempotency_key=$3 node_id=${4:-}
+[[ $os =~ ^(rocky|fedora|alma|centos)$ ]] || { echo 'unsupported OS key' >&2; exit 2; }
 [[ $customer =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo 'invalid customer ID' >&2; exit 2; }
 [[ $idempotency_key =~ ^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$ ]] || { echo 'invalid idempotency key' >&2; exit 2; }
+[[ -z $node_id || $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo 'invalid node ID' >&2; exit 2; }
 
 cd /
 run_dir="/var/tmp/adm-r66-${os}-failed-service-${customer}"
@@ -23,7 +22,14 @@ chmod 0600 "$run_dir/fixture.yaml"
 
 result=0
 instance_id=''
-printf 'test=R66-SN-%s-FAILED-SERVICE\nstart_utc=%s\n' "$os" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+topology=SN
+node_args=()
+if [[ -n $node_id ]]; then
+  topology=MN
+  node_args+=(--node "$node_id")
+fi
+printf 'test=R66-%s-%s-FAILED-SERVICE\nnode_id=%s\nstart_utc=%s\n' \
+  "$os" "$topology" "${node_id:-scheduler}" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 rpm -q admiral-common admirald admiral-fleet admiralctl admiral-flagship admiral-harbor
 
 if ! admiralctl apps apply --file "$run_dir/fixture.yaml" > "$run_dir/apply.log" 2>&1; then
@@ -35,7 +41,7 @@ fi
 set +e
 admiralctl instances provision --app e2e-failing-db-audit --tier small \
   --customer "$customer" --idempotency-key "$idempotency_key" \
-  --wait --wait-timeout 10m --quiet --output json \
+  "${node_args[@]}" --wait --wait-timeout 10m --quiet --output json \
   > "$run_dir/provision.json" 2> "$run_dir/provision.stderr"
 provision_rc=$?
 set -e

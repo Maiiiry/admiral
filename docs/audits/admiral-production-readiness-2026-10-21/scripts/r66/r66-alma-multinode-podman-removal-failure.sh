@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0
-# Exercise #228 on the isolated Release 66 AlmaLinux Multi-Node lab.
+# Exercise #228 on an isolated Release 66 EL10 Multi-Node lab.
 set -euo pipefail
 
-if [[ $# -ne 5 ]]; then
-  echo "Usage: $0 SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS INSTANCE_ID OUTPUT_DIR" >&2
+if [[ $# -ne 5 && $# -ne 7 ]]; then
+  echo "Usage: $0 SSH_KEY HUB_KNOWN_HOSTS WORKER_KNOWN_HOSTS INSTANCE_ID OUTPUT_DIR [HUB_IP WORKER_IP]" >&2
   exit 2
 fi
 
@@ -13,6 +13,8 @@ hub_known_hosts=$2
 worker_known_hosts=$3
 instance_id=$4
 run_dir=$5
+hub_ip=${6:-10.77.0.210}
+worker_ip=${7:-10.77.0.212}
 [[ $instance_id =~ ^inst_[0-9a-f]{16}$ ]] || { echo "invalid instance ID" >&2; exit 2; }
 [[ $run_dir == /* ]] || { echo "output directory must be absolute" >&2; exit 2; }
 
@@ -20,8 +22,8 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 audit_dir=$(cd -- "$script_dir/../.." && pwd)
 install -d -m 0700 "$run_dir"
 umask 077
-hub=validator@10.77.0.210
-worker=validator@10.77.0.212
+hub=validator@$hub_ip
+worker=validator@$worker_ip
 
 ssh_hub() {
   ssh -i "$ssh_key" -o IdentitiesOnly=yes -o BatchMode=yes \
