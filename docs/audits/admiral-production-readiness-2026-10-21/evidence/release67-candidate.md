@@ -1,6 +1,6 @@
 # RC5 Release 67 candidate record
 
-**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED SINGLE-NODE RUNTIME SCENARIOS PASSED ON ALL FOUR TARGET OSes; FEDORA AND ROCKY MULTI-NODE HAVE SCOPED RESULTS. Matrix: 0/8.**
+**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED SINGLE-NODE RUNTIME SCENARIOS PASSED ON ALL FOUR TARGET OSes; ALL FOUR MULTI-NODE OSes HAVE SCOPED THREE-GUEST RESULTS. Matrix: 0/8.**
 
 Release 66 is invalidated for active release-gate credit by the Fedora fresh
 Multi-Node worker-install failure tracked in [issue #266](https://github.com/admiral-project/admiral/issues/266).
@@ -139,6 +139,38 @@ This does not complete the Rocky Multi-Node cell. Full topology, operation IDs,
 timing, test limitations and local raw-log hashes are in
 [`release67-rocky-multinode-targeted.md`](release67-rocky-multinode-targeted.md).
 
+## Scoped R67 AlmaLinux 10 Multi-Node execution
+
+A fresh three-guest AlmaLinux 10.2 lab installed the exact `.el10` R67
+candidate through DNF. Hub and both workers completed secure bootstrap with no
+failed/unreachable tasks; two heartbeat/metrics retries on each worker
+eventually converged and temporary bootstrap credentials were rejected.
+W1/W2 placement and same-key replay passed with SQL-marker roundtrip, HTTP 200
+over WireGuard, and cleanup. Scoped recovery probes passed a controlled central
+PostgreSQL outage (77 Fleet 503, zero 401/429), W2 partition/rejoin, hub reboot
+and Podman deletion failure followed by restore-and-retry. An initial
+partition-helper invocation stopped at argument validation before modifying
+the guest; it is retained and excluded. This is not a completed matrix cell.
+See [`release67-alma-multinode-targeted.md`](release67-alma-multinode-targeted.md)
+for package versions, topology, exact IDs, timings, reproducible scripts and
+restricted-log hashes.
+
+## Scoped R67 CentOS Stream 10 Multi-Node execution
+
+A fresh three-guest CentOS Stream 10 lab installed the exact `.el10` R67
+candidate through normal DNF resolution. The hub re-resolved Flask/Mistune
+from the enabled package repositories after seed copies were removed. Hub and
+workers completed secure bootstrap with no failed/unreachable tasks; two
+heartbeat/metrics retries on each worker eventually converged and temporary
+bootstrap credentials were rejected. W1/W2 placement and same-key replay
+passed with SQL-marker roundtrip, HTTP 200 over WireGuard, and cleanup. Scoped
+recovery probes passed a controlled central PostgreSQL outage (78 Fleet 503,
+zero 401/429), W2 partition/rejoin, hub reboot and Podman deletion failure
+followed by restore-and-retry. This is not a completed matrix cell. See
+[`release67-centos-multinode-targeted.md`](release67-centos-multinode-targeted.md)
+for package versions, topology, exact IDs, timings, reproducible scripts and
+restricted-log hashes.
+
 ## Repository helper correction discovered during R67 staging
 
 Reviewing the existing `publish-candidate-repo.sh` exposed a latent cross-distro
@@ -227,12 +259,16 @@ ready. Full evidence and log hashes are in
   scenarios passed on exact R67 packages. The four Single-Node guests also passed
   the named extended regression scenarios in
   [`release67-single-node-extended-regressions.md`](release67-single-node-extended-regressions.md).
-  Fedora additionally passed fresh three-node secure bootstrap and W1/W2
-  placement/replay/health/HTTP/SQL/deprovision after a retained timing failure
-  was corrected in the helper; see
-  [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md).
+  All four OSes passed fresh three-node secure bootstrap and W1/W2
+  placement/replay/health/HTTP/SQL/deprovision. Fedora's retained timing
+  failure and corrected recheck are in
+  [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md);
+  Rocky, AlmaLinux and CentOS Stream selected recovery scenarios are detailed in
+  their respective R67 Multi-Node reports.
   These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
-  x86_64 OSes using only exact Release 67 RPMs built for each distro.
+  x86_64 OSes using only exact Release 67 RPMs built for each distro. Fedora
+  may receive only `.fc46` packages built with the Fedora toolchain; EL10
+  `.el10` binaries must not be forced or installed into Fedora.
 - Broad isolation, stress/performance, resource-exhaustion, interruption and
   failure-injection scenarios remain outstanding.

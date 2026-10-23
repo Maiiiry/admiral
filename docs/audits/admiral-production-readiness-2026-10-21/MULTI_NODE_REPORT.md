@@ -1,9 +1,9 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** Fedora and EL10 RPM sets were built with their respective native toolchains and published to separate local repositories. Fedora guests used only `.fc46` packages; EL10 guests used only `.el10` packages. No EL10 binary was copied or force-installed on Fedora. Three-guest Fedora and Rocky topologies passed fresh secure bootstrap and scoped worker workload placement. Rocky additionally passed central PostgreSQL outage/recovery, WireGuard partition/rejoin, hub reboot recovery, and Podman deletion-failure/retry scenarios. The Fedora first immediate-health assertion failure is retained; the corrected helper waited for health convergence. Neither OS has a complete Multi-Node cell; AlmaLinux and CentOS Stream have no R67 Multi-Node runtime evidence. Release 66 evidence remains historical and invalidated for matrix credit. Matrix remains 0/8. See the R67 Fedora reports and [`release67-rocky-multinode-targeted.md`](evidence/release67-rocky-multinode-targeted.md).
+> **R67 status:** Fedora and EL10 RPM sets were built with their respective native toolchains and installed from separate local repositories. Fedora guests used only `.fc46` packages; EL10 guests used only `.el10` packages. No EL10 binary was copied or force-installed on Fedora. Three-guest topologies on all four OSes passed fresh secure bootstrap and scoped worker placement/replay. Rocky, AlmaLinux and CentOS Stream additionally passed central PostgreSQL outage/recovery, WireGuard partition/rejoin, hub reboot recovery, and Podman deletion-failure/retry scenarios. Fedora's first immediate-health assertion failure, AlmaLinux's initial partition-helper usage error and Rocky's incomplete initial Podman harness attempt are retained; corrected runs passed. No OS has a complete Multi-Node cell. Release 66 evidence remains historical and invalidated for matrix credit. Matrix remains 0/8. See the R67 per-OS reports and [`release67-candidate.md`](evidence/release67-candidate.md).
 
-Current R67 execution: **SCOPED FEDORA AND ROCKY BOOTSTRAP/WORKLOAD-LIFECYCLE PASSES; Multi-Node remains NOT VALIDATED; matrix 0/8.** The exact candidate installed on fresh three-guest Fedora and Rocky topologies. Fedora resolver hardening passed after the baseline RPM; both workers enrolled with current heartbeats. A first Fedora placement check observed `running/stopped/unavailable` immediately after the provision operation returned `succeeded`; it did not report false availability. The cleanup succeeded. The corrected helper waited for asynchronous health convergence and repeated with new IDs. Both workers passed placement, same-key replay, API health convergence, PostgreSQL marker write/read, HTTP 200 over WireGuard, and resource cleanup. Rocky passed the same scoped placement on both workers. Additional Rocky scenarios passed controlled central PostgreSQL outage/recovery, W2 WireGuard partition/rejoin, hub reboot with worker rejoin and active workload recovery, and injected Podman deletion failure followed by successful cleanup retry. These are targeted results, not cell passes. Conflicting mutations, task interruption/replay, comprehensive isolation/security, resource pressure, broader fault scenarios and performance remain outstanding. R66 logs and reports are historical only; see [`release67-candidate.md`](evidence/release67-candidate.md), [`release67-fedora-multinode-bootstrap.md`](evidence/release67-fedora-multinode-bootstrap.md), [`release67-fedora-multinode-placement-recheck.md`](evidence/release67-fedora-multinode-placement-recheck.md), [`release67-rocky-multinode-targeted.md`](evidence/release67-rocky-multinode-targeted.md) and historical R66 reports.
+Current R67 execution: **SCOPED BOOTSTRAP/WORKLOAD-LIFECYCLE PASSES ON ALL FOUR OSes; Multi-Node remains NOT VALIDATED; matrix 0/8.** The exact candidate installed on fresh three-guest Fedora, Rocky, AlmaLinux and CentOS Stream topologies. All hubs and workers registered with active/healthy state. Placement on both workers, sequential same-key replay, API health convergence, PostgreSQL marker write/read, HTTP 200 over WireGuard, and cleanup passed. Fedora's first immediate-health sample showed `running/stopped/unavailable`, not false availability; the corrected helper waited for health convergence. Rocky, AlmaLinux and CentOS Stream also passed controlled central PostgreSQL outage/recovery, W2 WireGuard partition/rejoin, hub reboot with worker rejoin and active workload recovery, and injected Podman deletion failure followed by successful cleanup retry. The initial Alma partition helper stopped at argument validation before changing guest state; the correct run passed. These are targeted results, not cell passes. Conflicting mutations, task interruption/replay, comprehensive isolation/security, resource pressure, broader fault scenarios and performance remain outstanding. R66 logs and reports are historical only; see [`release67-candidate.md`](evidence/release67-candidate.md), [`release67-fedora-multinode-bootstrap.md`](evidence/release67-fedora-multinode-bootstrap.md), [`release67-fedora-multinode-placement-recheck.md`](evidence/release67-fedora-multinode-placement-recheck.md), [`release67-rocky-multinode-targeted.md`](evidence/release67-rocky-multinode-targeted.md), [`release67-alma-multinode-targeted.md`](evidence/release67-alma-multinode-targeted.md), [`release67-centos-multinode-targeted.md`](evidence/release67-centos-multinode-targeted.md) and historical R66 reports.
 
 ## R67 exact-candidate Fedora placement recheck
 
@@ -14,6 +14,46 @@ The exact R66 component pins, package NEVRAs and selected CI results are in [`re
 ## R67 exact-candidate Rocky Linux 10 targeted Multi-Node execution
 
 A fresh Rocky 10.2 hub and two workers installed the exact `.el10` Release 67 RPMs. Secure install completed with no failed or unreachable tasks; all nodes reported active/healthy/available, SELinux remained Enforcing, WireGuard handshakes were fresh, and worker inventories were clean. Explicit W1/W2 placement, same-key replay, SQL marker persistence, HTTP 200, and deprovision passed. Separate scenarios passed a 66-second central PostgreSQL outage, W2 partition/rejoin, hub reboot with worker heartbeat and active workload recovery, and an injected Podman delete failure followed by restore-and-retry cleanup. One initial Podman helper attempt failed in its read-only inventory step due to the validator user's working directory; it is retained and excluded. The corrected full injection/retry run passed. No Rocky cell is complete. Full commands, IDs, logs and hashes: [`release67-rocky-multinode-targeted.md`](evidence/release67-rocky-multinode-targeted.md).
+
+## R67 exact-candidate AlmaLinux 10 targeted Multi-Node execution
+
+A fresh AlmaLinux 10.2 hub and two workers installed the exact `.el10` Release
+67 packages from the isolated EL10 repository. The installers completed with
+zero failed/unreachable tasks. Workers had two transient heartbeat/metrics
+poll retries each before converging; the bootstrap credential was then
+rejected. Postchecks found SELinux Enforcing, active services, no failed units,
+fresh WireGuard handshakes, exact EL10 package tags, and all three nodes
+active/healthy/available. W1/W2 placement passed sequential idempotency replay,
+health convergence, SQL marker roundtrip, HTTP 200 over WireGuard and clean
+deprovision. Additional scenarios passed a controlled central PostgreSQL
+outage (77 Fleet 503, zero 401/429, app HTTP 200), W2 partition/rejoin (node
+offline/degraded after about 143 seconds; active/healthy/available 12 seconds
+after route restoration), hub reboot recovery (services/peers/workload restored
+at poll 2; SQL marker and HTTP persisted) and Podman delete failure followed
+by restore-and-retry with empty resource inventories. An initial partition
+helper call stopped at its argument-count check and did not modify a guest; it
+is excluded. This is not a completed cell. Full topology, test IDs, hashes and
+limitations: [`release67-alma-multinode-targeted.md`](evidence/release67-alma-multinode-targeted.md).
+
+## R67 exact-candidate CentOS Stream 10 targeted Multi-Node execution
+
+A fresh CentOS Stream 10 hub and two workers installed the exact `.el10`
+Release 67 packages through normal DNF dependency resolution from the separate
+EL10 repository. The hub re-resolved Flask/Mistune after removing the seed
+copies. Secure installers completed with zero failed/unreachable tasks;
+workers had two transient heartbeat/metrics retries each before converging and
+the bootstrap credentials were rejected. Postchecks found SELinux Enforcing,
+active services, no failed units, fresh WireGuard handshakes, zero Fedora-tagged
+packages, empty rootless inventories and all three nodes active/healthy/available.
+W1/W2 placement passed sequential idempotency replay, SQL marker roundtrip,
+HTTP 200 over WireGuard, and clean deprovision. Further scenarios passed a
+controlled central PostgreSQL outage (78 Fleet 503, zero 401/429, app HTTP
+200), W2 partition/rejoin (offline/degraded at about 140 seconds; active and
+available 12 seconds after route restoration), hub reboot recovery (services,
+routes, worker handshakes and workload at poll 3; HTTP and SQL marker persisted),
+and Podman delete failure followed by successful retry and empty inventories.
+This is not a completed cell. Full topology, operation IDs, timing, log hashes
+and limits: [`release67-centos-multinode-targeted.md`](evidence/release67-centos-multinode-targeted.md).
 
 ## Release 66 Rocky Linux 10 scoped execution
 
@@ -120,8 +160,8 @@ After recovery, `e2e-whoami` provisioning succeeded on both workers and direct r
 
 ## Operational limits
 
-Loss of the hub or central database blocks new control-plane operations and callbacks; this is a single-hub/single-database architecture, not HA. Workers may keep already-running local workloads under systemd, but the hub cannot authoritatively coordinate while disconnected. A worker loss interrupts workloads placed there; automatic migration is not implemented. Historical releases showed stale instance health during worker outages (`ADM-F-002` / #208). R66 current targeted runs on AlmaLinux and CentOS Stream recovered hub peers/workers after reboot, rejected failed required services (#227), retained retryable deprovision state under injected Podman errors (#228), and recovered from central PostgreSQL outages (#264). On CentOS, a controlled 60-second outage produced 78 Fleet 503s, zero 401/429, preserved HTTP 200 service and SQL marker, and both workers recovered. These scoped passes do not establish the fixes across all four Multi-Node target OSes. Placeholder-secret rejection (`ADM-F-007`), S3/volume restore, callback/lease replay, and WireGuard identity backup remain unvalidated.
+Loss of the hub or central database blocks new control-plane operations and callbacks; this is a single-hub/single-database architecture, not HA. Workers may keep already-running local workloads under systemd, but the hub cannot authoritatively coordinate while disconnected. A worker loss interrupts workloads placed there; automatic migration is not implemented. Historical releases showed stale instance health during worker outages (`ADM-F-002` / #208). R67 targeted runs on AlmaLinux and CentOS Stream reproduced the documented offline/rejoin transitions; their R67 hub reboots recovered peers/workers, injected Podman delete errors remained visible until retry, and central PostgreSQL outages recovered (#264). On CentOS, the controlled outage produced 78 Fleet 503s, zero 401/429, preserved HTTP 200 and SQL data, and both workers recovered. These scoped passes now cover selected scenarios on all four Multi-Node targets but do not establish full readiness. Placeholder-secret rejection (`ADM-F-007`), S3/volume restore, callback/lease replay, and WireGuard identity backup remain unvalidated.
 
-## R65 invalidation and R66 remaining executions
+## Historical R65/R66 evidence and remaining R67 executions
 
-The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). ARM64 remains a separate Tier 2 non-blocking track and is not release-gate evidence. Completion remains **0/8**. R65 remains invalidated by #264; its scoped regression passed on R66 AlmaLinux, CentOS Stream and Rocky Linux. R66 Multi-Node runtime runs are partial on AlmaLinux, CentOS Stream and Rocky Linux; Fedora has not been run. Remaining coverage includes the same regressions on Fedora, backup/restore on all workers and external storage, other conflicting concurrent operation orderings and cross-worker mutations, task/callback interruption, cross-workload isolation negatives, latency injection and performance measurement. Do not label this hub-and-spoke setup HA.
+The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). ARM64 remains a separate Tier 2 non-blocking track and is not release-gate evidence. Completion remains **0/8**. R65/R66 observations are historical and carry no R67 cell credit. All four OSes now have scoped R67 Multi-Node bootstrap/placement evidence; failure/recovery probes are present on Rocky, AlmaLinux and CentOS Stream. Remaining coverage includes Fedora failure injection and hub-reboot recovery, backup/restore on all workers and external storage, other conflicting concurrent operation orderings and cross-worker mutations, task/callback interruption, cross-workload isolation negatives, latency injection and performance measurement. Do not label this hub-and-spoke setup HA.
