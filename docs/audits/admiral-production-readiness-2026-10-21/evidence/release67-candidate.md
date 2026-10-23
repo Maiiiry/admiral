@@ -1,6 +1,6 @@
 # RC5 Release 67 candidate record
 
-**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED SINGLE-NODE RUNTIME SCENARIOS PASSED ON ALL FOUR TARGET OSes; FEDORA MULTI-NODE ALSO HAS SCOPED RESULTS. Matrix: 0/8.**
+**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED SINGLE-NODE RUNTIME SCENARIOS PASSED ON ALL FOUR TARGET OSes; FEDORA AND ROCKY MULTI-NODE HAVE SCOPED RESULTS. Matrix: 0/8.**
 
 Release 66 is invalidated for active release-gate credit by the Fedora fresh
 Multi-Node worker-install failure tracked in [issue #266](https://github.com/admiral-project/admiral/issues/266).
@@ -123,6 +123,22 @@ placement and cleanup checks. It verified fresh node metrics and exact
 Fedora-only package tags on all three guests. See
 [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md).
 
+## Scoped R67 Rocky Linux 10 Multi-Node execution
+
+A fresh Rocky Linux 10.2 hub and two workers installed exact `.el10` Release 67
+packages using normal DNF resolution from the local EL10 repository. Secure
+bootstrap, W1/W2 placement and same-key replay, SQL marker persistence, HTTP
+over WireGuard and cleanup passed. Scoped resilience runs also passed for
+central PostgreSQL outage/recovery, W2 WireGuard partition/rejoin, hub reboot
+with both workers rejoining and an active workload recovering, and injected
+Podman deletion failure followed by successful restore-and-retry cleanup.
+An initial Podman test-harness attempt failed only during read-only inventory
+because the validator user's inherited working directory was inaccessible;
+the incomplete attempt is retained and excluded. The corrected full run passed.
+This does not complete the Rocky Multi-Node cell. Full topology, operation IDs,
+timing, test limitations and local raw-log hashes are in
+[`release67-rocky-multinode-targeted.md`](release67-rocky-multinode-targeted.md).
+
 ## Repository helper correction discovered during R67 staging
 
 Reviewing the existing `publish-candidate-repo.sh` exposed a latent cross-distro
@@ -135,8 +151,10 @@ with HTTP 200 metadata for each target. This is related to open issue
 [#261](https://github.com/admiral-project/admiral/issues/261), which tracks
 candidate repository correctness. A fresh Fedora hub installed the six exact
 `.fc46` Admiral RPMs from this repo through DNF; fresh workers also installed
-exact `.fc46` common/Fleet packages. Equivalent fresh-guest DNF install
-validation for EL10 remains pending. The issue remains open.
+exact `.fc46` common/Fleet packages. A fresh Rocky hub and two workers also
+installed exact `.el10` packages through DNF from the separate EL10 repository.
+No EL10 RPM was copied to or force-installed in Fedora. The issue remains open
+for broader package-repository review.
 
 ## Scoped R67 Fedora and Rocky Single-Node results
 
