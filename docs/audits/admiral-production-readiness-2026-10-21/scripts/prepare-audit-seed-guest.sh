@@ -119,16 +119,71 @@ rpm -q --qf 'kernel-core-%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core 2>/dev/nul
 dnf history info last | sed -n '/^Transaction ID/,$p' | tail -n 20
 
 set +e
-dnf -q check-update
+update_output=/var/tmp/admiral-audit-seed-check-update.txt
+dnf -q check-update > "$update_output" 2>&1
 check_update_status=$?
 set -e
 if [[ $check_update_status -eq 100 ]]; then
-  echo "updates remain after seed refresh" >&2
-  exit 1
+  if ((${#candidate_python_rpms[@]} == 0)); then
+    cat "$update_output"
+    echo "updates remain after seed refresh" >&2
+    exit 1
+  fi
+  python3 - "$update_output" "${candidate_python_rpms[@]}" <<'PY'
+from pathlib import Path
+import subprocess
+import sys
+
+update_file = Path(sys.argv[1])
+candidate_paths = sys.argv[2:]
+pinned = {}
+for path in candidate_paths:
+    name, evr = subprocess.check_output(
+        ["rpm", "-qp", "--queryformat", "%{NAME}\t%{EPOCHNUM}:%{VERSION}", path],
+        text=True,
+    ).split("\t", 1)
+    installed = subprocess.check_output(
+        ["rpm", "-q", "--queryformat", "%{EPOCHNUM}:%{VERSION}", name],
+        text=True,
+    )
+    if installed != evr:
+        raise SystemExit(f"candidate package version is not installed: {name} {installed} != {evr}")
+    pinned[name] = evr
+
+def source_version(evr: str) -> str:
+    version = evr.rsplit("-", 1)[0]
+    return version if ":" in version else f"0:{version}"
+
+unexpected = []
+reported = 0
+for line in update_file.read_text(encoding="utf-8").splitlines():
+    fields = line.split()
+    if len(fields) < 2:
+        continue
+    package_arch, available_evr = fields[0], fields[1]
+    name = next((candidate for candidate in pinned if package_arch.startswith(candidate + ".")), None)
+    if name is None:
+        unexpected.append(line)
+        continue
+    reported += 1
+    if source_version(available_evr) != pinned[name]:
+        unexpected.append(line)
+    else:
+        print(f"same upstream version is pinned for {name}; newer RPM release available: {available_evr}")
+
+if unexpected:
+    print("Updates remain outside the candidate's pinned upstream package versions:", file=sys.stderr)
+    print("\n".join(unexpected), file=sys.stderr)
+    raise SystemExit(1)
+if reported == 0:
+    raise SystemExit("dnf reported updates but none matched candidate-pinned packages")
+PY
 elif [[ $check_update_status -ne 0 ]]; then
+  cat "$update_output"
   echo "dnf check-update failed with status $check_update_status" >&2
   exit "$check_update_status"
 fi
+rm -f "$update_output"
 
 dnf clean packages
 rm -rf /var/tmp/admiral-candidate-python-rpms
