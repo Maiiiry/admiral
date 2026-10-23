@@ -24,9 +24,15 @@ umask 077
 ssh_args=(-i "$ssh_key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$known_hosts")
 {
   printf 'audit_start_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  scp "${ssh_args[@]}" "$repo_file" "$target:/tmp/admiral-local.repo"
+  remote_repo_tmp=$(ssh "${ssh_args[@]}" "$target" 'umask 077; mktemp /tmp/admiral-local.repo.XXXXXX')
+  [[ $remote_repo_tmp =~ ^/tmp/admiral-local\.repo\.[[:alnum:]]{6}$ ]] || {
+    echo 'guest returned an unexpected candidate repository staging path' >&2
+    exit 1
+  }
+  scp "${ssh_args[@]}" "$repo_file" "$target:$remote_repo_tmp"
   ssh "${ssh_args[@]}" "$target" sudo install -o root -g root -m 0644 \
-    /tmp/admiral-local.repo /etc/yum.repos.d/admiral-local.repo
+    "$remote_repo_tmp" /etc/yum.repos.d/admiral-local.repo
+  ssh "${ssh_args[@]}" "$target" rm -f -- "$remote_repo_tmp"
   ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$distro" "$mistune_nevra" "$release" <<'REMOTE'
 set -euo pipefail
 distribution=$1 expected_mistune_nevra=$2 expected_release=$3

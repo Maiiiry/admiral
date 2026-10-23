@@ -14,7 +14,15 @@ esac
 repo_file=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)/packaging/build/validation/rc5-r${release}/$repo_name
 [[ -r $repo_file && -r $ssh_key && -r $known_hosts ]] || { echo "candidate repo or SSH input is unavailable" >&2; exit 1; }
 ssh_args=(-i "$ssh_key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$known_hosts")
-scp "${ssh_args[@]}" "$repo_file" "$target:/tmp/admiral-local.repo"
+remote_repo_tmp=$(ssh "${ssh_args[@]}" "$target" 'umask 077; mktemp /tmp/admiral-local.repo.XXXXXX')
+[[ $remote_repo_tmp =~ ^/tmp/admiral-local\.repo\.[[:alnum:]]{6}$ ]] || {
+  echo 'guest returned an unexpected candidate repository staging path' >&2
+  exit 1
+}
+scp "${ssh_args[@]}" "$repo_file" "$target:$remote_repo_tmp"
+ssh "${ssh_args[@]}" "$target" sudo install -o root -g root -m 0644 \
+    "$remote_repo_tmp" /etc/yum.repos.d/admiral-local.repo
+ssh "${ssh_args[@]}" "$target" rm -f -- "$remote_repo_tmp"
 ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$distro" "$mistune_nevra" "$release" <<'REMOTE'
 set -euo pipefail
 distribution=$1 expected_mistune_nevra=$2 expected_release=$3
@@ -23,7 +31,6 @@ if [[ $distribution == fedora ]]; then
     # The Rawhide candidate support RPM is built separately from the COPR build.
     install_args+=(--allow-vendor-change)
 fi
-install -o root -g root -m 0644 /tmp/admiral-local.repo /etc/yum.repos.d/admiral-local.repo
 dnf install -y dnf-plugins-core
 if [[ $distribution == el10 ]]; then
     dnf install -y epel-release

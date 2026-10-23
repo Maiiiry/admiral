@@ -48,11 +48,17 @@ if [[ -n ${ADMIRAL_LOCAL_REPO_CONFIG:-} ]]; then
     echo "candidate repository configuration is unreadable: $ADMIRAL_LOCAL_REPO_CONFIG" >&2
     exit 1
   }
+  remote_repo_tmp=$(ssh_to "$worker_ip" "$worker_known_hosts" 'umask 077; mktemp /tmp/admiral-local.repo.XXXXXX')
+  [[ $remote_repo_tmp =~ ^/tmp/admiral-local\.repo\.[[:alnum:]]{6}$ ]] || {
+    echo 'worker returned an unexpected candidate repository staging path' >&2
+    exit 1
+  }
   scp -i "$admin_key" -o IdentitiesOnly=yes -o BatchMode=yes \
     -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$worker_known_hosts" \
-    "$ADMIRAL_LOCAL_REPO_CONFIG" "validator@$worker_ip:/tmp/admiral-local.repo"
+    "$ADMIRAL_LOCAL_REPO_CONFIG" "validator@$worker_ip:$remote_repo_tmp"
   ssh_to "$worker_ip" "$worker_known_hosts" \
-    'sudo install -o root -g root -m 0644 /tmp/admiral-local.repo /etc/yum.repos.d/admiral-local.repo'
+    sudo install -o root -g root -m 0644 "$remote_repo_tmp" /etc/yum.repos.d/admiral-local.repo
+  ssh_to "$worker_ip" "$worker_known_hosts" rm -f -- "$remote_repo_tmp"
 fi
 
 capture_rpm_manifest() {
