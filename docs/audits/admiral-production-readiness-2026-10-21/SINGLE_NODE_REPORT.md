@@ -1,8 +1,12 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R60 is invalidated; matrix 0/8.** Exact local Release 60 RPMs were installed on a fresh Rocky Linux 10.2 Single-Node overlay. The install subset and PostgreSQL outage/recovery scenario passed, but a user-systemd manager restart produced `running/healthy/available` while the pod was activating, the DB container was absent and HTTP returned `000`; issue #259 tracks the failure. R60 results are retained as diagnostics only. No full cell passed. Fedora Rawhide, AlmaLinux 10 and CentOS Stream have no R60 guest run; all four Multi-Node cells remain NOT TESTED. Exact candidate identity and raw hashes are in `evidence/release60-rocky-single-node-invalidation.md`.<br>
+Current status: **NOT VALIDATED — R61 is invalidated; matrix 0/8.** Exact local Release 61 RPMs were installed on a fresh Rocky Linux 10.2 Single-Node overlay. The install subset passed, but three API samples reported `running/healthy/available` while `user@991.service` was `deactivating` or `inactive`; issue #259 tracks the failure. R61 results are retained as diagnostics only. No full cell passed. Fleet fix `0c805d6` is pushed with green CI; R62 is awaiting coordinated RPM build and fresh-guest revalidation. Fedora Rawhide, AlmaLinux 10 and CentOS Stream have no R61 guest run; all four Multi-Node cells remain NOT TESTED. Exact candidate identity and raw hashes are in `evidence/release61-rocky-single-node-invalidation.md`.<br>
 Full dependency closure, lifecycle, persistence, isolation, recovery, concurrency, resource cleanup and performance checks remain required for all four cells.
+
+## Release 61 targeted Rocky Linux 10.2 evidence — invalidated
+
+On the fresh `adm-r61-rocky-single` overlay, the exact six Release 61 RPMs installed and the secure installer completed with zero failed tasks. The high-frequency user-manager restart probe failed: the API returned `running/healthy/available` three times while the rootless manager was deactivating/inactive. The manager later returned, and the workload recovered, but the false-health assertion aborted before SQL marker persistence verification. Cleanup deprovisioned the instance and left no matching Podman resources. This is a **FAIL** that invalidates R61 under #259; it is targeted diagnostic evidence only, not a matrix pass. Candidate pins, package checksums, event times and raw-evidence hash: `evidence/release61-rocky-single-node-invalidation.md`.
 
 ## Release 60 targeted Rocky Linux 10.2 evidence — invalidated
 

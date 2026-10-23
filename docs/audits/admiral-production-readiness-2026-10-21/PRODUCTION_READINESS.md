@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest local RPM set: Admiral RC5 Release 60, built from root commit `1ee26549bf92181f1bd7d3b6b143f42280e524eb` with component SHAs recorded in `evidence/release60-rocky-single-node-invalidation.md`. The six exact packages were installed on a fresh Rocky Linux 10.2 guest. Installation and the targeted database outage/recovery scenario passed; a false `healthy/available` observation during a user-systemd manager restart invalidated R60 under #259. The Fleet fix is pushed as `c902a2895c1b12c18f4607b92f13c83515b3da25` with green CI. Release 61 pins/specs are prepared locally but have not been built or run on a guest.<br>
-The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R60 has partial Rocky Single-Node diagnostic evidence only; no complete cell passed. Fedora, Alma, CentOS and all four Multi-Node cells have no R60 runs. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
+Latest local RPM set: Admiral RC5 Release 61, built from root commit `6b55f7510aef822a6bf34c6e639f2a410fb19204` with component SHAs recorded in `evidence/release61-rocky-single-node-invalidation.md`. The six exact packages were installed on a fresh Rocky Linux 10.2 guest. The installation subset passed; the manager-restart probe observed three false `healthy/available` API samples while `user@991.service` was deactivating/inactive, invalidating R61 under #259. Fleet fix `0c805d6293bfb11fd4f015f1b0ccff520481e627` is pushed to `origin/main` with green CI. Release 62 has not yet been built.<br>
+The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R61 has partial Rocky Single-Node diagnostic evidence only; no complete cell passed. Fedora, Alma, CentOS and all four Multi-Node cells have no R61 runs. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | R60 installation and selected Rocky tests ran, but a reproducible false-healthy window during rootless manager restart invalidated the candidate. No full cell passed; Fedora, Alma, CentOS, controlled load/performance and several security/resilience scenarios remain untested. |
-| Multi-Node | **NOT VALIDATED** | No R60 three-guest topology ran. All four cells remain NOT TESTED. |
+| Single-Node | **NOT VALIDATED** | R61 installation and selected Rocky tests ran, but three false-healthy samples during rootless manager deactivation invalidated the candidate. No full cell passed; Fedora, Alma, CentOS, controlled load/performance and several security/resilience scenarios remain untested. |
+| Multi-Node | **NOT VALIDATED** | No R61 three-guest topology ran. All four cells remain NOT TESTED. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 
@@ -35,4 +35,4 @@ The target matrix is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS St
 
 ## Current answer to the audit question
 
-The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. The exact R60 candidate has partial targeted Single-Node evidence on Rocky only and is invalidated by #259; no full cell has passed. Fedora, Alma, CentOS, active-task crash windows, most cross-workload isolation negatives, resource exhaustion, latency, external storage, controlled performance and all Multi-Node full-cell scenarios remain outstanding. No production readiness claim is made.
+The production-readiness question cannot yet be answered: **Single-Node and Multi-Node are NOT VALIDATED** and the matrix remains 0/8. The exact R61 candidate has partial targeted Single-Node evidence on Rocky only and is invalidated by #259; no full cell has passed. Fleet's `ActiveState` fix is source-tested and CI-green but has not yet been packaged into a runtime candidate. Fedora, Alma, CentOS, active-task crash windows, most cross-workload isolation negatives, resource exhaustion, latency, external storage, controlled performance and all Multi-Node full-cell scenarios remain outstanding. No production readiness claim is made.
