@@ -2,6 +2,7 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 > **R67 status:** No R67 RPMs or runtime tests have completed. Release 66 is invalidated for active matrix credit by issue #266; its observations below are historical and must be rerun on the exact R67 packages. Matrix remains 0/8.
+
 Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R66 functional probes include individual operation durations but no progressive load, repeated sample set or p50/p95/p99 calculation. CPU, memory, swap, file descriptor, I/O and stress behavior have not been measured under controlled conditions. All performance and scalability acceptance remains **NOT TESTED**.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.

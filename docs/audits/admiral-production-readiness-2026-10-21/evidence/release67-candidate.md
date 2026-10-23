@@ -22,13 +22,9 @@ R67 packages reproduce successful fresh worker onboarding.
 | `admiral-flagship` | `b7325bbc71fc474a521496e593b2967e4d555ac1` | Fetched `origin/main`; equals latest published `origin/main` at candidate preparation. |
 | `admiral-harbor` | `dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db` | Fetched `origin/main`; equals latest published `origin/main` at candidate preparation. |
 
-The first package-preparation commit (`779391e`) failed root CI because the
-three audit installer helpers still defaulted to Release 66 after the specs
-were bumped. Their defaults have now been corrected to 67; the complete local
-script suite passes (131 tests). The follow-up commit and its CI result will be
-recorded here before either binary build. `python3
-scripts/validate-release-refs.py` must pass against these exact references
-before building.
+The specs and source references were prepared in root commit `779391e0be9589339c97cb2cb2255caa8f80cc85`. Its CI run [39968176202](https://github.com/admiral-project/admiral/actions/runs/39968176202) failed because three audit installer helpers still defaulted to Release 66 after the coordinated spec bump. The defaults were corrected in root commit `a89a605c934e0ab23c382f6ff79569879f75e70e`; local `python3 -m pytest -q scripts/test_*.py` passed (131 tests), and root CI run [39968696770](https://github.com/admiral-project/admiral/actions/runs/39968696770) succeeded. Existing issues [#232](https://github.com/admiral-project/admiral/issues/232) and [#238](https://github.com/admiral-project/admiral/issues/238) track the helper defaults; both remain open pending the exact Release 67 guest install-path checks. The candidate build checkout will include `a89a605` and the unchanged Release 67 specs.
+
+The component pins were re-fetched from each `origin/main` immediately before preparation and matched the selected SHAs above. Their latest CI runs for those exact commits succeeded: `admirald` run [39916850987](https://github.com/admiral-project/admirald/actions/runs/39916850987), `admiral-fleet` run [39878457179](https://github.com/admiral-project/admiral-fleet/actions/runs/39878457179), `admiralctl` run [39796863070](https://github.com/admiral-project/admiralctl/actions/runs/39796863070), `admiral-flagship` run [39795263415](https://github.com/admiral-project/admiral-flagship/actions/runs/39795263415), and `admiral-harbor` run [39795262318](https://github.com/admiral-project/admiral-harbor/actions/runs/39795262318). Before the actual RPM builds, fetch and compare all five component `origin/main` refs once more. `python3 scripts/validate-release-refs.py` passed before the package-preparation push and must pass again in the build checkout.
 
 ## Coordinated package set
 
@@ -51,6 +47,15 @@ EL10-tagged RPMs (for example `.el10`). The native-builder rule is also in
 | --- | --- | --- |
 | Fedora Rawhide x86_64 | `registry.fedoraproject.org/fedora:rawhide`, image ID `sha256:428f565534c378b103a8ec89b338164726967d88fa562966ed69cf5b3af100aa` (Fedora 46 prerelease) | NOT BUILT |
 | EL10 x86_64 | Native EL10 builder; exact image/host identity to be recorded before build | NOT BUILT |
+
+For Fedora BuildRequires, the Fedora builder is provisioned with the Fedora
+Rawhide-built Python helper RPMs from the filtered local R66 Fedora repository
+`packaging/build/repos/fedora-rawhide46-rc5-r66-x86_64` (only `python3-*.fc46.*.rpm`
+files were copied; the six R66 Admiral RPMs were excluded). NEVRAs and hashes
+for those helper RPMs are in the historical
+[`release66-fedora-RPM-MANIFEST.tsv`](release66-fedora-RPM-MANIFEST.tsv). These
+`.fc46` Python packages are build dependencies only; they are not R67 Admiral
+artifacts. No `.el10` RPM was copied to or installed in the Fedora builder.
 
 After successful builds, add per-target RPM manifests with package NEVRA and
 SHA-256, builder versions, build logs, and local-repository metadata. Do not
