@@ -120,17 +120,37 @@ if a.get('id')!=b.get('id') or a.get('instance_id')!=b.get('instance_id'):
     raise SystemExit('same-key replay did not return the original operation and instance')
 PY
 
-  ssh "${hub_ssh_args[@]}" "$hub" \
-    "sudo -u validator env HOME=/home/validator admiralctl instances show '$instance_id'" \
-    >"$run_dir/$label-instance.json"
-  python3 - "$run_dir/$label-instance.json" "$node_id" <<'PY'
+  local converged=0
+  for attempt in $(seq 1 60); do
+    if ! ssh "${hub_ssh_args[@]}" "$hub" \
+      "sudo -u validator env HOME=/home/validator admiralctl instances show '$instance_id'" \
+      >"$run_dir/$label-instance.json"; then
+      echo "instance inspection failed on health-convergence poll $attempt" >&2
+      sleep 5
+      continue
+    fi
+    if python3 - "$run_dir/$label-instance.json" "$node_id" "$attempt" <<'PY'
 import json,sys
 x=json.load(open(sys.argv[1],encoding='utf-8'))
-for k in ('id','node_id','technical_status','health_status','effective_availability','availability_reason','last_health_checked_at'):
+for k in ('id','node_id','technical_status','health_status','effective_availability','availability_reason','health_message','last_health_checked_at'):
     print(f'{k}={x.get(k)}')
-if x.get('node_id')!=sys.argv[2] or x.get('effective_availability')!='available':
-    raise SystemExit('instance state does not match the selected healthy worker')
+if x.get('node_id')!=sys.argv[2]:
+    raise SystemExit('instance was assigned to a different worker')
+if x.get('technical_status')=='deprovisioned' or x.get('availability_reason')=='instance_deprovisioned':
+    raise SystemExit('instance was deprovisioned before becoming healthy')
+if x.get('health_status')=='healthy' and x.get('effective_availability')=='available':
+    print(f'health_converged_poll={sys.argv[3]}')
+    raise SystemExit(0)
+raise SystemExit(1)
 PY
+    then
+      converged=1
+      break
+    fi
+    [[ $attempt -lt 60 ]] || break
+    sleep 5
+  done
+  [[ $converged -eq 1 ]] || { echo 'instance did not converge to healthy/available within 5 minutes' >&2; return 1; }
 
   ssh "${worker_args[@]}" "$worker" sudo bash -s -- "$instance_id" "$expected_ip" \
     >"$run_dir/$label-runtime.txt" <<'REMOTE'

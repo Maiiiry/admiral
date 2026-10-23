@@ -41,8 +41,11 @@ validation. No issue was closed for this build.
 ## Native build environments
 
 Builds were run in separate containers from the same selected source pins.
-No EL10 RPM was copied to or installed in Fedora. No dependency bypass such as
-`--nodeps` or `--force` was used. This separation is required by
+**Fedora is built with the Fedora Rawhide toolchain and installed only from the
+`.fc46` repository. EL10 is built with the EL10 toolchain and installed only
+from the `.el10` repository. EL10 RPMs are never copied into Fedora's repo or
+force-installed on Fedora.** No dependency bypass such as `--nodeps` or
+`--force` was used. This separation is required by
 [`docs/rpm_packaging.md`](../../../rpm_packaging.md).
 
 | Target | Builder and toolchain | Result | Build log |
@@ -112,8 +115,13 @@ no matching containers, pods, volumes, user units or files. A post-check found
 all three nodes active/healthy/available, zero active pods, and the exact R67
 `.fc46` package set on hub and workers. This is scoped workload evidence, not
 a complete Multi-Node cell. The procedure, operation/instance IDs, raw-log
-hashes, and one failed harness attempt are recorded in
+hashes, and the initial failed harness attempt are recorded in
 [`release67-fedora-multinode-placement.md`](release67-fedora-multinode-placement.md).
+The later dedicated R67 recheck retained an immediate-health assertion failure,
+corrected the harness to wait for health convergence, and passed fresh W1/W2
+placement and cleanup checks. It verified fresh node metrics and exact
+Fedora-only package tags on all three guests. See
+[`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md).
 
 ## Repository helper correction discovered during R67 staging
 
@@ -198,9 +206,14 @@ ready. Full evidence and log hashes are in
 - Matrix: **0/8**. RPM builds, CI and repository metadata do not count as a
   runtime cell pass.
 - Scoped fresh Fedora, Rocky, AlmaLinux and CentOS Stream Single-Node install/lifecycle/reboot
-  scenarios passed on exact R67 packages. Fedora additionally passed fresh three-node
-  secure bootstrap and one workload placement/replay/HTTP/SQL/deprovision
-  cycle on each worker. These results do not give complete matrix cell credit.
+  scenarios passed on exact R67 packages. The four Single-Node guests also passed
+  the named extended regression scenarios in
+  [`release67-single-node-extended-regressions.md`](release67-single-node-extended-regressions.md).
+  Fedora additionally passed fresh three-node secure bootstrap and W1/W2
+  placement/replay/health/HTTP/SQL/deprovision after a retained timing failure
+  was corrected in the helper; see
+  [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md).
+  These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
   x86_64 OSes using only exact Release 67 RPMs built for each distro.
 - Broad isolation, stress/performance, resource-exhaustion, interruption and
