@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release:        64%{?dist}
+Release:        65%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -87,6 +87,9 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
+- Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
 - Rebuild coordinated RC5 packages for stale-health reboot recovery fix
 

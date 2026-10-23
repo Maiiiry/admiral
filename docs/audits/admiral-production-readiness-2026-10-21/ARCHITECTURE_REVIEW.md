@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: Admiral RC5 Release 63 was built with dependency resolution and installed on fresh Rocky 10.2 Single-Node. Targeted reboot, idempotency, backup/restore, security, recovery, concurrency and lifecycle probes ran; they do not complete a cell. A Fedora Rawhide 46 build then exposed #262: the pinned SQLAlchemy spec omitted Python 3.15's lowercase `.dist-info`, invalidating R63 for release credit. The full R63 package manifest and targeted evidence are in `evidence/release63-rocky-single-node-progress.md`. The fix is proposed in the root spec; R64 coordinated Release bumps are local, not built. Matrix completion remains 0/8.
+Latest audit run: Release 64 built for EL10 and Fedora 46, but Fedora Rawhide DNF5 could not resolve its exact helper RPM release dependencies under normal vendor policy. Allowing vendor change required three downgrades. No R64 package was installed; it is invalidated before runtime, and matrix completion remains 0/8. Issue #263 tracks the packaging defect. Release 65 dependency-capability changes are local and have passed source-level checks, but R65 has not been built. Prior R63 observations remain invalidated by #262.
 
 ## Scope and evidence rules
 

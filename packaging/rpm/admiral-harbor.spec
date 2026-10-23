@@ -3,7 +3,7 @@
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release:        64%{?dist}
+Release:        65%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -24,30 +24,30 @@ BuildArch: noarch
 BuildRequires: python3
 BuildRequires: python3-argon2-cffi
 BuildRequires: python3-cryptography
-BuildRequires: python3-flask = 1:3.1.3-3%{?dist}
+BuildRequires: python3dist(flask) = 3.1.3
 BuildRequires: python3-werkzeug >= 3.0.6
-BuildRequires: python3-flask-alembic = 3.3.0-3%{?dist}
-BuildRequires: python3-flask-login = 0.6.3-8%{?dist}
-BuildRequires: python3-flask-sqlalchemy = 3.1.1-9%{?dist}
+BuildRequires: python3dist(flask-alembic) = 3.3
+BuildRequires: python3dist(flask-login) = 0.6.3
+BuildRequires: python3dist(flask-sqlalchemy) = 3.1.1
 BuildRequires: python3-gunicorn
-BuildRequires: python3-mistune = 3.4.0-1%{?dist}
+BuildRequires: python3dist(mistune) = 3.4
 BuildRequires: python3-pytest
 BuildRequires: python3-pyyaml
 BuildRequires: python3-requests
 BuildRequires: systemd
 
 Requires: admiral-common
-Requires: python3-flask = 1:3.1.3-3%{?dist}
+Requires: python3dist(flask) = 3.1.3
 Requires: python3-werkzeug >= 3.0.6
-Requires: python3-flask-login = 0.6.3-8%{?dist}
-Requires: python3-flask-sqlalchemy = 3.1.1-9%{?dist}
-Requires: python3-flask-alembic = 3.3.0-3%{?dist}
+Requires: python3dist(flask-login) = 0.6.3
+Requires: python3dist(flask-sqlalchemy) = 3.1.1
+Requires: python3dist(flask-alembic) = 3.3
 Requires: python3-gunicorn
 Requires: python3-requests
 Requires: python3-pyyaml
 Requires: python3-argon2-cffi
 Requires: python3-cryptography
-Requires: python3-mistune = 3.4.0-1%{?dist}
+Requires: python3dist(mistune) = 3.4
 Requires: python3-psycopg2
 Requires: systemd
 Recommends: cockpit-bridge
@@ -126,6 +126,9 @@ restorecon -R %{_localstatedir}/lib/admiral/harbor 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
+- Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
 - Rebuild coordinated RC5 packages for stale-health reboot recovery fix
 

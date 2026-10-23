@@ -6,7 +6,7 @@
 
 Name:           python3-alembic
 Version:        1.20.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A database migration tool for SQLAlchemy
 
 License:        MIT
@@ -21,9 +21,9 @@ BuildRequires:  python3-setuptools
 BuildRequires:  python3-wheel
 BuildRequires:  pyproject-rpm-macros
 
-Requires:       python3-sqlalchemy = 2.0.55-3%{?dist}
+Requires:       python3dist(sqlalchemy) >= 2.0.31
 Requires:       python3-mako
-Requires:       python3-typing-extensions = 4.16.0-1%{?dist}
+Requires:       python3dist(typing-extensions) >= 4.12
 
 %description
 Alembic is a lightweight database migration tool for SQLAlchemy that
@@ -58,6 +58,9 @@ sed -i '/^license-files/d' pyproject.toml
 %endif
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 1.20.1-4
+- Express runtime requirements as Python module capabilities, independent of RPM release
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 1.20.1-3
 - Require the corrected SQLAlchemy 2.0.55-3 package build
 

@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release:        64%{?dist}
+Release:        65%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -18,7 +18,7 @@ Source2: flagship.env
 BuildArch: noarch
 
 BuildRequires: python3
-BuildRequires: python3-flask = 1:3.1.3-3%{?dist}
+BuildRequires: python3dist(flask) = 3.1.3
 BuildRequires: python3-werkzeug >= 3.0.6
 BuildRequires: python3-gunicorn
 BuildRequires: python3-pytest
@@ -27,7 +27,7 @@ BuildRequires: systemd
 
 Requires: admiral-common
 Requires: python3
-Requires: python3-flask = 1:3.1.3-3%{?dist}
+Requires: python3dist(flask) = 3.1.3
 Requires: python3-werkzeug >= 3.0.6
 Requires: python3-requests
 Requires: python3-gunicorn
@@ -81,6 +81,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
+- Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
 - Rebuild coordinated RC5 packages for stale-health reboot recovery fix
 

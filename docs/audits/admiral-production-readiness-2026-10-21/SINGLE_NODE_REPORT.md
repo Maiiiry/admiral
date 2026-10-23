@@ -1,12 +1,12 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R63 is invalidated by #262; matrix 0/8.** A dependency-resolved Release 63 EL10 RPM set was installed on fresh Rocky 10.2. Targeted runtime probes passed or were partial as recorded in `evidence/release63-rocky-single-node-progress.md`; none completes the full Single-Node cell and none counts for the current release. Fedora Rawhide 46/Python 3.15 exposed the SQLAlchemy spec file-list failure. The proposed fix is in the local root tree and coordinated R64 specs are prepared; no R64 RPMs have been built. All four OS Single-Node cells still require fresh R64 execution, and Multi-Node remains NOT TESTED.
+Current status: **NOT VALIDATED — R64 is invalidated by #263 before runtime; matrix 0/8.** R64 package builds passed, but a fresh Fedora Rawhide 46 guest could not resolve them using normal DNF5 vendor policy. No R64 RPM was installed and no Single-Node scenario ran. A local dependency-capability fix is proposed in Release 65 specs; local tests pass, but R65 is not built. All four OS Single-Node cells remain NOT TESTED on a valid candidate; Multi-Node remains NOT TESTED.
 The R63 record includes install, host reboot, same-key concurrency, backup/restore, authentication, partial isolation, user-systemd restart, PostgreSQL outage, process recovery, concurrent update/delete, cgroup limits, resize/reactivation, and failed-service handling. It is retained only as historical diagnosis.
 
 ## Release 63 targeted Rocky Linux 10.2 probes — invalidated
 
-See `evidence/release63-rocky-single-node-progress.md` for exact candidate identity, evidence hashes, per-test outcomes and limitations. No full cell passed. Remaining coverage includes clean R64 installation, complete configuration/secret/network/storage lifecycle, resource exhaustion, controlled performance, deeper isolation negatives, in-flight task crash recovery, and complete fault scenarios.
+See `evidence/release63-rocky-single-node-progress.md` for historical R63 candidate identity, evidence hashes, per-test outcomes and limitations. No full cell passed. Remaining coverage includes clean R65 installation, complete configuration/secret/network/storage lifecycle, resource exhaustion, controlled performance, deeper isolation negatives, in-flight task crash recovery, and complete fault scenarios.
 
 ## Release 62 targeted Rocky Linux 10.2 evidence — invalidated
 

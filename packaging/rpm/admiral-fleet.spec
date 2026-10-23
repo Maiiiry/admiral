@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release:        64%{?dist}
+Release:        65%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
+- Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
 - Rebuild coordinated RC5 packages for stale-health reboot recovery fix
 

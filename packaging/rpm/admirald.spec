@@ -15,7 +15,7 @@
 
 Name:    admirald
 Version: 0.0.1rc5
-Release:        64%{?dist}
+Release:        65%{?dist}
 Summary: Admiral Control Plane - Core API and orchestration service
 
 License: Apache-2.0
@@ -90,6 +90,9 @@ restorecon -F %{_bindir}/admirald 2>/dev/null || :
 %systemd_postun_with_restart admirald.service
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
+- Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
 - Expire stale workload health observations before worker startup recovery completes
 

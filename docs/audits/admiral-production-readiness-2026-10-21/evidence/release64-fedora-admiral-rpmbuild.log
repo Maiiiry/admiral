@@ -1,0 +1,1403 @@
+Building target platforms: x86_64
+Building for target x86_64
+Installing /home/validator/r64-fedora-build/SRPMS/admiral-common-0.0.1rc5-64.fc46.src.rpm
+setting SOURCE_DATE_EPOCH=1792713600
+Executing(mkbuilddir): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.tu6xXj
+Creating(rpmbuild.env): /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/rpmbuild.env
+  RPM_SOURCE_DIR="/home/validator/r64-fedora-build/SOURCES"
+  RPM_BUILD_DIR="/home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build"
+  RPM_OPT_FLAGS="-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wno-complain-wrong-lang -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  RPM_LD_FLAGS="-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  "
+  RPM_ARCH="x86_64"
+  RPM_OS="linux"
+  RPM_BUILD_NCPUS="2"
+  RPM_SPECPARTS_DIR="/home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/SPECPARTS"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS RPM_BUILD_NCPUS RPM_SPECPARTS_DIR RPM_LD_FLAGS
+  RPM_DOC_DIR="/usr/share/doc"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="admiral-common"
+  RPM_PACKAGE_VERSION="0.0.1rc5"
+  RPM_PACKAGE_RELEASE="64.fc46"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C.UTF-8
+  export LANG
+  unset CDPATH DISPLAY ||:
+  unset DEBUGINFOD_URLS ||:
+  unset RPM_CONFIG_DIR ||:
+  RPM_BUILD_ROOT="/home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT"
+  export RPM_BUILD_ROOT
+
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+  export PKG_CONFIG_PATH
+  CONFIG_SITE=${CONFIG_SITE:-NONE}
+  export CONFIG_SITE
+Executing(%prep): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.VaUU1L
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ rm -rf admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ /usr/bin/rpmuncompress -x /home/validator/r64-fedora-build/SOURCES/f7118329c23a75ef36b0cd6067f30a82617d9ac9.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.NbA8yc
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.VkyHuN
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ '[' /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT '!=' / ']'
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT
+++ dirname /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ mkdir /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/admiral/ansible
++ cp -r ansible/filter_plugins ansible/inventory ansible/roles ansible/site.yml ansible/wireguard-peers.yml /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/admiral/ansible/
++ install -Dm0755 scripts/install.sh /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-install
++ install -Dm0755 scripts/admiral_known_host.py /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-known-host
++ install -Dm0755 scripts/admiral_revoke_bootstrap_key.py /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-revoke-bootstrap-key
++ install -Dm0755 scripts/admiral_ssh_delivery_cleanup.py /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-ssh-delivery-cleanup
++ install -Dm0755 scripts/admiral_control_plane_backup.sh /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-control-plane-backup
++ install -Dm0755 scripts/admiral_wireguard_load_peers.sh /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-wireguard-load-peers
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-control-plane-backup.service /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-control-plane-backup.service
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-control-plane-backup.timer /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-control-plane-backup.timer
++ install -Dm0644 docs/admiral-install.1 /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/man/man1/admiral-install.1
++ install -Dm0644 docs/admiral-install.8 /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/man/man8/admiral-install.8
++ install -Dm0755 scripts/admiral_rootless_subids.py /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-rootless-subids
++ install -Dm0755 scripts/admiral_https_setup.py /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-https-setup
++ install -Dm0755 /home/validator/r64-fedora-build/SOURCES/admiral_letsencrypt_deploy_hook.sh /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-letsencrypt-deploy-hook
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/admiral
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/admiral/tls
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/admiral/ssh
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/admiralctl
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/wireguard/peers.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/systemd/resolved.conf.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/systemd/system/admirald.service.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/systemd/system/admiral-flagship.service.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/systemd/system/admiral-harbor.service.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/systemd/system/caddy.service.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/ssh/sshd_config.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/nftables
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/fail2ban/jail.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/fail2ban/filter.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/audit/rules.d
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/root/.config/admiralctl
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/flagship
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/harbor
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/log/admiral
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/etc/containers/systemd/admiral
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/outbox
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/backups
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/restore
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/tmp
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/instances
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/control-plane-backups
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/harbor/uploads
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral/ssh-delivery
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/var/lib/admiral-apps
++ install -D -m 0644 /home/validator/r64-fedora-build/SOURCES/admiral-common.sysusers /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/lib/sysusers.d/admiral-common.conf
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ COMPRESS='gzip -9 -n'
++ COMPRESS_EXT=.gz
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip /usr/bin/strip
++ /usr/lib/rpm/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/check-rpaths
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
+mangling shebang in /usr/bin/admiral-install from /usr/bin/env bash to #!/usr/bin/bash
+mangling shebang in /usr/bin/admiral-known-host from /usr/bin/env python3 to #!/usr/bin/python3
+mangling shebang in /usr/bin/admiral-revoke-bootstrap-key from /usr/bin/env python3 to #!/usr/bin/python3
+mangling shebang in /usr/bin/admiral-ssh-delivery-cleanup from /usr/bin/env python3 to #!/usr/bin/python3
+mangling shebang in /usr/bin/admiral-control-plane-backup from /usr/bin/env bash to #!/usr/bin/bash
+mangling shebang in /usr/bin/admiral-rootless-subids from /usr/bin/env python3 to #!/usr/bin/python3
+mangling shebang in /usr/bin/admiral-https-setup from /usr/bin/env python3 to #!/usr/bin/python3
+mangling shebang in /usr/libexec/admiral-wireguard-load-peers from /usr/bin/env bash to #!/usr/bin/bash
+mangling shebang in /usr/libexec/admiral-letsencrypt-deploy-hook from /usr/bin/env bash to #!/usr/bin/bash
++ /usr/lib/rpm/brp-remove-la-files
++ /usr/lib/rpm/redhat/brp-python-rpm-in-distinfo
++ env /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0 -j2
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/bin/add-det --brp -j2 /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT
+Scanned 97 directories and 41 files,
+    processed 2 inodes,
+    0 modified (0 replaced + 0 rewritten),
+    0 unsupported format, 0 errors
++ /usr/bin/linkdupes --brp /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr
+Scanned 53 directories and 41 files,
+    considered 41 files, read 3 files, linked 0 files, 0 errors
+    sum of sizes of linked files: 0 bytes
+Executing(%check): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.wkam4P
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ for script in /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-install /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-control-plane-backup /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-wireguard-load-peers /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-letsencrypt-deploy-hook
++ bash -n /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-install
++ for script in /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-install /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-control-plane-backup /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-wireguard-load-peers /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-letsencrypt-deploy-hook
++ bash -n /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-control-plane-backup
++ for script in /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-install /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-control-plane-backup /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-wireguard-load-peers /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-letsencrypt-deploy-hook
++ bash -n /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-wireguard-load-peers
++ for script in /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-install /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-control-plane-backup /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-wireguard-load-peers /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-letsencrypt-deploy-hook
++ bash -n /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/libexec/admiral-letsencrypt-deploy-hook
++ python3 - /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-known-host /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-revoke-bootstrap-key /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-ssh-delivery-cleanup /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-rootless-subids /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-https-setup
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Processing files: admiral-common-0.0.1rc5-64.fc46.noarch
+Executing(%doc): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.Baad4B
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ cd admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ DOCDIR=/home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/doc/admiral-common
++ export LC_ALL=C.UTF-8
++ LC_ALL=C.UTF-8
++ export DOCDIR
++ /usr/bin/mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/doc/admiral-common
++ cp -pr /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9/README.md /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/doc/admiral-common
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%license): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.wcJhF9
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ cd admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9
++ LICENSEDIR=/home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-common
++ export LC_ALL=C.UTF-8
++ LC_ALL=C.UTF-8
++ export LICENSEDIR
++ /usr/bin/mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-common
++ cp -pr /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/admiral-f7118329c23a75ef36b0cd6067f30a82617d9ac9/LICENSE /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-common
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Provides: admiral-common = 0.0.1rc5-64.fc46 group(admiral) group(admiral-apps) user(admiral) = dSBhZG1pcmFsIC0gIkFkbWlyYWwgc2VydmljZSBhY2NvdW50IiAvdmFyL2xpYi9hZG1pcmFsIC9zYmluL25vbG9naW4A user(admiral-apps) = dSBhZG1pcmFsLWFwcHMgLSAiQWRtaXJhbCByb290bGVzcyBhcHBzIiAvdmFyL2xpYi9hZG1pcmFsLWFwcHMgL3NiaW4vbm9sb2dpbgAA
+Requires(interp): /bin/sh /bin/sh /bin/sh /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(pre): /bin/sh group(admiral) group(admiral-apps) user(admiral) user(admiral-apps)
+Requires(post): /bin/sh
+Requires(preun): /bin/sh
+Requires(postun): /bin/sh group(admiral) group(admiral-apps) user(admiral) user(admiral-apps)
+Requires: /usr/bin/bash /usr/bin/python3
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build/BUILDROOT
+Wrote: /home/validator/r64-fedora-build/RPMS/noarch/admiral-common-0.0.1rc5-64.fc46.noarch.rpm
+Executing(rmbuild): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.AB9O8y
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ test -d /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-common-0.0.1rc5-build
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Building target platforms: x86_64
+Building for target x86_64
+Installing /home/validator/r64-fedora-build/SRPMS/admirald-0.0.1rc5-64.fc46.src.rpm
+setting SOURCE_DATE_EPOCH=1792713600
+Executing(mkbuilddir): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.hNTf7r
+Creating(rpmbuild.env): /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/rpmbuild.env
+  RPM_SOURCE_DIR="/home/validator/r64-fedora-build/SOURCES"
+  RPM_BUILD_DIR="/home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build"
+  RPM_OPT_FLAGS="-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wno-complain-wrong-lang -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  RPM_LD_FLAGS="-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  "
+  RPM_ARCH="x86_64"
+  RPM_OS="linux"
+  RPM_BUILD_NCPUS="2"
+  RPM_SPECPARTS_DIR="/home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/SPECPARTS"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS RPM_BUILD_NCPUS RPM_SPECPARTS_DIR RPM_LD_FLAGS
+  RPM_DOC_DIR="/usr/share/doc"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="admirald"
+  RPM_PACKAGE_VERSION="0.0.1rc5"
+  RPM_PACKAGE_RELEASE="64.fc46"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C.UTF-8
+  export LANG
+  unset CDPATH DISPLAY ||:
+  unset DEBUGINFOD_URLS ||:
+  unset RPM_CONFIG_DIR ||:
+  RPM_BUILD_ROOT="/home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT"
+  export RPM_BUILD_ROOT
+
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+  export PKG_CONFIG_PATH
+  CONFIG_SITE=${CONFIG_SITE:-NONE}
+  export CONFIG_SITE
+Executing(%prep): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.7SL76l
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ rm -rf admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5
++ /usr/bin/rpmuncompress -x /home/validator/r64-fedora-build/SOURCES/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.kXuJCQ
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5
++ export GOWORK=off
++ GOWORK=off
++ export GOOS=linux
++ GOOS=linux
++ export GOARCH=amd64
++ GOARCH=amd64
++ export CGO_ENABLED=0
++ CGO_ENABLED=0
++ export PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ export GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ mkdir -p /home/validator/r64-fedora-build/tmp/go-cache
++ go build -trimpath -buildmode=pie '-ldflags=-s -w -X main.Version=0.0.1rc5' -o admirald ./cmd/admirald/
+go: downloading github.com/jackc/pgx/v5 v5.9.2
+go: downloading gopkg.in/yaml.v2 v2.4.0
+go: downloading golang.org/x/crypto v0.54.0
+go: downloading golang.org/x/sys v0.47.0
+go: downloading github.com/jackc/pgpassfile v1.0.0
+go: downloading github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761
+go: downloading golang.org/x/text v0.41.0
+go: downloading github.com/jackc/puddle/v2 v2.2.2
+go: downloading golang.org/x/sync v0.22.0
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.3GkRWe
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ '[' /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT '!=' / ']'
++ rm -rf /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT
+++ dirname /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ mkdir /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5
++ install -Dm0755 admirald /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/usr/bin/admirald
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admirald.service /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admirald.service
++ install -Dm0600 /home/validator/r64-fedora-build/SOURCES/admirald.ini /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/etc/admirald.ini
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ COMPRESS='gzip -9 -n'
++ COMPRESS_EXT=.gz
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip /usr/bin/strip
++ /usr/lib/rpm/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/check-rpaths
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
++ /usr/lib/rpm/brp-remove-la-files
++ /usr/lib/rpm/redhat/brp-python-rpm-in-distinfo
++ env /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0 -j2
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/bin/add-det --brp -j2 /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT
+Scanned 7 directories and 3 files,
+    processed 0 inodes,
+    0 modified (0 replaced + 0 rewritten),
+    0 unsupported format, 0 errors
++ /usr/bin/linkdupes --brp /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/usr
+Scanned 5 directories and 2 files,
+    considered 2 files, read 0 files, linked 0 files, 0 errors
+    sum of sizes of linked files: 0 bytes
+Reading /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/SPECPARTS/rpm-debuginfo.specpart
+Executing(%check): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.uTX3Nu
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5
++ export GOWORK=off
++ GOWORK=off
++ export PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ export GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ mkdir -p /home/validator/r64-fedora-build/tmp/go-cache
++ go test ./...
+?   	github.com/admiral-project/admiral/admirald/cmd/admirald	[no test files]
+ok  	github.com/admiral-project/admiral/admirald/internal/api	0.049s
+ok  	github.com/admiral-project/admiral/admirald/internal/bootstrap	0.015s
+ok  	github.com/admiral-project/admiral/admirald/internal/config	0.020s
+ok  	github.com/admiral-project/admiral/admirald/internal/database	0.016s
+ok  	github.com/admiral-project/admiral/admirald/internal/logging	0.009s
+ok  	github.com/admiral-project/admiral/admirald/internal/networking	0.630s
+ok  	github.com/admiral-project/admiral/admirald/internal/queue	0.021s
+?   	github.com/admiral-project/admiral/admirald/internal/queuedb	[no test files]
+ok  	github.com/admiral-project/admiral/admirald/internal/secrets	0.020s
+ok  	github.com/admiral-project/admiral/admirald/internal/security	1.619s
+ok  	github.com/admiral-project/admiral/admirald/internal/version	0.011s
+ok  	github.com/admiral-project/admiral/admirald/pkg/admiral	0.018s
+ok  	github.com/admiral-project/admiral/admirald/pkg/admiral/storage	0.054s
+ok  	github.com/admiral-project/admiral/admirald/pkg/admiral/tlsconfig	0.075s
++ readelf -h ./admirald
++ grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86-64'
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Processing files: admirald-0.0.1rc5-64.fc46.x86_64
+Executing(%license): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.iSbjku
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ cd admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5
++ LICENSEDIR=/home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admirald
++ export LC_ALL=C.UTF-8
++ LC_ALL=C.UTF-8
++ export LICENSEDIR
++ /usr/bin/mkdir -p /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admirald
++ cp -pr /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/admirald-351a713dec3a3672a22707c1e15a7f77f827e1c5/LICENSE /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admirald
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Provides: admirald = 0.0.1rc5-64.fc46 admirald(x86-64) = 0.0.1rc5-64.fc46 config(admirald) = 0.0.1rc5-64.fc46
+Requires(interp): /bin/sh /bin/sh /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(post): /bin/sh
+Requires(preun): /bin/sh
+Requires(postun): /bin/sh
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build/BUILDROOT
+Wrote: /home/validator/r64-fedora-build/RPMS/x86_64/admirald-0.0.1rc5-64.fc46.x86_64.rpm
+Executing(rmbuild): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.9dcZ8c
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ test -d /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ rm -rf /home/validator/r64-fedora-build/BUILD/admirald-0.0.1rc5-build
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Building target platforms: x86_64
+Building for target x86_64
+Installing /home/validator/r64-fedora-build/SRPMS/admiral-fleet-0.0.1rc5-64.fc46.src.rpm
+setting SOURCE_DATE_EPOCH=1792713600
+Executing(mkbuilddir): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.PTHCo9
+Creating(rpmbuild.env): /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/rpmbuild.env
+  RPM_SOURCE_DIR="/home/validator/r64-fedora-build/SOURCES"
+  RPM_BUILD_DIR="/home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build"
+  RPM_OPT_FLAGS="-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wno-complain-wrong-lang -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  RPM_LD_FLAGS="-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  "
+  RPM_ARCH="x86_64"
+  RPM_OS="linux"
+  RPM_BUILD_NCPUS="2"
+  RPM_SPECPARTS_DIR="/home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/SPECPARTS"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS RPM_BUILD_NCPUS RPM_SPECPARTS_DIR RPM_LD_FLAGS
+  RPM_DOC_DIR="/usr/share/doc"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="admiral-fleet"
+  RPM_PACKAGE_VERSION="0.0.1rc5"
+  RPM_PACKAGE_RELEASE="64.fc46"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C.UTF-8
+  export LANG
+  unset CDPATH DISPLAY ||:
+  unset DEBUGINFOD_URLS ||:
+  unset RPM_CONFIG_DIR ||:
+  RPM_BUILD_ROOT="/home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT"
+  export RPM_BUILD_ROOT
+
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+  export PKG_CONFIG_PATH
+  CONFIG_SITE=${CONFIG_SITE:-NONE}
+  export CONFIG_SITE
+Executing(%prep): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.qSPQ9k
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ rm -rf admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627
++ /usr/bin/rpmuncompress -x /home/validator/r64-fedora-build/SOURCES/0c805d6293bfb11fd4f015f1b0ccff520481e627.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ mkdir -p local_deps/admirald
++ tar -xzf /home/validator/r64-fedora-build/SOURCES/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz --strip-components=1 -C local_deps/admirald
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.wnZ8vn
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627
++ export GOWORK=off
++ GOWORK=off
++ export GOOS=linux
++ GOOS=linux
++ export GOARCH=amd64
++ GOARCH=amd64
++ export CGO_ENABLED=0
++ CGO_ENABLED=0
++ export PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ export GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ mkdir -p /home/validator/r64-fedora-build/tmp/go-cache
++ go build -trimpath -buildmode=pie '-ldflags=-s -w -X github.com/admiral-project/admiral/admiral-fleet/internal/agent.FleetVersion=0.0.1rc5' -o admiral-fleet ./cmd/admiral-fleet/
++ go build -trimpath -buildmode=pie '-ldflags=-s -w' -o admiral-fleet-lifecycle ./cmd/admiral-fleet-lifecycle/
++ go build -trimpath -buildmode=pie '-ldflags=-s -w' -o admiral-fleet-setup ./cmd/admiral-fleet-setup/
++ go build -trimpath -buildmode=pie '-ldflags=-s -w' -o admiral-fleet-backup ./cmd/admiral-fleet-backup/
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.h43z0q
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ '[' /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT '!=' / ']'
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT
+++ dirname /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ mkdir /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627
++ install -Dm0755 admiral-fleet /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-fleet
++ install -Dm0755 admiral-fleet-lifecycle /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-fleet-lifecycle
++ install -Dm0755 admiral-fleet-setup /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-fleet-setup
++ install -Dm0755 admiral-fleet-backup /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/bin/admiral-fleet-backup
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-fleet.service /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-fleet.service
++ install -Dm0600 /home/validator/r64-fedora-build/SOURCES/fleet.env /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/etc/admiral/fleet.env
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ COMPRESS='gzip -9 -n'
++ COMPRESS_EXT=.gz
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip /usr/bin/strip
++ /usr/lib/rpm/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/check-rpaths
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
++ /usr/lib/rpm/brp-remove-la-files
++ /usr/lib/rpm/redhat/brp-python-rpm-in-distinfo
++ env /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0 -j2
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/bin/add-det --brp -j2 /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT
+Scanned 8 directories and 6 files,
+    processed 0 inodes,
+    0 modified (0 replaced + 0 rewritten),
+    0 unsupported format, 0 errors
++ /usr/bin/linkdupes --brp /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr
+Scanned 5 directories and 5 files,
+    considered 5 files, read 2 files, linked 0 files, 0 errors
+    sum of sizes of linked files: 0 bytes
+Reading /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/SPECPARTS/rpm-debuginfo.specpart
+Executing(%check): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.9I0NVL
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627
++ export GOWORK=off
++ GOWORK=off
++ export PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ export GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ mkdir -p /home/validator/r64-fedora-build/tmp/go-cache
++ ADMIRAL_EXPECTED_FLEET_VERSION=0.0.1rc5
++ go test '-ldflags=-X github.com/admiral-project/admiral/admiral-fleet/internal/agent.FleetVersion=0.0.1rc5' ./...
+?   	github.com/admiral-project/admiral/admiral-fleet/cmd/admiral-fleet	[no test files]
+?   	github.com/admiral-project/admiral/admiral-fleet/cmd/admiral-fleet-backup	[no test files]
+?   	github.com/admiral-project/admiral/admiral-fleet/cmd/admiral-fleet-lifecycle	[no test files]
+?   	github.com/admiral-project/admiral/admiral-fleet/cmd/admiral-fleet-setup	[no test files]
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/agent	12.466s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/config	0.025s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/executor	8.349s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/helper	0.009s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/osutil	0.013s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/podman	0.017s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/quadlet	0.029s
+?   	github.com/admiral-project/admiral/admiral-fleet/internal/rootlessprotocol	[no test files]
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/security	0.020s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/storage	0.052s
+ok  	github.com/admiral-project/admiral/admiral-fleet/internal/systemd	1.102s
++ for binary in admiral-fleet admiral-fleet-lifecycle admiral-fleet-setup admiral-fleet-backup
++ readelf -h ./admiral-fleet
++ grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86-64'
++ for binary in admiral-fleet admiral-fleet-lifecycle admiral-fleet-setup admiral-fleet-backup
++ readelf -h ./admiral-fleet-lifecycle
++ grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86-64'
++ for binary in admiral-fleet admiral-fleet-lifecycle admiral-fleet-setup admiral-fleet-backup
++ readelf -h ./admiral-fleet-setup
++ grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86-64'
++ for binary in admiral-fleet admiral-fleet-lifecycle admiral-fleet-setup admiral-fleet-backup
++ readelf -h ./admiral-fleet-backup
++ grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86-64'
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Processing files: admiral-fleet-0.0.1rc5-64.fc46.x86_64
+Executing(%license): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.vVLcHm
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ cd admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627
++ LICENSEDIR=/home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-fleet
++ export LC_ALL=C.UTF-8
++ LC_ALL=C.UTF-8
++ export LICENSEDIR
++ /usr/bin/mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-fleet
++ cp -pr /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/admiral-fleet-0c805d6293bfb11fd4f015f1b0ccff520481e627/LICENSE /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-fleet
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Provides: admiral-fleet = 0.0.1rc5-64.fc46 admiral-fleet(x86-64) = 0.0.1rc5-64.fc46 config(admiral-fleet) = 0.0.1rc5-64.fc46
+Requires(interp): /bin/sh /bin/sh /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(post): /bin/sh
+Requires(preun): /bin/sh
+Requires(postun): /bin/sh
+Recommends: cockpit-bridge
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build/BUILDROOT
+Wrote: /home/validator/r64-fedora-build/RPMS/x86_64/admiral-fleet-0.0.1rc5-64.fc46.x86_64.rpm
+Executing(rmbuild): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.UdmDs8
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ test -d /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-fleet-0.0.1rc5-build
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Building target platforms: x86_64
+Building for target x86_64
+Installing /home/validator/r64-fedora-build/SRPMS/admiralctl-0.0.1rc5-64.fc46.src.rpm
+setting SOURCE_DATE_EPOCH=1792713600
+Executing(mkbuilddir): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.WTktpf
+Creating(rpmbuild.env): /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/rpmbuild.env
+  RPM_SOURCE_DIR="/home/validator/r64-fedora-build/SOURCES"
+  RPM_BUILD_DIR="/home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build"
+  RPM_OPT_FLAGS="-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wno-complain-wrong-lang -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  RPM_LD_FLAGS="-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  "
+  RPM_ARCH="x86_64"
+  RPM_OS="linux"
+  RPM_BUILD_NCPUS="2"
+  RPM_SPECPARTS_DIR="/home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/SPECPARTS"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS RPM_BUILD_NCPUS RPM_SPECPARTS_DIR RPM_LD_FLAGS
+  RPM_DOC_DIR="/usr/share/doc"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="admiralctl"
+  RPM_PACKAGE_VERSION="0.0.1rc5"
+  RPM_PACKAGE_RELEASE="64.fc46"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C.UTF-8
+  export LANG
+  unset CDPATH DISPLAY ||:
+  unset DEBUGINFOD_URLS ||:
+  unset RPM_CONFIG_DIR ||:
+  RPM_BUILD_ROOT="/home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT"
+  export RPM_BUILD_ROOT
+
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+  export PKG_CONFIG_PATH
+  CONFIG_SITE=${CONFIG_SITE:-NONE}
+  export CONFIG_SITE
+Executing(%prep): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.sXC781
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ rm -rf admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637
++ /usr/bin/rpmuncompress -x /home/validator/r64-fedora-build/SOURCES/49cf2428c064434c65af9a14f96975c1bb2db637.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ mkdir -p admirald
++ tar -xzf /home/validator/r64-fedora-build/SOURCES/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz --strip-components=1 -C admirald
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.31gJQP
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637
++ export GOWORK=off
++ GOWORK=off
++ export GOOS=linux
++ GOOS=linux
++ export GOARCH=amd64
++ GOARCH=amd64
++ export CGO_ENABLED=0
++ CGO_ENABLED=0
++ export PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ export GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ mkdir -p /home/validator/r64-fedora-build/tmp/go-cache
++ go build -trimpath -buildmode=pie '-ldflags=-s -w -X github.com/admiral-project/admiral/admiralctl/internal/version.Version=0.0.1rc5' -o admiralctl ./cmd/admiralctl/
+go: downloading github.com/spf13/cobra v1.10.2
+go: downloading github.com/spf13/pflag v1.0.9
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.Ij5V9B
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ '[' /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT '!=' / ']'
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT
+++ dirname /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ mkdir /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637
++ install -Dm0755 admiralctl /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr/bin/admiralctl
++ install -Dm0600 /home/validator/r64-fedora-build/SOURCES/admiralctl.yaml /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/etc/admiralctl/config.yaml
++ install -Dm0644 docs/admiralctl.1 /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr/share/man/man1/admiralctl.1
++ install -Dm0644 docs/admiralctl-admin.8 /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr/share/man/man8/admiralctl-admin.8
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ COMPRESS='gzip -9 -n'
++ COMPRESS_EXT=.gz
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip /usr/bin/strip
++ /usr/lib/rpm/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/check-rpaths
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
++ /usr/lib/rpm/brp-remove-la-files
++ /usr/lib/rpm/redhat/brp-python-rpm-in-distinfo
++ env /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0 -j2
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/bin/add-det --brp -j2 /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT
+Scanned 9 directories and 4 files,
+    processed 2 inodes,
+    0 modified (0 replaced + 0 rewritten),
+    0 unsupported format, 0 errors
++ /usr/bin/linkdupes --brp /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr
+Scanned 6 directories and 3 files,
+    considered 3 files, read 0 files, linked 0 files, 0 errors
+    sum of sizes of linked files: 0 bytes
+Reading /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/SPECPARTS/rpm-debuginfo.specpart
+Executing(%check): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.OqZxe6
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637
++ export GOWORK=off
++ GOWORK=off
++ export PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ PATH=/usr/lib/golang/bin:/usr/bin:/home/validator/.local/bin:/home/validator/bin:/usr/local/bin:/usr/bin
++ export GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ GOCACHE=/home/validator/r64-fedora-build/tmp/go-cache
++ mkdir -p /home/validator/r64-fedora-build/tmp/go-cache
++ go test ./...
+ok  	github.com/admiral-project/admiral/admiralctl/cli	0.141s
+?   	github.com/admiral-project/admiral/admiralctl/cmd/admiralctl	[no test files]
+ok  	github.com/admiral-project/admiral/admiralctl/internal/client	0.273s
+ok  	github.com/admiral-project/admiral/admiralctl/internal/config	0.024s
+ok  	github.com/admiral-project/admiral/admiralctl/internal/output	0.006s
+?   	github.com/admiral-project/admiral/admiralctl/internal/version	[no test files]
++ readelf -h ./admiralctl
++ grep -Eq 'Machine:[[:space:]]+Advanced Micro Devices X86-64'
+++ ./admiralctl version
++ test 'admiralctl 0.0.1rc5' = 'admiralctl 0.0.1rc5'
++ RPM_EC=0
+++ jobs -p
+Processing files: admiralctl-0.0.1rc5-64.fc46.x86_64
++ exit 0
+Executing(%license): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.9RFX9E
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ cd admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637
++ LICENSEDIR=/home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiralctl
++ export LC_ALL=C.UTF-8
++ LC_ALL=C.UTF-8
++ export LICENSEDIR
++ /usr/bin/mkdir -p /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiralctl
++ cp -pr /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/admiralctl-49cf2428c064434c65af9a14f96975c1bb2db637/LICENSE /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiralctl
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Provides: admiralctl = 0.0.1rc5-64.fc46 admiralctl(x86-64) = 0.0.1rc5-64.fc46 config(admiralctl) = 0.0.1rc5-64.fc46
+Requires(interp): /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(post): /bin/sh
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build/BUILDROOT
+Wrote: /home/validator/r64-fedora-build/RPMS/x86_64/admiralctl-0.0.1rc5-64.fc46.x86_64.rpm
+Executing(rmbuild): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.HNVFnD
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ test -d /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiralctl-0.0.1rc5-build
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Building target platforms: x86_64
+Building for target x86_64
+Installing /home/validator/r64-fedora-build/SRPMS/admiral-flagship-0.0.1rc5-64.fc46.src.rpm
+setting SOURCE_DATE_EPOCH=1792713600
+Executing(mkbuilddir): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.tnwQ18
+Creating(rpmbuild.env): /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/rpmbuild.env
+  RPM_SOURCE_DIR="/home/validator/r64-fedora-build/SOURCES"
+  RPM_BUILD_DIR="/home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build"
+  RPM_OPT_FLAGS="-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wno-complain-wrong-lang -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  RPM_LD_FLAGS="-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  "
+  RPM_ARCH="x86_64"
+  RPM_OS="linux"
+  RPM_BUILD_NCPUS="2"
+  RPM_SPECPARTS_DIR="/home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/SPECPARTS"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS RPM_BUILD_NCPUS RPM_SPECPARTS_DIR RPM_LD_FLAGS
+  RPM_DOC_DIR="/usr/share/doc"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="admiral-flagship"
+  RPM_PACKAGE_VERSION="0.0.1rc5"
+  RPM_PACKAGE_RELEASE="64.fc46"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C.UTF-8
+  export LANG
+  unset CDPATH DISPLAY ||:
+  unset DEBUGINFOD_URLS ||:
+  unset RPM_CONFIG_DIR ||:
+  RPM_BUILD_ROOT="/home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT"
+  export RPM_BUILD_ROOT
+
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+  export PKG_CONFIG_PATH
+  CONFIG_SITE=${CONFIG_SITE:-NONE}
+  export CONFIG_SITE
+Executing(%prep): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.Sx8RvQ
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ cd /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ rm -rf admiral-flagship-b7325bbc71fc474a521496e593b2967e4d555ac1
++ /usr/bin/rpmuncompress -x /home/validator/r64-fedora-build/SOURCES/b7325bbc71fc474a521496e593b2967e4d555ac1.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd admiral-flagship-b7325bbc71fc474a521496e593b2967e4d555ac1
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.bzkZQG
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-flagship-b7325bbc71fc474a521496e593b2967e4d555ac1
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.a2ynNq
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ '[' /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT '!=' / ']'
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT
+++ dirname /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ mkdir /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-flagship-b7325bbc71fc474a521496e593b2967e4d555ac1
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/flagship
++ touch flagships.files
++ '[' -d app ']'
++ cp -r app run.py /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/flagship/
++ find /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/flagship -type f
++ sort
++ sed 's|/home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT||'
++ '[' -f LICENSE ']'
++ install -Dm0644 LICENSE /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-flagship/LICENSE
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-flagship.service /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-flagship.service
++ install -Dm0600 /home/validator/r64-fedora-build/SOURCES/flagship.env /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/etc/admiral/flagship.env
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ COMPRESS='gzip -9 -n'
++ COMPRESS_EXT=.gz
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip /usr/bin/strip
++ /usr/lib/rpm/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/check-rpaths
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
++ /usr/lib/rpm/brp-remove-la-files
++ /usr/lib/rpm/redhat/brp-python-rpm-in-distinfo
++ env /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0 -j2
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/bin/add-det --brp -j2 /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT
+Scanned 25 directories and 35 files,
+    processed 1 inodes,
+    0 modified (0 replaced + 0 rewritten),
+    0 unsupported format, 0 errors
++ /usr/bin/linkdupes --brp /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT/usr
+Scanned 22 directories and 34 files,
+    considered 34 files, read 0 files, linked 0 files, 0 errors
+    sum of sizes of linked files: 0 bytes
+Executing(%check): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.Mr66pv
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-flagship-b7325bbc71fc474a521496e593b2967e4d555ac1
++ /usr/bin/python3 -m pytest tests/ -x --tb=short
+============================= test session starts ==============================
+platform linux -- Python 3.15.0, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/admiral-flagship-b7325bbc71fc474a521496e593b2967e4d555ac1
+configfile: pyproject.toml
+collected 266 items
+
+tests/test_admiral_client_internal.py ...........................        [ 10%]
+tests/test_auth.py ..................                                    [ 16%]
+tests/test_auth_internal.py ...........                                  [ 21%]
+tests/test_bff.py ...................................................... [ 41%]
+........                                                                 [ 44%]
+tests/test_bff_internal.py ............................................. [ 61%]
+..........                                                               [ 65%]
+tests/test_csrf_internal.py ..........                                   [ 68%]
+tests/test_dashboard.py .....                                            [ 70%]
+tests/test_dashboard_internal.py .......                                 [ 73%]
+tests/test_factory.py .....                                              [ 75%]
+tests/test_mfa.py .........................                              [ 84%]
+tests/test_pagination.py ........                                        [ 87%]
+tests/test_rate_limit.py ........                                        [ 90%]
+tests/test_routes.py ...........                                         [ 94%]
+tests/test_security_hardening.py ...                                     [ 95%]
+tests/test_security_internal.py ...........                              [100%]
+
+============================= 266 passed in 30.56s =============================
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Processing files: admiral-flagship-0.0.1rc5-64.fc46.noarch
+Provides: admiral-flagship = 0.0.1rc5-64.fc46 config(admiral-flagship) = 0.0.1rc5-64.fc46
+Requires(interp): /bin/sh /bin/sh /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(post): /bin/sh
+Requires(preun): /bin/sh
+Requires(postun): /bin/sh
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build/BUILDROOT
+Wrote: /home/validator/r64-fedora-build/RPMS/noarch/admiral-flagship-0.0.1rc5-64.fc46.noarch.rpm
+Executing(rmbuild): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.u3Dr0U
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ test -d /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-flagship-0.0.1rc5-build
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Building target platforms: x86_64
+Building for target x86_64
+Installing /home/validator/r64-fedora-build/SRPMS/admiral-harbor-0.0.1rc5-64.fc46.src.rpm
+setting SOURCE_DATE_EPOCH=1792713600
+Executing(mkbuilddir): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.Sm5r0u
+Creating(rpmbuild.env): /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/rpmbuild.env
+  RPM_SOURCE_DIR="/home/validator/r64-fedora-build/SOURCES"
+  RPM_BUILD_DIR="/home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build"
+  RPM_OPT_FLAGS="-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wno-complain-wrong-lang -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  RPM_LD_FLAGS="-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  "
+  RPM_ARCH="x86_64"
+  RPM_OS="linux"
+  RPM_BUILD_NCPUS="2"
+  RPM_SPECPARTS_DIR="/home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/SPECPARTS"
+  export RPM_SOURCE_DIR RPM_BUILD_DIR RPM_OPT_FLAGS RPM_ARCH RPM_OS RPM_BUILD_NCPUS RPM_SPECPARTS_DIR RPM_LD_FLAGS
+  RPM_DOC_DIR="/usr/share/doc"
+  export RPM_DOC_DIR
+  RPM_PACKAGE_NAME="admiral-harbor"
+  RPM_PACKAGE_VERSION="0.0.1rc5"
+  RPM_PACKAGE_RELEASE="64.fc46"
+  export RPM_PACKAGE_NAME RPM_PACKAGE_VERSION RPM_PACKAGE_RELEASE
+  LANG=C.UTF-8
+  export LANG
+  unset CDPATH DISPLAY ||:
+  unset DEBUGINFOD_URLS ||:
+  unset RPM_CONFIG_DIR ||:
+  RPM_BUILD_ROOT="/home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT"
+  export RPM_BUILD_ROOT
+
+  PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/lib64/pkgconfig:/usr/share/pkgconfig"
+  export PKG_CONFIG_PATH
+  CONFIG_SITE=${CONFIG_SITE:-NONE}
+  export CONFIG_SITE
+Executing(%prep): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.kNkPZA
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ cd /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ rm -rf admiral-harbor-dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
++ /usr/bin/rpmuncompress -x /home/validator/r64-fedora-build/SOURCES/dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db.tar.gz
++ STATUS=0
++ '[' 0 -ne 0 ']'
++ cd admiral-harbor-dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w .
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%build): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.x0iXmW
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-harbor-dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Executing(%install): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.wilo28
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ '[' /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT '!=' / ']'
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT
+++ dirname /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ mkdir /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-harbor-dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
++ mkdir -p /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/harbor
++ touch harbor.files
++ '[' -d app ']'
++ cp -r app run.py worker.py cli.py migrate.py alembic.ini migrations /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/harbor/
++ find /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/admiral/harbor -type f -o -type l
++ sed 's|/home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT||'
++ sort
++ install -Dm0755 /home/validator/r64-fedora-build/SOURCES/harborctl /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/bin/harborctl
++ install -Dm0755 /home/validator/r64-fedora-build/SOURCES/harbor-gunicorn /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/bin/harbor-gunicorn
++ install -Dm0755 /home/validator/r64-fedora-build/SOURCES/harbor-migrate /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/bin/harbor-migrate
++ install -Dm0644 docs/harborctl.8 /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/share/man/man8/harborctl.8
++ '[' -f LICENSE ']'
++ install -Dm0644 LICENSE /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/share/licenses/admiral-harbor/LICENSE
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-harbor.service /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-harbor.service
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-harbor-worker.service /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-harbor-worker.service
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-harbor-worker.timer /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-harbor-worker.timer
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-harbor-catalog-sync.service /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-harbor-catalog-sync.service
++ install -Dm0644 /home/validator/r64-fedora-build/SOURCES/admiral-harbor-catalog-sync.timer /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr/lib/systemd/system/admiral-harbor-catalog-sync.timer
++ install -Dm0600 /home/validator/r64-fedora-build/SOURCES/harbor.env /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/etc/admiral/harbor.env
++ /usr/lib/rpm/check-buildroot
++ /usr/lib/rpm/redhat/brp-ldconfig
++ COMPRESS='gzip -9 -n'
++ COMPRESS_EXT=.gz
++ /usr/lib/rpm/brp-compress
++ /usr/lib/rpm/brp-strip /usr/bin/strip
++ /usr/lib/rpm/brp-strip-comment-note /usr/bin/strip /usr/bin/objdump
++ /usr/lib/rpm/redhat/brp-strip-lto /usr/bin/strip
++ /usr/lib/rpm/check-rpaths
++ /usr/lib/rpm/redhat/brp-mangle-shebangs
+mangling shebang in /usr/bin/harbor-gunicorn from /bin/bash to #!/usr/bin/bash
+mangling shebang in /usr/bin/harbor-migrate from /usr/bin/env bash to #!/usr/bin/bash
++ /usr/lib/rpm/brp-remove-la-files
++ /usr/lib/rpm/redhat/brp-python-rpm-in-distinfo
++ env /usr/lib/rpm/redhat/brp-python-bytecompile '' 1 0 -j2
++ /usr/lib/rpm/redhat/brp-python-hardlink
++ /usr/bin/add-det --brp -j2 /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT
+Scanned 24 directories and 129 files,
+    processed 68 inodes,
+    0 modified (0 replaced + 0 rewritten),
+    0 unsupported format, 0 errors
++ /usr/bin/linkdupes --brp /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT/usr
+Scanned 21 directories and 128 files,
+    considered 127 files, read 2 files, linked 0 files, 0 errors
+    sum of sizes of linked files: 0 bytes
+Executing(%check): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.i1w2g5
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CFLAGS
++ CXXFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer  '
++ export CXXFLAGS
++ FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FFLAGS
++ FCFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules  '
++ export FCFLAGS
++ VALAFLAGS=-g
++ export VALAFLAGS
++ RUSTFLAGS='-Copt-level=3 -Cdebuginfo=2 -Ccodegen-units=1 -Cstrip=none -Cforce-frame-pointers=yes -Clink-arg=-specs=/usr/lib/rpm/redhat/redhat-package-notes --cap-lints=warn'
++ export RUSTFLAGS
++ LDFLAGS='-Wl,-z,relro -Wl,--as-needed  -Wl,-z,pack-relative-relocs -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -specs=/usr/lib/rpm/redhat/redhat-hardened-ld-errors -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -Wl,--build-id=sha1 -specs=/usr/lib/rpm/redhat/redhat-package-notes  '
++ export LDFLAGS
++ LT_SYS_LIBRARY_PATH=/usr/lib64:
++ export LT_SYS_LIBRARY_PATH
++ CC=gcc
++ export CC
++ CXX=g++
++ export CXX
++ cd admiral-harbor-dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
++ /usr/bin/python3 -m pytest tests/ -x --tb=short
+============================= test session starts ==============================
+platform linux -- Python 3.15.0, pytest-9.1.1, pluggy-1.7.0
+rootdir: /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/admiral-harbor-dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db
+configfile: pyproject.toml
+collected 350 items
+
+tests/test_admin.py ........................                             [  6%]
+tests/test_admin_security.py .                                           [  7%]
+tests/test_admiral_client.py ................                            [ 11%]
+tests/test_auth.py ...........................                           [ 19%]
+tests/test_backup_links.py ..                                            [ 20%]
+tests/test_branding.py .................                                 [ 24%]
+tests/test_catalog.py ..                                                 [ 25%]
+tests/test_catalog_service.py .................                          [ 30%]
+tests/test_cli_ping.py .....                                             [ 31%]
+tests/test_cli_user.py .......                                           [ 33%]
+tests/test_client_routes.py ......................................       [ 44%]
+tests/test_context_processor.py ....                                     [ 45%]
+tests/test_csrf.py ...........                                           [ 48%]
+tests/test_factory.py ...                                                [ 49%]
+tests/test_fiscal.py ........                                            [ 52%]
+tests/test_identity.py .....................                             [ 58%]
+tests/test_markdown.py .....                                             [ 59%]
+tests/test_migrate.py .                                                  [ 59%]
+tests/test_paypal.py .........................                           [ 66%]
+tests/test_paypal_config.py .......                                      [ 68%]
+tests/test_presentation.py .                                             [ 69%]
+tests/test_rate_limit.py ....                                            [ 70%]
+tests/test_routes.py ...............................................     [ 83%]
+tests/test_secrets_manager.py .....                                      [ 85%]
+tests/test_security_utils.py ......                                      [ 86%]
+tests/test_settings.py .......                                           [ 88%]
+tests/test_setup_failed.py .....                                         [ 90%]
+tests/test_theming.py .....................                              [ 96%]
+tests/test_validation.py ......                                          [ 98%]
+tests/test_worker.py .......                                             [100%]
+
+======================= 350 passed in 389.79s (0:06:29) ========================
++ RPM_EC=0
+++ jobs -p
++ exit 0
+Processing files: admiral-harbor-0.0.1rc5-64.fc46.noarch
+Provides: admiral-harbor = 0.0.1rc5-64.fc46 config(admiral-harbor) = 0.0.1rc5-64.fc46
+Requires(interp): /bin/sh /bin/sh /bin/sh
+Requires(rpmlib): rpmlib(CompressedFileNames) <= 3.0.4-1 rpmlib(FileDigests) <= 4.6.0-1 rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+Requires(post): /bin/sh
+Requires(preun): /bin/sh
+Requires(postun): /bin/sh
+Requires: /usr/bin/bash /usr/bin/python3
+Recommends: cockpit-bridge
+Checking for unpackaged file(s): /usr/lib/rpm/check-files /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build/BUILDROOT
+Wrote: /home/validator/r64-fedora-build/RPMS/noarch/admiral-harbor-0.0.1rc5-64.fc46.noarch.rpm
+Executing(rmbuild): /bin/sh -e /home/validator/r64-fedora-build/tmp/rpm-tmp.kYL8P1
++ umask 022
++ cd /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ test -d /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ /usr/bin/chmod -Rf a+rX,u+w,g-w,o-w /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ rm -rf /home/validator/r64-fedora-build/BUILD/admiral-harbor-0.0.1rc5-build
++ RPM_EC=0
+++ jobs -p
++ exit 0

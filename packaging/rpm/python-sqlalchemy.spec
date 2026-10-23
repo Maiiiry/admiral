@@ -6,7 +6,7 @@
 
 Name:           python3-sqlalchemy
 Version:        2.0.55
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Database toolkit and Object Relational Mapper for Python
 
 License:        MIT
@@ -25,7 +25,7 @@ Provides:       python%{python3_version}dist(sqlalchemy) = %{version}
 Provides:       python3dist(sqlalchemy) = %{version}
 Requires:       python3
 Requires:       python3-greenlet >= 1
-Requires:       python3-typing-extensions = 4.16.0-1%{?dist}
+Requires:       python3dist(typing-extensions) >= 4.12
 
 %description
 SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives
@@ -62,6 +62,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch}:%{buildroot}%{python3_sitelib} %{pyth
 %license LICENSE
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 2.0.55-4
+- Require compatible typing-extensions module versions without RPM release pins
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 2.0.55-3
 - Include normalized lowercase dist-info payloads produced by Fedora Python 3.15
 

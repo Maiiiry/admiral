@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no controlled Release 63 or R64 performance run.** R63 had targeted Rocky Single-Node integration and recovery checks, but no controlled cache/load profile, repeated throughput sweep, resource-pressure run, or p50/p95/p99 calculation. These are not performance results and R63 is invalidated for matrix credit by #262. Resource-pressure and Multi-Node throughput measurements remain NOT TESTED; matrix remains 0/8.
+Current status: **NOT VALIDATED — no controlled valid-candidate performance run.** R64 was invalidated by Fedora DNF5 dependency resolution before runtime installation. R63 had targeted Rocky Single-Node checks but no controlled cache/load profile, repeated throughput sweep, resource-pressure run, or p50/p95/p99 calculation, and is invalidated for matrix credit. Resource-pressure and Multi-Node throughput measurements remain NOT TESTED; matrix remains 0/8. R65 has not been built.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
