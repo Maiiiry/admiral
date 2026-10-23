@@ -1,7 +1,7 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no R65 Multi-Node guest run; matrix 0/8.** R65 is built and installed on four Single-Node guests, but no R65 hub/worker topology has been deployed. All four Multi-Node cells remain NOT TESTED. Each cell requires three fresh isolated guests (one admin/portal hub and two workers), exact distribution RPMs on all guests, and evidence tied to the current candidate. The partial Single-Node results are summarized in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md) and do not demonstrate distributed behavior.
+Current status: **NOT VALIDATED — matrix 0/8.** R65 has partial Single-Node evidence on all four targets and one scoped three-guest AlmaLinux 10 Multi-Node run. AlmaLinux is IN PROGRESS; Fedora, Rocky and CentOS Stream Multi-Node remain NOT TESTED for R65. The Alma run validates selected install, placement, idempotency, restart, auth-negative, failure-injection and partition/rejoin scenarios only; it does not complete a cell. See [`release65-alma-multinode-progress.md`](evidence/release65-alma-multinode-progress.md).
 The #246 source correction is included as `admirald@b4b125e` with green CI [39737323015](https://github.com/admiral-project/admirald/actions/runs/39737323015). Root package preparation [`e149571`](https://github.com/admiral-project/admiral/commit/e149571e6124d1e4223f2c868a2a1c1f685f8d58) is green in CI [39738673606](https://github.com/admiral-project/admiral/actions/runs/39738673606). Release 53 package evidence is in `evidence/release53-candidate.md`. Older Release 42–52 Multi-Node evidence and partial Single-Node evidence are historical only. Findings, including the high-impact WireGuard hub-restart scenario, remain open pending exact-candidate three-guest regressions.
 
 ## Observed architecture and guarantees
@@ -14,7 +14,7 @@ The durable queue uses lease-based at-least-once delivery. No exactly-once guara
 
 Prior RC42 Rocky Linux 10 and Fedora Rawhide x86_64 logs record three-node onboarding, WireGuard/Fleet health, worker workload lifecycle, backup/restore and cleanup subsets. These logs remain in the ignored local `packaging/build/validation/rc5-r42/` directory and are not redistributed until secret scanning is complete. They count only as named prior-RC scenarios, not complete topology validation.
 
-## Current audit execution — AlmaLinux 10.2 x86_64 target cell
+## Historical Release 42 execution — AlmaLinux 10.2 x86_64
 
 An isolated three-VM topology used one `--admin-portal-node` hub and two `--worker-node` VMs, each 2 vCPU/2 GiB RAM. Secure install helpers completed on both workers with exit 0, no unreachable hosts and no failed Ansible tasks. The hub listed its portal plus both workers as `active/healthy`; both WireGuard peers had recent handshakes. Fleet was active on each worker and correctly inactive on the hub.
 
@@ -64,7 +64,7 @@ The three existing Fedora Rawhide guests started with a hub configuration contai
 
 After recovery, `e2e-whoami` provisioning succeeded on both workers and direct rootless Podman inspection confirmed the app, infrastructure and database containers. PostgreSQL accepted connections. A SQL marker on worker2 survived a guest reboot: the boot ID changed and SSH returned in about 35 seconds, then the same containers returned and PostgreSQL accepted connections. Both instances were successfully deprovisioned, each worker had zero test containers, volumes and Quadlet files, and the hub retained all nodes as active/healthy. Full operation IDs, intervals and raw-log hashes are in `evidence/fedora-multi-hub-reboot.md`.
 
-## Scenario status
+## Historical scenario status (prior candidates)
 
 | Scenario | Expected | Observed | Status | Evidence |
 | --- | --- | --- | --- | --- |
@@ -103,6 +103,6 @@ After recovery, `e2e-whoami` provisioning succeeded on both workers and direct r
 
 Loss of the hub or central database blocks new control-plane operations and callbacks. Workers may keep already-running local workloads under systemd, but the hub cannot authoritatively coordinate them while disconnected. A worker loss interrupts only workloads placed there; this audit observed no automatic rescheduling. The offline detector makes the node unavailable after a bounded heartbeat timeout, but instance-level health remains last-known during the outage; AlmaLinux, Rocky Linux and CentOS Stream runtime tests reproduce `ADM-F-002` / #208. CentOS Stream Single-Node/Multi-Node and AlmaLinux Multi-Node `/bin/false` injections confirmed that Fleet reports healthy while a declared service is failed (`ADM-F-006`). AlmaLinux Multi-Node also reported deprovision success after Podman deletion errors left an exited infra container, pod and DB volume (`ADM-F-008`). Production configuration accepts placeholder encryption/callback keys that would affect any topology retaining the shipped defaults (`ADM-F-007`). Hub restart lost WireGuard runtime peers on Rocky, Fedora, AlmaLinux and CentOS Stream despite durable peer fragments and required manual config reconstruction (`ADM-F-005`). Local PostgreSQL workload backup/restore passed on both AlmaLinux and CentOS Stream; S3/volume restore, central database recovery and WireGuard identity backup/recovery need separate clean-guest drills.
 
-## Target matrix status and next executions
+## R65 matrix status and next executions
 
-The target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). No R49 three-guest execution has run; R47 is invalidated by #237 and R48 was superseded before tests by #234. Historical three-node installs, placement, worker outages/rejoins and other probes do not validate R49. Full cell coverage remains incomplete. Required scenarios include node registration, placement, outage/rejoin/removal, hub restart and peer recovery, partitions, database outage, task/callback interruption, authorization negatives, cross-workload isolation and performance measurement. Do not label this hub-and-spoke setup HA.
+The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 on x86_64, each Single-Node and Multi-Node (eight cells). Completion remains **0/8**. All four Single-Node cells and AlmaLinux Multi-Node have partial R65 scenario evidence; Fedora, Rocky and CentOS Stream Multi-Node have no R65 three-guest runs. No full cell has passed. Complete the remaining scenarios on the current candidate or revalidate if any required fix changes the candidate. Remaining work includes local and external backup/restore on a worker, concurrent cross-node update/delete, task/callback interruption, cross-workload isolation negatives, latency injection, central database failure and performance measurement. Do not label this hub-and-spoke setup HA.

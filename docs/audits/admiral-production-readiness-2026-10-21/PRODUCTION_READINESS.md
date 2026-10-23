@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest candidate: RC5 Release 65 built from root commit `967920fb122f09521444c9f6e27d3db0c836becc` for EL10 and Fedora Rawhide 46. The root GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green. Normal DNF installation succeeded on fresh Single-Node guests for all four target OSes. Named Single-Node functional and resilience probes passed, but do not cover the full acceptance suite; see [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md).<br>
-The active matrix is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. All four Single-Node cells have partial R65 evidence; no Multi-Node R65 topology has run. Direct cross-workload PostgreSQL-IP reachability, controlled performance/stress, and multiple fault categories remain untested. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
+Latest candidate: RC5 Release 65 built from root commit `967920fb122f09521444c9f6e27d3db0c836becc` for EL10 and Fedora Rawhide 46. The root GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green. Normal DNF installation succeeded on fresh Single-Node guests for all four target OSes. Named Single-Node probes are partial. A three-guest AlmaLinux Multi-Node R65 run passed selected placement, recovery, partition and failure-injection scenarios; neither topology has completed its acceptance suite. See [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md) and [`release65-alma-multinode-progress.md`](evidence/release65-alma-multinode-progress.md).<br>
+The active matrix is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. All four Single-Node cells and AlmaLinux Multi-Node have partial R65 evidence; Fedora, Rocky and CentOS Stream Multi-Node have not run. Direct cross-workload PostgreSQL-IP reachability, controlled performance/stress, and multiple fault categories remain untested. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
 | Single-Node | **NOT VALIDATED** | All four OSes installed R65 and passed named runtime probes. None completed the full matrix; direct cross-workload database reachability, complete security negatives, broad resilience, and performance/load remain open. |
-| Multi-Node | **NOT VALIDATED** | No R65 three-guest topology has run. All four cells remain NOT TESTED. |
+| Multi-Node | **NOT VALIDATED** | AlmaLinux has one scoped three-guest R65 run; selected scenarios passed, but the cell remains open. The other three OS cells are NOT TESTED on R65. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 

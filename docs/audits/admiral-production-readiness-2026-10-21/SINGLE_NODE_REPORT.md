@@ -1,7 +1,7 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R65 named Single-Node probes are partial; matrix 0/8.** R65 built for EL10 and Fedora Rawhide 46, installed through normal DNF on fresh guests for all four target OSes, and passed the named scenarios listed in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md). Each OS cell remains open because complete storage/network/secrets coverage, exhaustive failure injection, controlled performance/load, and direct cross-workload PostgreSQL-IP reachability are not proven. Multi-Node remains NOT TESTED. Run-log hashes are in [`release65-local-log-sha256.txt`](evidence/release65-local-log-sha256.txt).
+Current status: **NOT VALIDATED — R65 named Single-Node probes are partial; matrix 0/8.** R65 built for EL10 and Fedora Rawhide 46, installed through normal DNF on fresh guests for all four target OSes, and passed the named scenarios listed in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md). Each OS cell remains open because complete storage/network/secrets coverage, exhaustive failure injection, controlled performance/load, and direct cross-workload PostgreSQL-IP reachability are not proven. AlmaLinux Multi-Node has partial R65 three-guest evidence; the other three Multi-Node targets remain NOT TESTED on this candidate. Run-log hashes are in [`release65-local-log-sha256.txt`](evidence/release65-local-log-sha256.txt).
 
 ## Release 65 named Single-Node scenario evidence — in progress
 
