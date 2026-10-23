@@ -1,6 +1,6 @@
 # RC5 Release 67 candidate record
 
-**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED FEDORA AND ROCKY SINGLE-NODE, AND FEDORA MULTI-NODE, RUNTIME SCENARIOS PASSED. Matrix: 0/8.**
+**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED SINGLE-NODE RUNTIME SCENARIOS PASSED ON ALL FOUR TARGET OSes; FEDORA MULTI-NODE ALSO HAS SCOPED RESULTS. Matrix: 0/8.**
 
 Release 66 is invalidated for active release-gate credit by the Fedora fresh
 Multi-Node worker-install failure tracked in [issue #266](https://github.com/admiral-project/admiral/issues/266).
@@ -150,12 +150,46 @@ HTTP and marker data persisted, and cleanup succeeded. Full IDs, seed hashes,
 per-step statuses, harness failures and mode-0600 raw-log hashes are in
 [`release67-single-node-targeted.md`](release67-single-node-targeted.md).
 
-These results are targeted regressions, not completed Single-Node cells.
-AlmaLinux and CentOS Stream have not yet run R67 Single-Node tests. The updated
-seeds already contain support packages, so fresh-image dependency closure is
-also not proven. Backup/restore, external storage, tenant isolation, conflicting
-concurrency, failure injection, resource pressure and performance scenarios
-remain outstanding.
+These results are targeted regressions, not completed Single-Node cells. The
+updated seeds already contain support packages, so fresh-image dependency
+closure is not proven. Backup/restore, external storage, tenant isolation,
+conflicting concurrency, failure injection, resource pressure and performance
+scenarios remain outstanding.
+
+## Scoped R67 AlmaLinux Single-Node results
+
+A fresh AlmaLinux 10.2 overlay from the updated seed installed all six exact
+EL10-native Release 67 RPMs and completed the secure Single-Node installer
+(`ok=231 changed=97 unreachable=0 failed=0`, 379 seconds, helper exit 0).
+SELinux stayed Enforcing; all five checked services were active; no systemd
+units failed; the CLI was healthy; and the worker was active, healthy and
+available. A fresh run, with no Podman command issued before installer
+completion, passed the `e2e-whoami` same-key replay, PostgreSQL readiness,
+SQL marker, loopback HTTP 200 and complete deprovision/cleanup checks. A real
+guest reboot changed the boot ID, preserved the PostgreSQL marker, returned
+HTTP 200, and only reported available after DB readiness. Exact IDs and log
+hashes are recorded in [`release67-single-node-targeted.md`](release67-single-node-targeted.md).
+
+An earlier attempt is excluded from credit because the audit harness invoked
+Podman before the installer created the `admiral-apps` subordinate UID/GID
+ranges. The resulting single-ID mapping prevented PostgreSQL image layer
+ownership changes. A fresh clean overlay passed without manual migration; the
+first attempt and diagnosis are recorded in
+[`release67-alma-harness-contamination.md`](release67-alma-harness-contamination.md).
+
+## Scoped R67 CentOS Stream Single-Node results
+
+A fresh CentOS Stream 10 overlay installed all six exact EL10-native Release 67
+RPMs. The secure Single-Node installer completed with `ok=230 changed=97
+unreachable=0 failed=0` in 369 seconds. SELinux remained Enforcing; all five
+checked services were active; no units failed; the CLI was healthy; and Fleet
+reported the worker active, healthy and available with subordinate UID/GID
+ranges present. The first `e2e-whoami` lifecycle passed same-key replay,
+PostgreSQL readiness, SQL marker roundtrip, loopback HTTP 200 and full cleanup.
+A real guest reboot changed the boot ID, preserved the SQL marker, returned
+HTTP 200 and stayed unavailable until all three containers and PostgreSQL were
+ready. Full evidence and log hashes are in
+[`release67-single-node-targeted.md`](release67-single-node-targeted.md).
 
 ## Validation state
 
@@ -163,8 +197,8 @@ remain outstanding.
   10 x86_64 × Single-Node/Multi-Node.
 - Matrix: **0/8**. RPM builds, CI and repository metadata do not count as a
   runtime cell pass.
-- Scoped fresh Fedora and Rocky Single-Node install/lifecycle/reboot scenarios
-  passed on exact R67 packages. Fedora additionally passed fresh three-node
+- Scoped fresh Fedora, Rocky, AlmaLinux and CentOS Stream Single-Node install/lifecycle/reboot
+  scenarios passed on exact R67 packages. Fedora additionally passed fresh three-node
   secure bootstrap and one workload placement/replay/HTTP/SQL/deprovision
   cycle on each worker. These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four

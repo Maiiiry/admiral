@@ -1,9 +1,9 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** Scoped Fedora/Rocky Single-Node and Fedora Multi-Node functional runs are recorded, including individual install and operation timings. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
+> **R67 status:** Scoped Single-Node install, lifecycle and reboot runs are recorded for all four OSes, plus Fedora Multi-Node functional runs. Individual installer and operation timings are observations only. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
 
-Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R67 has single functional samples, including secure installer times of 441 seconds on Fedora and 920 seconds on Rocky and individual provision/deprovision timings. These are not controlled performance measurements: there are no repeated samples, p50/p95/p99 calculations, progressive load or controlled host/guest resource measurements. CPU, memory, swap, file descriptor, I/O and stress behavior remain unmeasured under controlled conditions. Performance and scalability acceptance remains **NOT TESTED**.
+Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R67 secure installer times were 441 seconds on Fedora, 920 on Rocky, 379 on AlmaLinux and 369 on CentOS Stream. Each is a single functional sample from a seeded 2-vCPU/2-GiB guest, not a comparable benchmark: host load and repository timing were not controlled. There are no repeated samples, p50/p95/p99 calculations, progressive load or controlled host/guest resource measurements. CPU, memory, swap, file descriptor, I/O and stress behavior remain unmeasured under controlled conditions. Performance and scalability acceptance remains **NOT TESTED**.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
@@ -13,7 +13,7 @@ For provision, update, pause/resume, backup, restore and deprovision, record ope
 
 ## Current evidence
 
-R67's Fedora and Rocky Single-Node runs provide one functional lifecycle and one host-reboot sample per OS, not a benchmark distribution. The Fedora secure installer ran for 441 seconds and the Rocky installer for 920 seconds on seeded 2-vCPU/2-GiB guests; the Rocky sample includes a recorded host-side wrapper error after the installer itself exited 0. Database readiness was observed on poll 2 (Fedora) and poll 1 (Rocky) during the basic lifecycle, and on the second post-reboot sample for each. These observations are useful for reproduction only; no SLO or percentile is inferred. See [`release67-single-node-targeted.md`](evidence/release67-single-node-targeted.md).
+R67 Single-Node runs provide one functional lifecycle and one host-reboot sample per OS, not a benchmark distribution. The secure installer ran for 441 seconds on Fedora, 920 on Rocky, 379 on AlmaLinux and 369 on CentOS Stream, all on seeded 2-vCPU/2-GiB guests. The Rocky sample includes a recorded host-side wrapper error after the installer itself exited 0. Database readiness was observed on poll 2 (Fedora) and poll 1 (Rocky, AlmaLinux and CentOS Stream) during the basic lifecycle. Post-reboot availability followed DB readiness on the sampled recovery paths. These observations are useful for reproduction only; no SLO or percentile is inferred. See [`release67-single-node-targeted.md`](evidence/release67-single-node-targeted.md).
 
 Release 60 targeted runs record install and fault-detection elapsed times in protected raw logs. No R60 numbers are reported here as benchmark samples because cache state, host load and repetitions were not controlled. Prior Release 58, Release 47 and Release 46 timings remain historical diagnostics only; no p50/p95/p99 values are available and none are inferred.
 
