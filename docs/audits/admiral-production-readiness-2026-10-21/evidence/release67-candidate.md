@@ -203,15 +203,20 @@ Details, exact IDs, commands, raw manifest hashes and limitations:
 [`release67-centos-multinode-concurrent-idempotency.md`](release67-centos-multinode-concurrent-idempotency.md),
 and [`release67-el10-multinode-database-backup-restore.md`](release67-el10-multinode-database-backup-restore.md).
 
-Both EL10 Multi-Node candidates also passed a separate active-workload W2
-reboot/recovery probe on the exact Release 67 packages. AlmaLinux's boot ID
-changed; the control plane kept the instance unavailable until health
-converged, the SQL marker persisted, HTTP remained 200, and cleanup plus the
-three-node postcheck passed. Raw logs and excluded helper-preflight evidence
-are retained with verified manifests; see
-[`release67-alma-multinode-worker-reboot.md`](release67-alma-multinode-worker-reboot.md)
+All four Multi-Node candidates passed a separate active-workload W2 reboot
+probe on their exact Release 67 packages. The boot ID changed; each control
+plane kept the instance unavailable/stopped until health converged; SQL
+markers persisted; HTTP returned 200; and cleanup plus the three-node
+postcheck passed. Raw logs and helper errors are retained with verified
+manifests. The Fedora helper's printed metadata had a wrong `.el10` label;
+RPM queries and the Fedora-specific postcheck prove that the runtime used only
+`.fc46` packages, and the helper was corrected to derive its label from the
+verified release. Details:
+[`release67-fedora-multinode-worker-reboot.md`](release67-fedora-multinode-worker-reboot.md),
+[`release67-rocky-multinode-worker-reboot.md`](release67-rocky-multinode-worker-reboot.md),
+[`release67-alma-multinode-worker-reboot.md`](release67-alma-multinode-worker-reboot.md),
 and [`release67-centos-multinode-worker-reboot.md`](release67-centos-multinode-worker-reboot.md).
-This is scoped reboot evidence only and does not complete either OS cell.
+These are scoped reboot results only and do not complete any OS cell.
 
 ## Repository helper correction discovered during R67 staging
 
@@ -308,9 +313,9 @@ ready. Full evidence and log hashes are in
   are in [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md);
   the Fedora recovery run is documented in
   [`release67-fedora-multinode-targeted.md`](release67-fedora-multinode-targeted.md)
-  and the EL10 runs in their respective per-OS reports. CentOS Stream also
-  passed a separate R67 W2 reboot with workload/data recovery, documented in
-  [`release67-centos-multinode-worker-reboot.md`](release67-centos-multinode-worker-reboot.md).
+  and the EL10 runs in their respective per-OS reports. All four OSes also
+  passed separate R67 W2 reboots with active-workload/data recovery, documented
+  in the Fedora, Rocky, AlmaLinux and CentOS Stream worker-reboot reports.
   These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
   x86_64 OSes using only exact Release 67 RPMs built for each distro. Fedora
