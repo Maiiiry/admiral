@@ -24,12 +24,25 @@ Both reported all six candidate NEVRAs, active PostgreSQL/Admiral/Caddy services
 | `R66-SN-ROCKY-IDEMP-01` / `R66-SN-FEDORA-IDEMP-01` | Replay provision with the same stable idempotency key; deprovision; inspect state and resources | Replay returned the same operation and instance (`op_5057db2aac0dd809` / `inst_f9770911cfd74ce0` Rocky; `op_fc9db017502de11c` / `inst_3baf3db801c26426` Fedora). Cleanup left zero matching containers, pods, volumes and artifacts | PASS, scoped |
 | `R66-SN-ROCKY-FLEET-01` / `R66-SN-FEDORA-FLEET-01` | Restart `admiral-fleet` while workload is active | Instance remained `running/healthy/available`, DB marker persisted, HTTP 200; recovery observed in about 2 seconds | PASS, scoped |
 | `R66-SN-ROCKY-REBOOT-01` / `R66-SN-FEDORA-REBOOT-01` | Provision fresh instance, insert SQL marker, reboot the guest, confirm boot ID change, service/workload recovery, marker and HTTP; deprovision and inventory resources | Both boot IDs changed. All six system services were active; instance `running/healthy/available`; three containers up; PostgreSQL accepted connections; SQL marker remained `r66-{rocky,fedora}-boot-id-20261023 / pre-reboot`; dynamic host port returned HTTP 200. Deprovision succeeded and left zero containers, pods, volumes and user units | PASS, scoped |
+| `R66-SN-ROCKY-FAILED-SVC-01` / `R66-SN-FEDORA-FAILED-SVC-01` | Apply `fixtures/e2e-failing-db.yaml`; provision the app with PostgreSQL `/bin/false`; inspect operation, instance, DB unit/container; deprovision and verify cleanup | Both operations terminated `failed` with the DB-readiness error. Instance state was `failed/stopped/unavailable` on Rocky and `failed/unhealthy/unavailable` on Fedora. After failure, the DB unit was not loaded and no matching DB container remained. Deprovision succeeded; inventories had zero containers, pods, volumes, matching user units or artifacts | PASS for #227 regression, scoped |
 
 The exact reboot test operation/instance IDs were Rocky `op_72e8c61b019647aa` / `inst_9bd91be79dc63659` and Fedora `op_f150aec8fb56a835` / `inst_84b1c06f0a536428`. Deprovision operations were `op_b928d18fe9cb90b4` and `op_4034986a124b95d7` respectively. Before/after boot IDs and complete outcome are in the final raw logs below.
 
 ## Reboot probe harness corrections
 
 Two early post-reboot probes were not counted as product failures: the SSH session started in a validator home directory that was inaccessible to `sudo`, so the check was rerun from `/tmp`; a subsequent query used the wrong table name `admiral_reboot_marker`. The pre-reboot setup had inserted into `public.admiral_audit_marker`; querying that exact table after reboot returned the expected marker on both guests. The failed harness attempts remain preserved in the local ignored validation directory. A prior HTTP probe also initially assumed port 40000; the actual dynamically assigned port was obtained with `podman port` and returned HTTP 200. These are harness corrections, not product defects.
+
+
+### R66 failed declared-service evidence (#227)
+
+This exact-candidate probe ran against the same clean Rocky/Fedora Single-Node guests after the lifecycle/reboot checks. It used the tracked `scripts/r66/r66-single-failed-service.sh` with unique customer IDs and idempotency keys. Provision operations were Rocky `op_496dbdf593ec19fd` / instance `inst_8151d8ae75820074` and Fedora `op_68658456802ea47e` / instance `inst_55a0ecaa91eccc0c`; both failed with `service "db" failed readiness after provision`. The failed instances were unavailable and never reported healthy or available in the terminal snapshot. The failed DB unit had already been unloaded (`LoadState=not-found`) and no DB container was present before explicit deprovision. Deprovision operations `op_8acab55e137b5bdf` and `op_33d108b356933218` succeeded; final state was `deprovisioned/unavailable`, with zero matching containers, pods, volumes, user units or artifacts. Detailed captures are mode 0600 under `packaging/build/validation/rc5-r66/`.
+
+| Capture | SHA-256 |
+| --- | --- |
+| `rocky-single-failed-service-final.log` | `bc19f660b15649e84e9e5f4fe6ca7a7285e29925941e357a61f33ac13f15cfe8` |
+| `fedora-single-failed-service-final.log` | `1d23badda727bccd68702d071fad5296ec5e134bd79e63da075a24d33a127613` |
+
+An initial draft of the harness assumed the DB unit would remain loaded as `failed`. Both guests had already unloaded the service by the time the failed provision returned. That first capture is preserved; the corrected tracked script accepts a failed or removed unit only when no DB container remains, performs deprovision, and verifies all final inventories. This is a harness correction, not a product defect.
 
 ## Evidence and boundaries
 
@@ -56,4 +69,4 @@ Raw files are under ignored local path `packaging/build/validation/rc5-r66/`. Ha
 | `rocky-single-deprovision-cleanup-recheck.log` | `6bc86170ce278816787e288d2941510a86ba00c142bbb86d689a6c0e3e3fed5d` |
 | `fedora-single-deprovision-cleanup-recheck.log` | `6bc86170ce278816787e288d2941510a86ba00c142bbb86d689a6c0e3e3fed5d` |
 
-The local VM execution log files are mode `0600`; no credentials are included in this committed report. Public hostname/DNS/TLS routing was not configured on the cloned single-node test VMs and is **NOT TESTED**. This record does not validate the complete Single-Node cells: configuration/secrets/network lifecycle, broad concurrent update/delete, negative isolation/security tests, controlled exhaustion, external backup/restore, fault categories, and performance sampling remain outstanding.
+The local VM execution log files are mode `0600`; no credentials are included in this committed report. Public hostname/DNS/TLS routing was not configured on the cloned single-node test VMs and is **NOT TESTED**. This record does not validate the complete Single-Node cells: configuration/secrets/network lifecycle, broad concurrent update/delete, negative isolation/security tests, controlled exhaustion, external backup/restore, additional fault categories, and performance sampling remain outstanding.
