@@ -283,7 +283,9 @@ ready. Full evidence and log hashes are in
   are in [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md);
   the Fedora recovery run is documented in
   [`release67-fedora-multinode-targeted.md`](release67-fedora-multinode-targeted.md)
-  and the EL10 runs in their respective per-OS reports.
+  and the EL10 runs in their respective per-OS reports. CentOS Stream also
+  passed a separate R67 W2 reboot with workload/data recovery, documented in
+  [`release67-centos-multinode-worker-reboot.md`](release67-centos-multinode-worker-reboot.md).
   These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
   x86_64 OSes using only exact Release 67 RPMs built for each distro. Fedora
