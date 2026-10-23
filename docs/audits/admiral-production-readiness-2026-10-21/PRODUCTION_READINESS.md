@@ -10,7 +10,7 @@ The active matrix is four x86_64 operating systems in Single-Node and Multi-Node
 | Topology | Decision | Basis |
 | --- | --- | --- |
 | Single-Node | **NOT VALIDATED** | All four R66 Single-Node OSes have targeted install/lifecycle/reboot evidence; the EL10 samples additionally cover local backup/restore, #227 and partial isolation. Broad authorization/isolation, conflicting concurrency, external storage, resource pressure, public route/TLS and performance remain incomplete. |
-| Multi-Node | **NOT VALIDATED** | AlmaLinux and CentOS Stream have R66 three-guest targeted onboarding, placement, reboot and #227/#228 recovery results; both cover #264 outage recovery. Alma also covers partition/rejoin; CentOS covers same-key concurrent replay. Rocky/Fedora Multi-Node and broad security/performance/task-fault coverage remain incomplete. |
+| Multi-Node | **NOT VALIDATED** | AlmaLinux and CentOS Stream have R66 three-guest targeted onboarding, placement, reboot and #227/#228 recovery results; both cover #264 outage recovery. Alma also covers partition/rejoin; CentOS covers same-key concurrent replay and W2 reboot with workload persistence. Rocky/Fedora Multi-Node and broad security/performance/task-fault coverage remain incomplete. |
 
 Neither topology is READY or CONDITIONALLY READY on current evidence. CI success and these targeted runtime results do not substitute for a complete matrix cell. No production system was touched.
 
