@@ -6,7 +6,7 @@
 
 Name:    admiral-flagship
 Version: 0.0.1rc5
-Release:        65%{?dist}
+Release:        66%{?dist}
 Summary: Admiral Administrative Web Console
 
 License: Apache-2.0
@@ -81,6 +81,9 @@ restorecon -R %{_prefix}/lib/admiral/flagship 2>/dev/null || :
 %{python3} -m pytest tests/ -x --tb=short
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-66
+- Rebuild coordinated RC5 packages with retryable node authentication database errors
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
 - Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
 

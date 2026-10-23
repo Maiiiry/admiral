@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release:        65%{?dist}
+Release:        66%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -24,7 +24,7 @@ URL:     https://github.com/admiral-project/admiral-fleet
 Source0: https://github.com/admiral-project/admiral-fleet/archive/%{commit}.tar.gz
 Source1: admiral-fleet.service
 Source2: fleet.env
-Source3: https://github.com/admiral-project/admirald/archive/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz
+Source3: https://github.com/admiral-project/admirald/archive/643d203576037a12eba59d534d51d170acae9b5d.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-66
+- Rebuild coordinated RC5 packages with retryable node authentication database errors
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
 - Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
 

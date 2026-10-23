@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release:        65%{?dist}
+Release:        66%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -23,7 +23,7 @@ ExclusiveArch: x86_64 aarch64
 URL:     https://github.com/admiral-project/admiralctl
 Source0: https://github.com/admiral-project/admiralctl/archive/%{commit}.tar.gz
 Source1: admiralctl.yaml
-Source2: https://github.com/admiral-project/admirald/archive/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz
+Source2: https://github.com/admiral-project/admirald/archive/643d203576037a12eba59d534d51d170acae9b5d.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -87,6 +87,9 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-66
+- Rebuild coordinated RC5 packages with retryable node authentication database errors
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
 - Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
 

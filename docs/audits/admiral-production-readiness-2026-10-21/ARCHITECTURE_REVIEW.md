@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: RC5 Release 65 from root commit `967920fb122f09521444c9f6e27d3db0c836becc` built for EL10 and Fedora Rawhide 46. GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green; normal DNF installation and selected Single-Node runtime scenarios ran on all four x86_64 targets. These are partial scenarios, not full cells; matrix completion remains 0/8 and Multi-Node R65 is not yet tested. Issue #263's packaging fix is included in the candidate and awaits full release validation. Historical R63 observations remain invalidated by #262; see [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md).
+Latest audit run: RC5 Release 65 from root commit `967920fb122f09521444c9f6e27d3db0c836becc`; R65 is **INVALIDATED** by confirmed HIGH issue [#264](https://github.com/admiral-project/admiral/issues/264). On a three-guest AlmaLinux Multi-Node deployment, a central PostgreSQL outage caused valid Fleet token lookups to be counted as auth failures and then IP-blocked after database recovery. The fix is pushed to `admirald/main` at `643d203576037a12eba59d534d51d170acae9b5d`; local tests and vet pass while component CI [39915433860](https://github.com/admiral-project/admirald/actions/runs/39915433860) is pending. It is not yet packaged. Matrix remains 0/8; R65 observations are diagnostic only. See [`release65-invalidation-central-db-auth.md`](evidence/release65-invalidation-central-db-auth.md).
 
 ## Scope and evidence rules
 

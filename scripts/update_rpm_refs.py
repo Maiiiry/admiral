@@ -14,6 +14,10 @@ COMPONENTS = (
     ("FLAGSHIP_COMMIT", "admiral-flagship", "admiral-flagship.spec"),
     ("HARBOR_COMMIT", "admiral-harbor", "admiral-harbor.spec"),
 )
+SECONDARY_ADMIRALD_SOURCES = (
+    ("admiral-fleet", "Source3"),
+    ("admiralctl", "Source2"),
+)
 
 
 def git_head(path):
@@ -33,8 +37,10 @@ def replace_once(path, pattern, replacement):
 
 def main():
     makefile = ROOT / "Makefile"
+    component_commits = {}
     for variable, directory, spec_name in COMPONENTS:
         commit = git_head(ROOT / directory)
+        component_commits[directory] = commit
         replace_once(
             makefile,
             rf"^{variable} := [0-9a-f]{{40}}$",
@@ -46,11 +52,24 @@ def main():
             f"%global commit {commit}",
         )
 
+    common_commit = git_head(ROOT)
+    replace_once(
+        makefile,
+        r"^ADMIRAL_COMMON_COMMIT := [0-9a-f]{40}$",
+        f"ADMIRAL_COMMON_COMMIT := {common_commit}",
+    )
     replace_once(
         ROOT / "packaging" / "rpm" / "admiral-common.spec",
         r"^%global commit [0-9a-f]{40}$",
-        f"%global commit {git_head(ROOT)}",
+        f"%global commit {common_commit}",
     )
+    admirald_commit = component_commits["admirald"]
+    for spec_name, source in SECONDARY_ADMIRALD_SOURCES:
+        replace_once(
+            ROOT / "packaging" / "rpm" / f"{spec_name}.spec",
+            rf"^{source}: https://github\.com/admiral-project/admirald/archive/[0-9a-f]{{40}}\.tar\.gz$",
+            f"{source}: https://github.com/admiral-project/admirald/archive/{admirald_commit}.tar.gz",
+        )
     print("RPM source references updated; release and changelog were not modified.")
 
 

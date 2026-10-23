@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: William Moreno Reyes CP | MBA
 # SPDX-License-Identifier: Apache-2.0
 
-%global commit f7118329c23a75ef36b0cd6067f30a82617d9ac9
+%global commit 1314ec47c28f77aa8f0f6fb7641e069e4afa8089
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release:        65%{?dist}
+Release:        66%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -250,6 +250,9 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-66
+- Rebuild coordinated RC5 packages with retryable node authentication database errors
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-65
 - Rebuild coordinated RC5 packages with Fedora-compatible dependency capabilities
 
