@@ -30,6 +30,19 @@ esac
 
 dnf copr enable -y admiral-project/admiral
 
+# Release-candidate audit seeds may use an isolated host-served repository to
+# keep the RPM's pinned Python dependency set coherent with its exact specs.
+# The repo file is staged into the guest before this script is run.
+if [[ -n ${ADMIRAL_AUDIT_LOCAL_REPO_FILE:-} ]]; then
+  local_repo_file=$ADMIRAL_AUDIT_LOCAL_REPO_FILE
+  [[ -f $local_repo_file && ! -L $local_repo_file ]] || {
+    echo "invalid local Admiral audit repo file: $local_repo_file" >&2
+    exit 1
+  }
+  install -o root -g root -m 0644 "$local_repo_file" \
+    /etc/yum.repos.d/admiral-local.repo
+fi
+
 copr_repo=$(find /etc/yum.repos.d -maxdepth 1 -type f \
   -name '*admiral-project*admiral*.repo' -print -quit)
 [[ -n "$copr_repo" ]] || { echo "missing Admiral COPR repository file" >&2; exit 1; }
