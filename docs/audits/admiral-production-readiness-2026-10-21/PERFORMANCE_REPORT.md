@@ -1,9 +1,9 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** The package sets are built, and scoped Fedora onboarding timings are recorded in the bootstrap evidence. No controlled R67 performance or scalability campaign has been run. Release 66 functional observations are historical and do not count toward a cell. Matrix remains 0/8.
+> **R67 status:** Scoped Fedora/Rocky Single-Node and Fedora Multi-Node functional runs are recorded, including individual install and operation timings. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
 
-Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R66 functional probes include individual operation durations but no progressive load, repeated sample set or p50/p95/p99 calculation. CPU, memory, swap, file descriptor, I/O and stress behavior have not been measured under controlled conditions. All performance and scalability acceptance remains **NOT TESTED**.
+Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R67 has single functional samples, including secure installer times of 441 seconds on Fedora and 920 seconds on Rocky and individual provision/deprovision timings. These are not controlled performance measurements: there are no repeated samples, p50/p95/p99 calculations, progressive load or controlled host/guest resource measurements. CPU, memory, swap, file descriptor, I/O and stress behavior remain unmeasured under controlled conditions. Performance and scalability acceptance remains **NOT TESTED**.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
@@ -12,6 +12,8 @@ This audit defines no product SLO. It will record the measured baseline and the 
 For provision, update, pause/resume, backup, restore and deprovision, record operation request-to-terminal latency and separate API request latency where applicable. For repeated samples, report count, p50, p95 and p99, plus failures/timeouts. Record host and guest CPU, RSS, swap, memory pressure, disk free/IO, PostgreSQL activity, process count, file descriptors and Podman/systemd unit state. Multi-Node measurements must include hub and each worker, placement, WireGuard traffic, and one-worker versus two-worker behavior.
 
 ## Current evidence
+
+R67's Fedora and Rocky Single-Node runs provide one functional lifecycle and one host-reboot sample per OS, not a benchmark distribution. The Fedora secure installer ran for 441 seconds and the Rocky installer for 920 seconds on seeded 2-vCPU/2-GiB guests; the Rocky sample includes a recorded host-side wrapper error after the installer itself exited 0. Database readiness was observed on poll 2 (Fedora) and poll 1 (Rocky) during the basic lifecycle, and on the second post-reboot sample for each. These observations are useful for reproduction only; no SLO or percentile is inferred. See [`release67-single-node-targeted.md`](evidence/release67-single-node-targeted.md).
 
 Release 60 targeted runs record install and fault-detection elapsed times in protected raw logs. No R60 numbers are reported here as benchmark samples because cache state, host load and repetitions were not controlled. Prior Release 58, Release 47 and Release 46 timings remain historical diagnostics only; no p50/p95/p99 values are available and none are inferred.
 

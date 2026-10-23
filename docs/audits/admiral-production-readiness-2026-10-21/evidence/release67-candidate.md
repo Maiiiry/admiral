@@ -1,6 +1,6 @@
 # RC5 Release 67 candidate record
 
-**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; FEDORA MULTI-NODE BOOTSTRAP AND WORKLOAD LIFECYCLE PASSED AS SCOPED REGRESSIONS. Matrix: 0/8.**
+**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED FEDORA AND ROCKY SINGLE-NODE, AND FEDORA MULTI-NODE, RUNTIME SCENARIOS PASSED. Matrix: 0/8.**
 
 Release 66 is invalidated for active release-gate credit by the Fedora fresh
 Multi-Node worker-install failure tracked in [issue #266](https://github.com/admiral-project/admiral/issues/266).
@@ -130,15 +130,43 @@ candidate repository correctness. A fresh Fedora hub installed the six exact
 exact `.fc46` common/Fleet packages. Equivalent fresh-guest DNF install
 validation for EL10 remains pending. The issue remains open.
 
+## Scoped R67 Fedora and Rocky Single-Node results
+
+Fresh Fedora Rawhide 46 and Rocky Linux 10.2 guests installed the exact
+Release 67 packages from the matching local repositories. Both secure
+installers completed with `failed=0` and `unreachable=0`; their workers were
+active, healthy and available, with SELinux Enforcing and no failed systemd
+units. Fedora contained only `.fc46` Admiral RPMs; Rocky contained only
+`.el10` Admiral RPMs. Neither installation used a dependency bypass.
+
+Both guests passed a scoped `e2e-whoami` lifecycle: same-key replay returned
+the original operation/instance, PostgreSQL accepted connections, SQL markers
+were written/read, the loopback HTTP endpoint returned 200, and deprovision
+left no matching containers, pods, volumes, units or files. Both then passed a
+real host reboot/data recovery probe: boot IDs changed, the API remained
+unavailable while runtime services were absent, and returned to
+healthy/available only after all three containers and PostgreSQL were ready;
+HTTP and marker data persisted, and cleanup succeeded. Full IDs, seed hashes,
+per-step statuses, harness failures and mode-0600 raw-log hashes are in
+[`release67-single-node-targeted.md`](release67-single-node-targeted.md).
+
+These results are targeted regressions, not completed Single-Node cells.
+AlmaLinux and CentOS Stream have not yet run R67 Single-Node tests. The updated
+seeds already contain support packages, so fresh-image dependency closure is
+also not proven. Backup/restore, external storage, tenant isolation, conflicting
+concurrency, failure injection, resource pressure and performance scenarios
+remain outstanding.
+
 ## Validation state
 
 - Active target: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream
   10 x86_64 × Single-Node/Multi-Node.
 - Matrix: **0/8**. RPM builds, CI and repository metadata do not count as a
   runtime cell pass.
-- Scoped fresh Fedora three-node secure bootstrap and one workload
-  placement/replay/HTTP/SQL/deprovision cycle on each worker passed on exact R67
-  packages. This does not give a complete matrix cell credit.
+- Scoped fresh Fedora and Rocky Single-Node install/lifecycle/reboot scenarios
+  passed on exact R67 packages. Fedora additionally passed fresh three-node
+  secure bootstrap and one workload placement/replay/HTTP/SQL/deprovision
+  cycle on each worker. These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
   x86_64 OSes using only exact Release 67 RPMs built for each distro.
 - Broad isolation, stress/performance, resource-exhaustion, interruption and

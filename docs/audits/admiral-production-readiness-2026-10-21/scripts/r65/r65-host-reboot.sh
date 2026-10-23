@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0
-# Reboot a disposable R65 Single-Node guest and verify runtime/data convergence.
+# Reboot a disposable Single-Node guest and verify runtime/data convergence.
 set -euo pipefail
 [[ $# -eq 6 ]] || {
   echo "usage: $0 {fedora|rocky|alma|centos} GUEST_NAME USER@GUEST SSH_KEY KNOWN_HOSTS CUSTOMER" >&2
@@ -8,6 +8,9 @@ set -euo pipefail
 }
 os=$1 guest_name=$2 target=$3 ssh_key=$4 known_hosts=$5 customer=$6
 case "$os" in fedora|rocky|alma|centos) ;; *) echo 'unsupported OS key' >&2; exit 2 ;; esac
+release=${ADMIRAL_RC_RELEASE:-65}
+[[ $release =~ ^[0-9]+$ ]] || { echo 'invalid Admiral release label' >&2; exit 2; }
+marker="r${release}-reboot-persisted"
 [[ $guest_name =~ ^[A-Za-z0-9][A-Za-z0-9-]{0,62}$ ]] || { echo 'invalid guest name' >&2; exit 2; }
 [[ $customer =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo 'invalid customer' >&2; exit 2; }
 [[ -r $ssh_key && -r $known_hosts ]] || { echo 'SSH identity or known_hosts is unavailable' >&2; exit 1; }
@@ -16,9 +19,9 @@ fixture="$script_dir/../../fixtures/e2e-backup.yaml"
 [[ -r $fixture ]] || { echo "fixture not found: $fixture" >&2; exit 1; }
 ssh_args=(-i "$ssh_key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$known_hosts" -o ConnectTimeout=5)
 ssh_guest() { ssh "${ssh_args[@]}" "$target" "$@"; }
-idempotency_key="r65-${os}-reboot-$(date -u +%Y%m%dT%H%M%SZ)-$$"
+idempotency_key="r${release}-${os}-reboot-$(date -u +%Y%m%dT%H%M%SZ)-$$"
 previous_boot_id=$(ssh_guest 'cat /proc/sys/kernel/random/boot_id')
-printf 'test=R65-%s-SN-REBOOT guest=%s start_utc=%s\n' "$os" "$guest_name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+printf 'test=R%s-%s-SN-REBOOT guest=%s start_utc=%s\n' "$release" "$os" "$guest_name" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 printf 'idempotency_key=%s\n' "$idempotency_key"
 printf 'boot_id_before=%s\n' "$previous_boot_id"
 ssh_guest 'sudo install -o root -g root -m 0644 /dev/stdin /tmp/audit-e2e-backup.yaml' < "$fixture"
@@ -30,7 +33,7 @@ printf 'pre_reboot_setup_started_utc=%s\\n' "\$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 os='$os'
 customer='$customer'
 idempotency_key='$idempotency_key'
-run_dir="/var/tmp/adm-r65-${os}-host-reboot"
+run_dir="/var/tmp/adm-r${release}-${os}-host-reboot"
 install -d -m 0700 "\$run_dir"
 cp /tmp/audit-e2e-backup.yaml "\$run_dir/fixture.yaml"
 chmod 0600 "\$run_dir/fixture.yaml"
@@ -72,7 +75,7 @@ PY
 done
 printf '%s\\n' "\$false_healthy_before_db_ready" > "\$run_dir/false-healthy-before-db-ready.txt"
 echo "database_readiness_seconds_tested=\$attempt"
-printf "CREATE TABLE IF NOT EXISTS admiral_reboot_marker (value TEXT PRIMARY KEY); TRUNCATE admiral_reboot_marker; INSERT INTO admiral_reboot_marker(value) VALUES ('r65-reboot-persisted');\\n" | runuser -u admiral-apps -- env XDG_RUNTIME_DIR="/run/user/\$uid" podman exec -i "\$db_container" sh -c 'export PGPASSWORD="\$POSTGRES_PASSWORD"; exec psql -h 127.0.0.1 -U "\$POSTGRES_USER" -d "\$POSTGRES_DB" -v ON_ERROR_STOP=1' > "\$run_dir/marker-before-reboot.txt"
+printf "CREATE TABLE IF NOT EXISTS admiral_reboot_marker (value TEXT PRIMARY KEY); TRUNCATE admiral_reboot_marker; INSERT INTO admiral_reboot_marker(value) VALUES ('${marker}');\\n" | runuser -u admiral-apps -- env XDG_RUNTIME_DIR="/run/user/\$uid" podman exec -i "\$db_container" sh -c 'export PGPASSWORD="\$POSTGRES_PASSWORD"; exec psql -h 127.0.0.1 -U "\$POSTGRES_USER" -d "\$POSTGRES_DB" -v ON_ERROR_STOP=1' > "\$run_dir/marker-before-reboot.txt"
 cat "\$run_dir/marker-before-reboot.txt"
 printf 'reboot_requested_utc=%s instance_id=%s operation_id=%s\\n' "\$(date -u +%Y-%m-%dT%H:%M:%SZ)" "\$instance_id" "\$(tail -n1 "\$run_dir/identity.txt")"
 sync
@@ -101,7 +104,7 @@ ssh_guest 'sudo bash -s --' <<REMOTE
 set -euo pipefail
 cd /
 os='$os'
-run_dir="/var/tmp/adm-r65-${os}-host-reboot"
+run_dir="/var/tmp/adm-r${release}-${os}-host-reboot"
 instance_id=\$(head -n1 "\$run_dir/identity.txt")
 operation_id=\$(tail -n1 "\$run_dir/identity.txt")
 printf 'post_reboot_start_utc=%s instance_id=%s operation_id=%s\\n' "\$(date -u +%Y-%m-%dT%H:%M:%SZ)" "\$instance_id" "\$operation_id"
@@ -148,7 +151,7 @@ printf 'post_reboot_http=%s port=%s\\n' "\$http" "\$port"
 db_container="admiral-\${instance_id}-db"
 printf 'SELECT value FROM admiral_reboot_marker;\\n' | runuser -u admiral-apps -- env XDG_RUNTIME_DIR="/run/user/\$uid" podman exec -i "\$db_container" sh -c 'export PGPASSWORD="\$POSTGRES_PASSWORD"; exec psql -h 127.0.0.1 -U "\$POSTGRES_USER" -d "\$POSTGRES_DB" -At -v ON_ERROR_STOP=1' > "\$run_dir/marker-after-reboot.txt"
 cat "\$run_dir/marker-after-reboot.txt"
-[[ \$(tr -d '\\r\\n' < "\$run_dir/marker-after-reboot.txt") == r65-reboot-persisted ]] || { echo 'SQL marker was not preserved' >&2; exit 1; }
+[[ \$(tr -d '\\r\\n' < "\$run_dir/marker-after-reboot.txt") == ${marker} ]] || { echo 'SQL marker was not preserved' >&2; exit 1; }
 admiralctl instances deprovision "\$instance_id" --force --wait --wait-timeout 10m --output json > "\$run_dir/deprovision.json"
 cat "\$run_dir/deprovision.json"
 runuser -u admiral-apps -- env XDG_RUNTIME_DIR="/run/user/\$uid" podman ps --all --filter name="\$instance_id" --format '{{.Names}}' > "\$run_dir/containers-after-cleanup.txt"
