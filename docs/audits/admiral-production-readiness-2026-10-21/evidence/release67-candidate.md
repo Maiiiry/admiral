@@ -123,6 +123,23 @@ placement and cleanup checks. It verified fresh node metrics and exact
 Fedora-only package tags on all three guests. See
 [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md).
 
+## Scoped R67 Fedora Rawhide targeted recovery execution
+
+A subsequent run on the same exact `.fc46` R67 candidate passed scoped central
+PostgreSQL outage/recovery, W2 WireGuard partition/rejoin, hub reboot with an
+active W1 workload, and injected Podman deletion failure followed by
+restore-and-retry cleanup. The outage produced 81 Fleet 503 records and zero
+401/429 while app HTTP and SQL data remained available. W2 was offline/degraded
+at poll 13 (~141 seconds) and returned active/healthy/available two polls
+(~12 seconds) after peer restoration. Hub recovery was observed at poll 2
+(~58 seconds); services, worker routes/handshakes, workload HTTP and SQL data
+recovered. Podman removal failed visibly on the first attempt and retry
+removed all resources. Fedora postchecks verified only native `.fc46` RPMs,
+SELinux Enforcing, active services, healthy topology and empty worker
+inventories. This is scoped fault-recovery evidence, not a complete cell. Full
+procedures, IDs, durations, raw evidence hashes and limitations:
+[`release67-fedora-multinode-targeted.md`](release67-fedora-multinode-targeted.md).
+
 ## Scoped R67 Rocky Linux 10 Multi-Node execution
 
 A fresh Rocky Linux 10.2 hub and two workers installed exact `.el10` Release 67
@@ -259,12 +276,14 @@ ready. Full evidence and log hashes are in
   scenarios passed on exact R67 packages. The four Single-Node guests also passed
   the named extended regression scenarios in
   [`release67-single-node-extended-regressions.md`](release67-single-node-extended-regressions.md).
-  All four OSes passed fresh three-node secure bootstrap and W1/W2
-  placement/replay/health/HTTP/SQL/deprovision. Fedora's retained timing
-  failure and corrected recheck are in
-  [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md);
-  Rocky, AlmaLinux and CentOS Stream selected recovery scenarios are detailed in
-  their respective R67 Multi-Node reports.
+  All four OSes passed fresh three-node secure bootstrap, W1/W2
+  placement/replay/health/HTTP/SQL/deprovision, and selected central database
+  outage, worker partition/rejoin, hub reboot, and Podman deletion-failure/retry
+  scenarios. Fedora's retained timing failure and corrected placement recheck
+  are in [`release67-fedora-multinode-placement-recheck.md`](release67-fedora-multinode-placement-recheck.md);
+  the Fedora recovery run is documented in
+  [`release67-fedora-multinode-targeted.md`](release67-fedora-multinode-targeted.md)
+  and the EL10 runs in their respective per-OS reports.
   These results do not give complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
   x86_64 OSes using only exact Release 67 RPMs built for each distro. Fedora
