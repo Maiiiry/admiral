@@ -1,9 +1,24 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-R66 is the current RC5 Release 66 candidate, built from root package-preparation commit `c5365da267eca6f1f5246c60a26c7875f07a5ffa`; root and all five component CI runs for the selected pins are green. Scoped R66 regressions passed for #227 across all four Single-Node OSes and both EL10 Multi-Node labs; #228 cleanup retry on AlmaLinux and CentOS Multi-Node; #207 same-key replay/concurrency on tested R66 paths; #211 hub reboot on AlmaLinux/CentOS; and #264 PostgreSQL outage recovery on AlmaLinux and CentOS. Exact R66 Go binary metadata, vulnerability scanning and live HTTP/2 authentication checks also verify the fix tracked by #209, already closed upstream. These scoped results do not close remaining issues or complete cells. The matrix remains **0/8**. See the R66 candidate and targeted reports linked in [`release66-candidate.md`](evidence/release66-candidate.md).
+R67 package preparation is underway; no R67 RPM build or runtime validation has occurred. Release 66 is invalidated for active release-gate credit by the confirmed Fedora fresh-worker bootstrap failure in [issue #266](https://github.com/admiral-project/admiral/issues/266). The source fix is in root commit `ad4f6caa0572ebeff54d3dfcb51f635cf346b31e` with green root CI. The matrix remains **0/8**. R66 observations remain historical and require rerun on R67. See [`release67-candidate.md`](evidence/release67-candidate.md).
 
 Severity follows the audit criteria. Open findings remain open until a fix is revalidated in the affected topologies; a source change or passing component test alone does not close a live-system finding. Historical finding ADM-F-007 / #212 is resolved upstream and is explicitly marked below.
+
+## ADM-F-035 — Fresh Fedora Multi-Node workers fail before baseline package installation ([#266](https://github.com/admiral-project/admiral/issues/266))
+
+**Status: FIX PROPOSED; R67 runtime revalidation pending.** The source correction is pushed in root commit `ad4f6caa0572ebeff54d3dfcb51f635cf346b31e`; its root CI run [39967404421](https://github.com/admiral-project/admiral/actions/runs/39967404421) succeeded. Issue #266 remains open and has the `fix-proposed` label. Release 66 is invalidated for active matrix credit; matrix remains 0/8.
+
+* **Severity:** HIGH.
+* **Component:** `admiral-common` installer role and RPM-owned systemd resolver directory.
+* **Environment:** Fresh Fedora Rawhide x86_64 secure Multi-Node W1 and W2, using the R66 candidate.
+* **Reproduction:** On a fresh Fedora worker, configure the exact Fedora candidate repository and run the supported `admiral-install --worker-node` bootstrap. Both R66 workers fail at `Disable LLMNR on Fedora secure installs` before `admiral-common` is installed.
+* **Expected:** The exact candidate completes worker bootstrap; LLMNR is disabled, unicast DNS works, the worker obtains a fresh heartbeat and WireGuard handshake, and the temporary bootstrap credential is revoked.
+* **Observed:** Both fresh workers exit nonzero with `Destination directory /etc/systemd/resolved.conf.d does not exist`; recap is `ok=12 changed=0 unreachable=0 failed=1`. Neither worker reaches Admiral package installation, Fleet registration, or WireGuard startup. The R66 hub succeeded because its `admiral-common` RPM already owned the directory.
+* **Evidence:** R66 raw worker logs are preserved mode `0600` on the isolated validation host: W1 SHA-256 `2b9765a8733c34020ad24f109c9ab77376be1c1dfc31a3a8550687003f1289d0`; W2 SHA-256 `710f2fdbfb59b2b89c47caee1b1403cd6bc87ad526e529ac20d903b86331887a`. Exact issue reproduction and root-cause notes are in [#266](https://github.com/admiral-project/admiral/issues/266).
+* **Root cause:** Confirmed task-ordering defect: Fedora resolver policy writes a drop-in under `/etc/systemd/resolved.conf.d` before the later `Install admiral-common baseline package` task. The RPM spec owns this directory. This is separate from #126, which fixed the LLMNR policy but not fresh-worker task ordering.
+* **Recommendation:** Install the baseline RPM before applying the resolver drop-in; keep fixed directory ownership and permissions in the RPM spec and do not create that directory in Ansible.
+* **Regression test:** On fresh R67 Fedora hub and worker overlays, complete secure installation; verify the resolver drop-in, no UDP/TCP 5355 listener, successful unicast DNS, fresh heartbeat and WireGuard handshake, revoked temporary bootstrap key, and clean teardown. Repeat the three-node onboarding path to ensure both workers pass.
 
 ## ADM-F-001 — Repeating provision could create an unintended second instance ([#207](https://github.com/admiral-project/admiral/issues/207))
 

@@ -10,6 +10,24 @@ distributions simultaneously:
 
 ## Build System
 
+### Native build environments and distro separation
+
+Build RPM binaries with the native toolchain for the distribution that will
+consume them. Fedora Rawhide packages must be built inside a Fedora Rawhide
+build environment and carry Fedora's own RPM distribution tag (for example,
+`.fc46`). EL10 packages must be built with EL10 tooling and carry the EL10
+distribution tag (for example, `.el10`). When a spec needs different
+BuildRequires, dependency capabilities, patches, or test behavior, express
+those differences with RPM conditionals and build each target in its own
+environment.
+
+Never install an EL10 binary RPM in Fedora, including with `--nodeps`,
+`--force`, or equivalent dependency bypasses. An EL10 build is not Fedora
+validation evidence, even if its source commit is identical. For a coordinated
+release, build each package set from the same pinned source commits in the
+appropriate native environments, retain separate repositories and record the
+builder image/toolchain, resulting NEVRAs, and SHA-256 hashes for each target.
+
 All Python packages use `pyproject-rpm-macros` with PEP 517 builds.
 The `%pyproject_wheel` macro calls `pip wheel --no-build-isolation`,
 which means build backends must be installed system-wide.

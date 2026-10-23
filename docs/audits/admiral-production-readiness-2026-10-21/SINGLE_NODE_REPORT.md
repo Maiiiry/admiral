@@ -1,6 +1,7 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
+> **R67 status:** No R67 RPMs or runtime tests have completed. Release 66 is invalidated for active matrix credit by issue #266; its observations below are historical and must be rerun on the exact R67 packages. Matrix remains 0/8.
 Current status: **NOT VALIDATED — matrix 0/8.** R66 has scoped Single-Node execution on all four target OSes. Rocky Linux 10.2 and Fedora Rawhide passed selected installation, workload lifecycle/idempotent replay, Fleet restart, real host reboot/data-persistence/cleanup and #227 checks. AlmaLinux 10.2 and CentOS Stream 10 passed exact-candidate installation, same-key replay, reboot/data marker, local PostgreSQL backup/restore, cleanup and #227 checks; both showed brief conservative unavailable/stopped intervals during recovery. EL10 isolation samples remain partial. Public DNS/TLS routing, full security/isolation negatives, conflicting concurrency, resource pressure, broad fault injection and controlled performance remain outstanding. See [`release66-single-node-targeted.md`](evidence/release66-single-node-targeted.md), [`release66-el10-single-node-targeted.md`](evidence/release66-el10-single-node-targeted.md) and [`release66-candidate.md`](evidence/release66-candidate.md).
 
 ## Release 66 targeted Single-Node evidence — partial, not cell passes
