@@ -1,7 +1,12 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R64 is invalidated by #263 before runtime; matrix 0/8.** R64 package builds passed, but a fresh Fedora Rawhide 46 guest could not resolve them using normal DNF5 vendor policy. No R64 RPM was installed and no Single-Node scenario ran. A local dependency-capability fix is proposed in Release 65 specs; local tests pass, but R65 is not built. All four OS Single-Node cells remain NOT TESTED on a valid candidate; Multi-Node remains NOT TESTED.
+Current status: **NOT VALIDATED — R65 named Single-Node probes are partial; matrix 0/8.** R65 built for EL10 and Fedora Rawhide 46, installed through normal DNF on fresh guests for all four target OSes, and passed the named scenarios listed in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md). Each OS cell remains open because complete storage/network/secrets coverage, exhaustive failure injection, controlled performance/load, and direct cross-workload PostgreSQL-IP reachability are not proven. Multi-Node remains NOT TESTED. Run-log hashes are in [`release65-local-log-sha256.txt`](evidence/release65-local-log-sha256.txt).
+
+## Release 65 named Single-Node scenario evidence — in progress
+
+R65 passed installation/service baseline, backup/restore with marker integrity, selected unauthenticated/invalid-token checks, cgroup enforcement, same-key concurrent provision, update/delete race, PostgreSQL outage/recovery, expected declared-service failure and cleanup, host reboot recovery, process/Quadlet recovery, resize/reactivation, and user systemd manager restart across the tested distributions. Same-host samples found separate database secrets/volumes and namespaces and denied the tested cross-workload host-mapped app port. The direct PostgreSQL-IP probe remains **NOT TESTED** because rootless Podman did not expose the target IP. See the linked R65 progress report for per-OS status, the Fedora DNF5 dependency caveat, exact candidate identity, raw-log hashes, and unsupported claims. These probes do not close an OS cell or establish production readiness.
+
 The R63 record includes install, host reboot, same-key concurrency, backup/restore, authentication, partial isolation, user-systemd restart, PostgreSQL outage, process recovery, concurrent update/delete, cgroup limits, resize/reactivation, and failed-service handling. It is retained only as historical diagnosis.
 
 ## Release 63 targeted Rocky Linux 10.2 probes — invalidated

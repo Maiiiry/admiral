@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 64 built successfully for EL10 and Fedora 46, but its Fedora DNF5 install dry-run failed under normal vendor policy because exact RPM-release dependencies conflicted with compatible Fedora/COPR providers. Allowing vendor changes required three downgrades. No R64 RPM was installed; R64 is invalidated before runtime and the matrix remains 0/8. Issue #263 tracks the blocker. The local proposed fix uses versioned Python module capabilities, and all six Admiral specs are coordinated at Release 65. Local tests and spec/reference validation pass; R65 is not built. Issues remain open; none was closed.
+R65 built from root commit `967920fb122f09521444c9f6e27d3db0c836becc`; all six Admiral specs are Release 65 and GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green. Normal DNF installation succeeded on Fedora Rawhide 46 and EL10; selected Single-Node runtime probes passed on all four target OSes. Issue #263's Python module-capability fix is included in this candidate. The R65 probes have not confirmed a new product defect; they are partial and matrix completion remains 0/8. Existing issues remain open unless explicitly resolved upstream; none was closed as part of these tests. Candidate-specific evidence is in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md).
 
 Severity follows the audit criteria. Open findings remain open until a fix is revalidated in the affected topologies; a source change or passing component test alone does not close a live-system finding. Historical finding ADM-F-007 / #212 is resolved upstream and is explicitly marked below.
 

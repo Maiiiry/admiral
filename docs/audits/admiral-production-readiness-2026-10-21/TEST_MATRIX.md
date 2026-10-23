@@ -1,17 +1,17 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Latest candidate status — 2026-10-23:** R64 built six Admiral and eight helper RPMs for EL10 and Fedora 46; package `%check` passed. Fedora Rawhide 46 DNF5 normal-policy dependency resolution failed because exact helper RPM Releases conflicted with compatible Fedora/COPR providers (#263). The vendor-change override required three package downgrades and was aborted. No R64 package was installed and no runtime test ran; R64 is invalidated before runtime. The candidate records, hashes, build logs and resolver output are in `evidence/release64-invalidation-fedora-dnf5.md` and its linked files. The local dependency-capability fix is proposed in the coordinated Release 65 specs; R65 has not been built.<br>
-**Current matrix completion: 0/8.** The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, each in Single-Node and Multi-Node. No valid-candidate cell has passed. No R64 guest installed Admiral packages. All eight cells remain NOT TESTED on R65. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidate evidence never carries forward.
+**Latest candidate status — 2026-10-23:** R65 is the active candidate, built from root commit `967920fb122f09521444c9f6e27d3db0c836becc`. The six Admiral RPMs and eight helper RPMs built for EL10 and Fedora Rawhide 46; package `%check` passed. GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green for that commit. Normal DNF installation succeeded on fresh Fedora Rawhide 46, Rocky Linux 10.2, AlmaLinux 10.2 and CentOS Stream 10 guests. Selected Single-Node runtime scenarios have passed; see [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md). This is partial scenario evidence and does not complete a cell.<br>
+**Current matrix completion: 0/8.** The active target is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS Stream 10, x86_64 only, each in Single-Node and Multi-Node. All four Single-Node cells have partial R65 evidence and remain open; no R65 Multi-Node cell has run. Every Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidate evidence never carries forward.
 
-| Target OS (x86_64) | Single-Node — next candidate R65 | Multi-Node — next candidate R65 |
+| Target OS (x86_64) | Single-Node — R65 | Multi-Node — R65 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED — R65 build and DNF5 resolver pending | NOT TESTED — fresh three-guest run pending |
-| Rocky Linux 10 | NOT TESTED — R65 build and fresh overlay pending | NOT TESTED — fresh three-guest run pending |
-| AlmaLinux 10 | NOT TESTED — R65 build and fresh overlay pending | NOT TESTED — fresh three-guest run pending |
-| CentOS Stream 10 | NOT TESTED — R65 build and fresh overlay pending | NOT TESTED — fresh three-guest run pending |
+| Fedora Rawhide | IN PROGRESS — package install and named runtime probes passed; full cell open | NOT TESTED — fresh three-guest run pending |
+| Rocky Linux 10 | IN PROGRESS — package install and named runtime probes passed; full cell open | NOT TESTED — fresh three-guest run pending |
+| Alma Linux 10 | IN PROGRESS — package install and named runtime probes passed; full cell open | NOT TESTED — fresh three-guest run pending |
+| CentOS Stream 10 | IN PROGRESS — package install and named runtime probes passed; full cell open | NOT TESTED — fresh three-guest run pending |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R64 package checks are build evidence only; Fedora DNF5 resolution failed before runtime, invalidating the candidate under #263. Fedora requires its own Python 3.15 RPMs; the EL10 package set is not treated as Fedora evidence. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. The R65 named probes do not cover all acceptance scenarios; direct cross-workload PostgreSQL-IP reachability is NOT TESTED, as are sustained stress/performance and all Multi-Node checks. Fedora requires its own Python 3.15 RPMs; the EL10 package set is not treated as Fedora evidence. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception. Current candidate artifacts, run-log hashes and scenario limits are in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md), [`release65-rpm-sha256.txt`](evidence/release65-rpm-sha256.txt), and [`release65-local-log-sha256.txt`](evidence/release65-local-log-sha256.txt).
 
 ## R63 targeted Rocky Single-Node diagnostics — invalidated
 

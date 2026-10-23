@@ -2,14 +2,14 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest candidate: RC5 Release 64 built for EL10 and Fedora 46 with package `%check` passing, but the Fedora normal DNF5 resolver failed due exact helper RPM release requirements. The override transaction required three downgrades and was aborted; no R64 package was installed. R64 is invalidated before runtime. Issue #263 tracks the defect. A local fix is proposed in coordinated Release 65 specs and local tests pass, but R65 RPMs have not been built or published.<br>
-The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. No current-candidate cell has passed. No R65 guest has been tested. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
+Latest candidate: RC5 Release 65 built from root commit `967920fb122f09521444c9f6e27d3db0c836becc` for EL10 and Fedora Rawhide 46. The root GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green. Normal DNF installation succeeded on fresh Single-Node guests for all four target OSes. Named Single-Node functional and resilience probes passed, but do not cover the full acceptance suite; see [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md).<br>
+The active matrix is Fedora Rawhide, Rocky Linux 10, Alma Linux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. All four Single-Node cells have partial R65 evidence; no Multi-Node R65 topology has run. Direct cross-workload PostgreSQL-IP reachability, controlled performance/stress, and multiple fault categories remain untested. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | R64 was invalidated by Fedora DNF5 dependency resolution #263 before installation. No full cell passed; all four OSes need current-candidate evidence, including controlled performance and remaining security/resilience scenarios. |
+| Single-Node | **NOT VALIDATED** | All four OSes installed R65 and passed named runtime probes. None completed the full matrix; direct cross-workload database reachability, complete security negatives, broad resilience, and performance/load remain open. |
 | Multi-Node | **NOT VALIDATED** | No R65 three-guest topology has run. All four cells remain NOT TESTED. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.

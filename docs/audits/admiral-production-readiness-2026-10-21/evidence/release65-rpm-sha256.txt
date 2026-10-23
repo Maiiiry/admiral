@@ -1,0 +1,36 @@
+R65 local x86_64 RPM SHA-256 manifests; candidate source commit 967920fb122f09521444c9f6e27d3db0c836becc.
+Generated 2026-10-23 UTC. Package files and the actual local test repos remain under ignored packaging/build/. Verify by recalculating from those files.
+
+EL10 repomd.xml:
+63c3b87f35178970994c06834aed2fa0b058d74c156b6d241b282ac506afee71  repodata/repomd.xml
+29cb7b983e40c9bcfc7ee69772aca6dbefdcbcacf42fedc2f764dd9eb627b8f2  el10/admiral-common-0.0.1rc5-65.el10.noarch.rpm
+37100e0d7734356bca5dc05b686b239d694ebae96f2f1f2a853c1b8994436bef  el10/admiral-flagship-0.0.1rc5-65.el10.noarch.rpm
+b02feaf921c9f80ba1853a40a1d5e877986282e951d8902e1605c1e32391c91c  el10/admiral-fleet-0.0.1rc5-65.el10.x86_64.rpm
+05caf2ebcdffb19b12d99ab6605e3722c2eb40da68d2252bcf7bbc2077d943ca  el10/admiral-harbor-0.0.1rc5-65.el10.noarch.rpm
+bd5ec5eeef94c81935e0f5be1e2b306689ac5fed5d41381982917a05c2f572a2  el10/admiralctl-0.0.1rc5-65.el10.x86_64.rpm
+f0fee8675cd088a8ebee3bc86ee6fed5471e558dd77efef5e4bbe1b92b632f31  el10/admirald-0.0.1rc5-65.el10.x86_64.rpm
+1202cb98a552cc6f2fed878e9a77fb17376ab4f69f187d24acb6187b3f02d243  el10/python3-alembic-1.20.1-4.el10.noarch.rpm
+ce3450ade4d6392be966dfc892c13be9a4fb4f3a47116110b07ad5b51e5926ff  el10/python3-flask-3.1.3-3.el10.noarch.rpm
+ea64ed8d34350d485be5195a86ea93ebdd8bdfa62b41ac34794460c9ae1343c4  el10/python3-flask-alembic-3.3.0-4.el10.noarch.rpm
+787e16890562c303997fc6ccfe211002efe57437e860884c522e48d2103db28b  el10/python3-flask-login-0.6.3-9.el10.noarch.rpm
+13e08d4a66cd57689f5e75dd0df3bb8ae555d66496f3094bfca0d117153537cf  el10/python3-flask-sqlalchemy-3.1.1-10.el10.noarch.rpm
+a037c635768458e127565605b47b0d66578990afaaf92db8f34d23482f1c84d1  el10/python3-mistune-3.4.0-1.el10.noarch.rpm
+b9ed57bf3ff6365fbda98ba21c18bba7b2e81b9088e8f071280eaecdf69cfbc5  el10/python3-sqlalchemy-2.0.55-4.el10.x86_64.rpm
+eb33d5bd18a49f98db41ee3d355ceb885399940725657d73e63a4373b10c8a31  el10/python3-typing-extensions-4.16.0-1.el10.noarch.rpm
+
+Fedora Rawhide 46 repomd.xml:
+5a56d54cd4625b7cfcfd68853c229766ad0fea7d36194589cd74412ec00e9e31  repodata/repomd.xml
+2245d408588e7424c38028a00aae8e688e407f4a6569934ac37b7dd120a3f5ba  fedora/admiral-common-0.0.1rc5-65.fc46.noarch.rpm
+d9505412310f64912ccd37beb6cee6d6892e24f05d03dc2324739d28fb2e184d  fedora/admiral-flagship-0.0.1rc5-65.fc46.noarch.rpm
+8806b144bd5ce70921aa508065006ca3000ea45af4b6e0438c731568e260d03e  fedora/admiral-fleet-0.0.1rc5-65.fc46.x86_64.rpm
+cf2cdffb2449e674ffd8f52706bdbdb90dd684835a68b577970233e08cfd7738  fedora/admiral-harbor-0.0.1rc5-65.fc46.noarch.rpm
+c4b544b24e616e5bbdb3b68d5ab13951207115dca650bed4f94016d971c47833  fedora/admiralctl-0.0.1rc5-65.fc46.x86_64.rpm
+54df3eb4e18d780fb9fa8906a1e0e49fd67517cf8fe0db72e394f87b2ae60dc2  fedora/admirald-0.0.1rc5-65.fc46.x86_64.rpm
+b87f647629f3379f5758e617a869cea333386c3a1e712269c1b2b442ec83eb17  fedora/python3-alembic-1.20.1-4.fc46.noarch.rpm
+3808da4a9bd00f79f68759e40839a10c10599a6c14c90dd6a1809647df879b4b  fedora/python3-flask-3.1.3-3.fc46.noarch.rpm
+dd84154d4b54fca868fb4941dc06daeae0c90d668bedf202c4f24956e881f678  fedora/python3-flask-alembic-3.3.0-4.fc46.noarch.rpm
+2c504de96a23178542c4697ba818d0ed222dc0eace85708c10dee9b4fd34e1d5  fedora/python3-flask-login-0.6.3-9.fc46.noarch.rpm
+4b0e18831b9affa903b627be44096a4d3b7e90ff345a8ccbf6919e8ee7384be0  fedora/python3-flask-sqlalchemy-3.1.1-10.fc46.noarch.rpm
+4df6bd4722ae04ea595213f1faef64e717aef5892c7de8f20c936a94b31c1f1d  fedora/python3-mistune-3.4.0-1.fc46.noarch.rpm
+e676d92e02e217e3f0fd98c403d8cb6ec4bbe19c5e13b1feb650baad718b169e  fedora/python3-sqlalchemy-2.0.55-4.fc46.x86_64.rpm
+72950d1ac83061990a6384e4269105b2aea238f5e7e859c8f22b41d3582cc5d0  fedora/python3-typing-extensions-4.16.0-1.fc46.noarch.rpm

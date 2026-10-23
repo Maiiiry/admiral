@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: Release 64 built for EL10 and Fedora 46, but Fedora Rawhide DNF5 could not resolve its exact helper RPM release dependencies under normal vendor policy. Allowing vendor change required three downgrades. No R64 package was installed; it is invalidated before runtime, and matrix completion remains 0/8. Issue #263 tracks the packaging defect. Release 65 dependency-capability changes are local and have passed source-level checks, but R65 has not been built. Prior R63 observations remain invalidated by #262.
+Latest audit run: RC5 Release 65 from root commit `967920fb122f09521444c9f6e27d3db0c836becc` built for EL10 and Fedora Rawhide 46. GitHub Actions run [39895176300](https://github.com/admiral-project/admiral/actions/runs/39895176300) is green; normal DNF installation and selected Single-Node runtime scenarios ran on all four x86_64 targets. These are partial scenarios, not full cells; matrix completion remains 0/8 and Multi-Node R65 is not yet tested. Issue #263's packaging fix is included in the candidate and awaits full release validation. Historical R63 observations remain invalidated by #262; see [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md).
 
 ## Scope and evidence rules
 
