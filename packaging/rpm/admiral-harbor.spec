@@ -3,7 +3,7 @@
 
 Name:    admiral-harbor
 Version: 0.0.1rc5
-Release: 63%{?dist}
+Release:        64%{?dist}
 Summary: Admiral Customer Portal - Web UI for end users
 
 License: Apache-2.0
@@ -26,9 +26,9 @@ BuildRequires: python3-argon2-cffi
 BuildRequires: python3-cryptography
 BuildRequires: python3-flask = 1:3.1.3-3%{?dist}
 BuildRequires: python3-werkzeug >= 3.0.6
-BuildRequires: python3-flask-alembic = 3.3.0-2%{?dist}
+BuildRequires: python3-flask-alembic = 3.3.0-3%{?dist}
 BuildRequires: python3-flask-login = 0.6.3-8%{?dist}
-BuildRequires: python3-flask-sqlalchemy = 3.1.1-8%{?dist}
+BuildRequires: python3-flask-sqlalchemy = 3.1.1-9%{?dist}
 BuildRequires: python3-gunicorn
 BuildRequires: python3-mistune = 3.4.0-1%{?dist}
 BuildRequires: python3-pytest
@@ -40,8 +40,8 @@ Requires: admiral-common
 Requires: python3-flask = 1:3.1.3-3%{?dist}
 Requires: python3-werkzeug >= 3.0.6
 Requires: python3-flask-login = 0.6.3-8%{?dist}
-Requires: python3-flask-sqlalchemy = 3.1.1-8%{?dist}
-Requires: python3-flask-alembic = 3.3.0-2%{?dist}
+Requires: python3-flask-sqlalchemy = 3.1.1-9%{?dist}
+Requires: python3-flask-alembic = 3.3.0-3%{?dist}
 Requires: python3-gunicorn
 Requires: python3-requests
 Requires: python3-pyyaml

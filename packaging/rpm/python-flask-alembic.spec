@@ -5,7 +5,7 @@
 
 Name:           python3-flask-alembic
 Version:        3.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Integrate Alembic with Flask
 
 License:        MIT
@@ -19,9 +19,9 @@ BuildRequires:  python3-pip
 BuildRequires:  python3-flit-core
 BuildRequires:  pyproject-rpm-macros
 
-Requires:       python3-alembic = 1.20.1-2%{?dist}
+Requires:       python3-alembic = 1.20.1-3%{?dist}
 Requires:       python3-flask = 1:3.1.3-3%{?dist}
-Requires:       python3-sqlalchemy = 2.0.55-2%{?dist}
+Requires:       python3-sqlalchemy = 2.0.55-3%{?dist}
 
 %description
 Flask-Alembic provides a configurable Alembic migration environment
@@ -45,6 +45,9 @@ sed -i '/^license-files/d' pyproject.toml
 %license LICENSE.txt
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.3.0-3
+- Require the coordinated Alembic and corrected SQLAlchemy package builds
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 3.3.0-2
 - Update Flask-Alembic to the latest upstream release
 - Pin Alembic, Flask, and SQLAlchemy runtime versions

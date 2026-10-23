@@ -2,15 +2,15 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-Latest local RPM set: Admiral RC5 Release 62, built from root commit `df279377c1e558ad5256c6457f3795665f1963de` with component SHAs recorded in `evidence/release62-rocky-single-node-invalidation.md`. The exact packages were installed on a fresh Rocky Linux 10.2 guest. Two host-reboot probes returned stale pre-boot `running/healthy/available` state before fresh workload health and database readiness, invalidating R62 under #256. The local RPM build used `--nodeps`; a clean builder-side dependency-resolved build is still required. Fix `admirald@351a713` passed the full local Go suite, vet/build and CI [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112). Root refs and all six RPM release numbers are prepared for R63; no R63 RPMs have been built.<br>
-The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. R62 has targeted Rocky Single-Node diagnostics only, invalidated for matrix credit; no complete cell passed. Fedora, Alma, CentOS and all four Multi-Node cells have no R62 runs. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
+Latest local RPM set: RC5 Release 63 was built with normal dependency resolution and installed on a fresh Rocky Linux 10.2 Single-Node guest. It passed multiple targeted runtime probes but did not complete a cell. Fedora Rawhide 46/Python 3.15 exposed #262: the SQLAlchemy RPM file list omitted lowercase `.dist-info` metadata. R63 is invalidated for release credit; its exact packages and diagnostic results are retained in `evidence/release63-rocky-single-node-progress.md`. The proposed fix and dependent Python pins are local; all six Admiral RPM specs now target Release 64. No R64 RPM build exists.<br>
+The active matrix is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, in Single-Node and Multi-Node. Current completion is **0/8**; both topology decisions are **NOT VALIDATED**. No current-candidate cell has passed. Fedora, Rocky, AlmaLinux, CentOS Stream and all four Multi-Node cells require fresh R64 validation. Rocky's EPEL pyOpenSSL 25.0.0 pin remains a visible validation-seed exception.
 
 ## Current decision by topology
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | R62 install and scoped Rocky checks ran, but two host reboots reproduced stale pre-boot healthy availability. No full cell passed; Fedora, Alma, CentOS, controlled load/performance and several security/resilience scenarios remain untested. |
-| Multi-Node | **NOT VALIDATED** | No R62 three-guest topology ran. All four cells remain NOT TESTED. |
+| Single-Node | **NOT VALIDATED** | R63 had targeted Rocky tests but is invalidated by the Fedora SQLAlchemy RPM build failure #262. No full cell passed; all four OSes need current-candidate evidence, including controlled performance and remaining security/resilience scenarios. |
+| Multi-Node | **NOT VALIDATED** | No R64 three-guest topology has run. All four cells remain NOT TESTED. |
 
 Neither topology is READY or CONDITIONALLY READY on the current evidence. Build and unit-test success do not establish runtime readiness. No production system was touched.
 

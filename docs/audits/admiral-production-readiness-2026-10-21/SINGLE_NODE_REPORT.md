@@ -1,8 +1,12 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R62 is invalidated by #256; matrix 0/8.** Exact local Release 62 RPMs were installed on a fresh Rocky Linux 10.2 Single-Node guest. The install subset and several targeted probes ran, but two host-reboot attempts returned stale pre-boot `running/healthy/available` state before fresh runtime health and DB readiness. R62 diagnostics do not count toward a matrix cell. No full cell passed. Fix `admirald@351a713` passed full local Go tests, vet/build and CI [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) and is being packaged into R63; no R63 RPMs exist yet. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 have no R62 guest run; all four Multi-Node cells remain NOT TESTED. Exact identity and evidence hashes are in `evidence/release62-rocky-single-node-invalidation.md`.<br>
-Full dependency closure, lifecycle, persistence, isolation, recovery, concurrency, resource cleanup and performance checks remain required for all four cells.
+Current status: **NOT VALIDATED — R63 is invalidated by #262; matrix 0/8.** A dependency-resolved Release 63 EL10 RPM set was installed on fresh Rocky 10.2. Targeted runtime probes passed or were partial as recorded in `evidence/release63-rocky-single-node-progress.md`; none completes the full Single-Node cell and none counts for the current release. Fedora Rawhide 46/Python 3.15 exposed the SQLAlchemy spec file-list failure. The proposed fix is in the local root tree and coordinated R64 specs are prepared; no R64 RPMs have been built. All four OS Single-Node cells still require fresh R64 execution, and Multi-Node remains NOT TESTED.
+The R63 record includes install, host reboot, same-key concurrency, backup/restore, authentication, partial isolation, user-systemd restart, PostgreSQL outage, process recovery, concurrent update/delete, cgroup limits, resize/reactivation, and failed-service handling. It is retained only as historical diagnosis.
+
+## Release 63 targeted Rocky Linux 10.2 probes — invalidated
+
+See `evidence/release63-rocky-single-node-progress.md` for exact candidate identity, evidence hashes, per-test outcomes and limitations. No full cell passed. Remaining coverage includes clean R64 installation, complete configuration/secret/network/storage lifecycle, resource exhaustion, controlled performance, deeper isolation negatives, in-flight task crash recovery, and complete fault scenarios.
 
 ## Release 62 targeted Rocky Linux 10.2 evidence — invalidated
 

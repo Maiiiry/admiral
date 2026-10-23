@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Release 62 is the latest locally built candidate, pinned to root commit `df279377c1e558ad5256c6457f3795665f1963de` and the component SHAs recorded in `evidence/release62-rocky-single-node-invalidation.md`. Its exact RPMs were installed on a fresh Rocky Linux 10.2 Single-Node guest. Two host-reboot probes reproduced stale pre-boot `running/healthy/available` state under #256; R62 is invalidated and the matrix remains 0/8. The R62 build used `--nodeps`, so it did not establish a dependency-resolved package build. Fix `admirald@351a713` has full local suite/vet/build and CI [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) green. Root R63 refs and coordinated release bumps are being prepared; no R63 RPM build exists. Issues remain open; none was closed in this checkpoint.
+Release 63 is the latest locally built candidate. It was dependency-resolved and its EL10 RPMs were installed on a fresh Rocky 10.2 Single-Node guest; targeted scenarios are recorded in `evidence/release63-rocky-single-node-progress.md`. A Fedora Rawhide 46/Python 3.15 SQLAlchemy RPM build failed because the spec omitted lowercase `.dist-info` metadata, tracked by #262. R63 is invalidated and none of its runtime evidence counts toward the current candidate; matrix remains 0/8. The spec fix and dependent Python pins are proposed locally, and all six Admiral specs are coordinated at Release 64. R64 has not been built or run. Issues remain open; none was closed.
 
 Severity follows the audit criteria. Open findings remain open until a fix is revalidated in the affected topologies; a source change or passing component test alone does not close a live-system finding. Historical finding ADM-F-007 / #212 is resolved upstream and is explicitly marked below.
 
@@ -445,3 +445,16 @@ Harbor README calls the component an “Admin workspace for operators,” while 
 * **Root cause:** Confirmed in source: the RPM directory and repository path were hard-coded and did not derive from current spec metadata.
 * **Recommendation:** Parameterize RPM topdir/repository root/architecture, derive the coordinated release from specs, verify exact package metadata and emit a NEVRA/SHA-256 manifest.
 * **Regression:** The helper now stages from `RPMDIR`/`RPMTOPDIR`, rejects missing or mismatched RPMs, derives `el10-rc5-r<N>-<arch>`, and writes `RPM-MANIFEST.tsv`. Release 63 end-to-end local repository generation and DNF query remain pending. Issue #261 remains open with `fix-proposed` until this verification is recorded.
+
+## ADM-F-032 — Fedora SQLAlchemy spec omits lowercase distribution metadata ([#262](https://github.com/admiral-project/admiral/issues/262))
+
+* **Severity:** MEDIUM — blocks Fedora Rawhide candidate packaging and therefore release validation on that distribution.
+* **Component:** `python3-sqlalchemy` RPM spec and Fedora Python packaging.
+* **Environment:** Fedora Rawhide 46 x86_64, Python 3.15, Release 63 spec/source.
+* **Reproduction:** Build `python-sqlalchemy.spec` with the Fedora 46 RPM Python macros and SQLAlchemy 2.0.55. `%pyproject_install` creates `sqlalchemy-2.0.55.dist-info`, then `%files` fails because the generated list only matches `SQLAlchemy-2.0.55.dist-info`.
+* **Expected:** The RPM owns the SQLAlchemy modules, compiled extension, and all distribution metadata and license files on both Fedora and EL10.
+* **Observed:** Fedora's lowercase metadata directory is rejected as installed-but-unpackaged content. The EL10 Release 63 build did not expose the case difference.
+* **Evidence:** `evidence/release63-rocky-single-node-progress.md` records the Fedora failure and focused fix probe. The protected local logs are `packaging/build/validation/rc5-r63/fedora-single/python-build.log` (SHA-256 `377358bb25ee5558618814dfc24fa913a9ba82de0bb90df35844acef722e733f`) and `sqlalchemy-fedora-fix-build.log` (SHA-256 `0d26d898468fbd97ae0308d3e86ab9c780bada5a8da819f916e5c9066a27119c`).
+* **Root cause:** Confirmed. The spec's file list included only the uppercase project-name spelling while Fedora's Python 3.15 build macros normalize the `.dist-info` directory to lowercase.
+* **Recommendation:** Include both normalized spellings, keep exact SQLAlchemy pins in dependent Python RPMs, and rebuild the complete coordinated release set on Fedora and EL10.
+* **Regression:** The local spec now includes both names and was rebuilt on Fedora; `%check` imported SQLAlchemy's compiled C extension and RPM ownership includes `METADATA`, `WHEEL`, and licenses. This is only a focused packaging fix probe. The coordinated Release 64 set has not been built, installed, or runtime-tested. Issue #262 remains open with `fix-proposed` pending upstream CI and complete candidate revalidation.

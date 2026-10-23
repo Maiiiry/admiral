@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: Admiral RC5 Release 62 is the latest local RPM candidate, built from root `df279377c1e558ad5256c6457f3795665f1963de`. Two fresh-boot probes on Rocky 10.2 returned stale `running/healthy/available` state before a post-boot health observation, reproducing #256 and invalidating R62. Matrix completion remains 0/8. The exact-candidate evidence is in `evidence/release62-rocky-single-node-invalidation.md`. The local RPM build used `--nodeps`, so builder-side BuildRequires resolution is not established. The fix is pushed as `admirald@351a713`, full local tests/vet/build and component CI [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) are green. Root R63 packaging pins are prepared; there is no R63 build yet.
+Latest audit run: Admiral RC5 Release 63 was built with dependency resolution and installed on fresh Rocky 10.2 Single-Node. Targeted reboot, idempotency, backup/restore, security, recovery, concurrency and lifecycle probes ran; they do not complete a cell. A Fedora Rawhide 46 build then exposed #262: the pinned SQLAlchemy spec omitted Python 3.15's lowercase `.dist-info`, invalidating R63 for release credit. The full R63 package manifest and targeted evidence are in `evidence/release63-rocky-single-node-progress.md`. The fix is proposed in the root spec; R64 coordinated Release bumps are local, not built. Matrix completion remains 0/8.
 
 ## Scope and evidence rules
 

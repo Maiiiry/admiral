@@ -1,17 +1,21 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Latest local RPM candidate status — 2026-10-23:** Release 62 was built locally and installed on a fresh Rocky Linux 10.2 Single-Node guest. Two host-reboot probes reproduced stale `running/healthy/available` responses before a fresh post-boot runtime report (#256), invalidating R62. The exact candidate, evidence hashes and result are in `evidence/release62-rocky-single-node-invalidation.md`. R62's RPM build used `--nodeps`; it did not verify builder-side dependency resolution. Fix `admirald@351a713` now expires observations older than 15 seconds; the full Go suite, vet/build and CI run [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) pass. All six root package Release fields and exact refs are being prepared for R63; no R63 RPM build exists yet.<br>
-**Current matrix completion: 0/8.** R62 yielded targeted Rocky Single-Node diagnostics only, invalidated for release validation; none of its scenarios count toward a matrix cell. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 have no R62 run. All four Multi-Node cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidate evidence does not count toward a future candidate.
+**Latest candidate status — 2026-10-23:** R63 was built as a dependency-resolved EL10 RPM set and installed on a fresh Rocky Linux 10.2 Single-Node guest. It produced named targeted results, not a full cell. Fedora Rawhide 46/Python 3.15 could not build the pinned SQLAlchemy RPM because its file list omitted lowercase `.dist-info` contents (#262). R63 is invalidated under the candidate invalidation rule; all its probes are diagnostic only. The exact manifest and evidence are in `evidence/release63-rocky-single-node-progress.md` and `evidence/release63-rpm-manifest.tsv`. The proposed spec fix is local and the coordinated R64 specs are prepared; no R64 set has been built.<br>
+**Current matrix completion: 0/8.** The active target is Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, each in Single-Node and Multi-Node. No current candidate cell has passed. The R63 Rocky tests do not count; Fedora, AlmaLinux, CentOS Stream and all four Multi-Node cells have no valid-candidate run. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidate evidence never carries forward.
 
-| Target OS (x86_64) | Single-Node — Release 62 | Multi-Node — Release 62 |
+| Target OS (x86_64) | Single-Node — next candidate R64 | Multi-Node — next candidate R64 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED — no R62 guest run | NOT TESTED — fresh three-guest run pending |
-| Rocky Linux 10 | INVALIDATED — two stale-availability reboot failures, #256 | NOT TESTED — fresh three-guest run pending |
-| AlmaLinux 10 | NOT TESTED on R62 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
-| CentOS Stream 10 | NOT TESTED on R62 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
+| Fedora Rawhide | NOT TESTED — R64 package build pending | NOT TESTED — fresh three-guest run pending |
+| Rocky Linux 10 | NOT TESTED — R64 fresh overlay pending; R63 diagnostics invalidated | NOT TESTED — fresh three-guest run pending |
+| AlmaLinux 10 | NOT TESTED — R64 fresh overlay pending | NOT TESTED — fresh three-guest run pending |
+| CentOS Stream 10 | NOT TESTED — R64 fresh overlay pending | NOT TESTED — fresh three-guest run pending |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R62's targeted Rocky scenarios are retained as diagnostic evidence but invalidated for release validation by #256; hashes are in `evidence/release62-rocky-single-node-invalidation.md`. The local R62 repo and runtime probes do not replace a clean dependency-resolved build or the complete required scenario set. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R63 targeted Rocky scenarios are retained as diagnostic evidence but invalidated for release credit by #262; see `evidence/release63-rocky-single-node-progress.md`. Fedora requires its own Python 3.15 RPMs; the EL10 package set is not treated as Fedora evidence. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+
+## R63 targeted Rocky Single-Node diagnostics — invalidated
+
+The candidate passed install baseline, #256 reboot recovery, #254 same-key provisioning, local backup/restore, selected auth negatives, partial same-host isolation, #259 user-manager restart, #260 database outage, no-active-task process recovery, concurrent resize/deprovision, cgroup limits, resize/reactivation and declared-service failure handling. These are named probes only. A Fedora Rawhide SQLAlchemy RPM build failure under #262 invalidated R63 for release credit, so none contributes to the matrix. Full results and evidence references are in `evidence/release63-rocky-single-node-progress.md`.
 
 ## Release 62 named Rocky Linux 10.2 diagnostic scenarios — invalidated
 

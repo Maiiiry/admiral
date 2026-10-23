@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no controlled Release 62 performance run.** R62 had several targeted Rocky Single-Node recovery and concurrency checks, but no fixed performance sample set, controlled cache/load profile, repeated concurrency sweep or p50/p95/p99 calculation. Those observations are not performance results and are invalidated for matrix credit by #256. Resource-pressure and Multi-Node throughput measurements remain NOT TESTED; matrix remains 0/8.
+Current status: **NOT VALIDATED — no controlled Release 63 or R64 performance run.** R63 had targeted Rocky Single-Node integration and recovery checks, but no controlled cache/load profile, repeated throughput sweep, resource-pressure run, or p50/p95/p99 calculation. These are not performance results and R63 is invalidated for matrix credit by #262. Resource-pressure and Multi-Node throughput measurements remain NOT TESTED; matrix remains 0/8.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 

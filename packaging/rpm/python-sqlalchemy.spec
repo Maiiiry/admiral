@@ -6,7 +6,7 @@
 
 Name:           python3-sqlalchemy
 Version:        2.0.55
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Database toolkit and Object Relational Mapper for Python
 
 License:        MIT
@@ -32,7 +32,7 @@ SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives
 application developers the full power and flexibility of SQL.
 
 This RPM builds SQLAlchemy's optional Cython extensions for native execution
-on the supported EL10 x86_64 target.
+on supported x86_64 Fedora and Enterprise Linux targets.
 
 %prep
 %autosetup -n sqlalchemy-%{version}
@@ -49,6 +49,7 @@ REQUIRE_SQLALCHEMY_CEXT=1 %pyproject_wheel
 mkdir -p %{buildroot}%{python3_sitelib} %{buildroot}%{python3_sitearch}
 find %{buildroot}%{python3_sitelib} %{buildroot}%{python3_sitearch} \
     -type f \( -path '*/sqlalchemy/*' \
+        -o -path '*/sqlalchemy-%{version}.dist-info/*' \
         -o -path '*/SQLAlchemy-%{version}.dist-info/*' \) \
     -print | sed 's|%{buildroot}||' | sort > sqlalchemy.files
 test -s sqlalchemy.files
@@ -61,6 +62,9 @@ PYTHONPATH=%{buildroot}%{python3_sitearch}:%{buildroot}%{python3_sitelib} %{pyth
 %license LICENSE
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 2.0.55-3
+- Include normalized lowercase dist-info payloads produced by Fedora Python 3.15
+
 * Thu Oct 22 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 2.0.55-2
 - Package SQLAlchemy 2.0.55 for Flask-Alembic compatibility on EL10
 - Build the optional Cython extensions on the supported EL10 x86_64 target
