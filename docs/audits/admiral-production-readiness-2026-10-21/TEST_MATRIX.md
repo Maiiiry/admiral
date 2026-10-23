@@ -1,7 +1,7 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Candidate status — 2026-10-23:** RC5 Release 67 is being prepared from the Fedora worker-bootstrap fix in root commit `ad4f6caa0572ebeff54d3dfcb51f635cf346b31e`; its root CI is green. No R67 RPMs or runtime results exist yet. Release 66 is invalidated for active release-gate credit by issue #266; its observations below are historical and must be rerun on R67. Build Fedora RPMs only in Fedora Rawhide tooling and EL10 RPMs only in EL10 tooling. See [`release67-candidate.md`](evidence/release67-candidate.md).<br>
+**Candidate status — 2026-10-23:** RC5 Release 67 is being prepared from the Fedora worker-bootstrap fix in root commit `ad4f6caa0572ebeff54d3dfcb51f635cf346b31e`; that source fix's CI is green. Initial R67 package-preparation CI found the audit installer defaults had not advanced to 67; the correction is pushed and its full local regression suite passes (131 tests), with follow-up CI pending. No R67 RPMs or runtime results exist yet. Release 66 is invalidated for active release-gate credit by issue #266; its observations below are historical and must be rerun on R67. Build Fedora RPMs only in Fedora Rawhide tooling and EL10 RPMs only in EL10 tooling. See [`release67-candidate.md`](evidence/release67-candidate.md).<br>
 **Current matrix completion: 0/8.** Target: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64, Single-Node and Multi-Node. No cell has R67 execution evidence.
 
 | Target OS (x86_64) | Historical Single-Node — R66, invalidated | Historical Multi-Node — R66, invalidated |

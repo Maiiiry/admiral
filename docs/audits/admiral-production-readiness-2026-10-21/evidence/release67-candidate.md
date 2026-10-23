@@ -22,9 +22,13 @@ R67 packages reproduce successful fresh worker onboarding.
 | `admiral-flagship` | `b7325bbc71fc474a521496e593b2967e4d555ac1` | Fetched `origin/main`; equals latest published `origin/main` at candidate preparation. |
 | `admiral-harbor` | `dd39e9a74bf658ecf6fd6e9f8bd30b2ddf82d7db` | Fetched `origin/main`; equals latest published `origin/main` at candidate preparation. |
 
-The package-preparation commit and its CI run will be recorded here before
-starting either binary build. `python3 scripts/validate-release-refs.py` must
-pass against these exact references before building.
+The first package-preparation commit (`779391e`) failed root CI because the
+three audit installer helpers still defaulted to Release 66 after the specs
+were bumped. Their defaults have now been corrected to 67; the complete local
+script suite passes (131 tests). The follow-up commit and its CI result will be
+recorded here before either binary build. `python3
+scripts/validate-release-refs.py` must pass against these exact references
+before building.
 
 ## Coordinated package set
 
