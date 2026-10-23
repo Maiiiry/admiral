@@ -3,19 +3,24 @@
 # Install the exact local RC candidate as an isolated admin/portal hub.
 set -euo pipefail
 
-[[ $# -eq 6 ]] || {
-  echo "usage: $0 SSH_KEY KNOWN_HOSTS USER@GUEST UNDERLAY_IP NODE_ID OUTPUT_LOG" >&2
+[[ $# -eq 6 || $# -eq 7 ]] || {
+  echo "usage: $0 SSH_KEY KNOWN_HOSTS USER@GUEST UNDERLAY_IP NODE_ID OUTPUT_LOG [el10|fedora]" >&2
   exit 2
 }
 ssh_key=$1 known_hosts=$2 target=$3 underlay_ip=$4 node_id=$5 output=$6
+distro=${7:-el10}
 release=${ADMIRAL_RC_RELEASE:-66}
 [[ $release =~ ^[0-9]+$ ]] || { echo "invalid Admiral RPM Release: $release" >&2; exit 2; }
 [[ $underlay_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid underlay IPv4" >&2; exit 2; }
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ -r $ssh_key && -r $known_hosts ]] || { echo "SSH identity or known-hosts file is unreadable" >&2; exit 1; }
-
-repo_file=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)/packaging/build/validation/rc5-r${release}/admiral-local-el10.repo
-[[ -r $repo_file ]] || { echo "local EL10 candidate repository is missing: $repo_file" >&2; exit 1; }
+case "$distro" in
+  el10) repo_name=admiral-local-el10.repo; rpm_suffix=el10 ;;
+  fedora) repo_name=admiral-local-fedora.repo; rpm_suffix=fc46 ;;
+  *) echo "unsupported distribution profile: $distro" >&2; exit 2 ;;
+esac
+repo_file=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)/packaging/build/validation/rc5-r${release}/$repo_name
+[[ -r $repo_file ]] || { echo "local $distro candidate repository is missing: $repo_file" >&2; exit 1; }
 mkdir -p "$(dirname "$output")"
 umask 077
 ssh_args=(-i "$ssh_key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes -o "UserKnownHostsFile=$known_hosts")
@@ -31,12 +36,14 @@ ssh_args=(-i "$ssh_key" -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyC
   ssh "${ssh_args[@]}" "$target" sudo install -o root -g root -m 0644 \
     "$remote_repo_tmp" /etc/yum.repos.d/admiral-local.repo
   ssh "${ssh_args[@]}" "$target" rm -f -- "$remote_repo_tmp"
-  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$release" <<'REMOTE'
+  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$release" "$distro" "$rpm_suffix" <<'REMOTE'
 set -euo pipefail
-release=$1
+release=$1 distro=$2 rpm_suffix=$3
 dnf install -y dnf-plugins-core
-dnf install -y epel-release
-dnf config-manager --set-enabled crb
+if [[ $distro == el10 ]]; then
+  dnf install -y epel-release
+  dnf config-manager --set-enabled crb
+fi
 dnf copr enable -y admiral-project/admiral
 
 echo 'PUBLIC_REPOSITORY_DEPENDENCY_QUERY_BEGIN'
@@ -44,21 +51,26 @@ dnf --disablerepo=admiral-local repoquery --available --latest-limit=1 \
   --qf '%{name}-%{version}-%{release}.%{arch} %{repoid}' python3-flask python3-mistune
 echo 'PUBLIC_REPOSITORY_DEPENDENCY_QUERY_END'
 
-# The immutable seed contains support packages to make ordinary provisioning
-# fast. Remove the two version-gated packages on this disposable hub so the
-# exact candidate transaction must resolve them again. Keep unrelated cached
-# dependencies; DNF will restore any extension packages it needs.
-dnf remove -y --noautoremove python3-flask python3-mistune
-
 packages=()
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
-  packages+=("${package}-0.0.1rc5-${release}.el10")
+  packages+=("${package}-0.0.1rc5-${release}.${rpm_suffix}")
 done
-dnf install -y "${packages[@]}"
+if [[ $distro == el10 ]]; then
+  # The immutable seed contains support packages to make ordinary
+  # provisioning fast. Remove the version-gated packages on this disposable
+  # hub so the exact candidate transaction must resolve them again.
+  dnf remove -y --noautoremove python3-flask python3-mistune
+  dnf install -y "${packages[@]}"
+else
+  # Fedora Rawhide support RPMs use the local repository with priority
+  # 1. Keep normal Fedora/COPR repos enabled so DNF resolves any missing OS
+  # requirements using the same enabled package universe as the installer.
+  dnf install -y --allow-vendor-change "${packages[@]}"
+fi
 
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
   actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' "$package")
-  [[ $actual == "0.0.1rc5-${release}.el10."* ]] || {
+  [[ $actual == "0.0.1rc5-${release}.${rpm_suffix}."* ]] || {
     echo "$package has unexpected NEVRA: $actual" >&2
     exit 1
   }
@@ -66,9 +78,9 @@ done
 rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' python3-flask python3-mistune
 REMOTE
 
-  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$underlay_ip" "$node_id" "$release" <<'REMOTE'
+  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$underlay_ip" "$node_id" "$release" "$rpm_suffix" <<'REMOTE'
 set -euo pipefail
-underlay_ip=$1 node_id=$2 release=$3
+underlay_ip=$1 node_id=$2 release=$3 rpm_suffix=$4
 before=$(mktemp)
 after=$(mktemp)
 trap 'rm -f -- "$before" "$after"' EXIT
@@ -95,9 +107,9 @@ if [[ $install_rc -eq 0 ]]; then
       *) expected_arch=x86_64 ;;
     esac
     actual=$(rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}' "$package")
-    expected="$package-0.0.1rc5-${release}.el10.$expected_arch"
+    expected="$package-0.0.1rc5-${release}.${rpm_suffix}.$expected_arch"
     [[ $actual == "$expected" ]] || {
-      echo "$package is not the exact Release 57 candidate after install: $actual" >&2
+      echo "$package is not the exact Release ${release}.${rpm_suffix} candidate after install: $actual" >&2
       exit 1
     }
   done

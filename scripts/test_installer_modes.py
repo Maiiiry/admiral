@@ -683,6 +683,23 @@ done
         ):
             self.assertNotIn("path: /etc/wireguard/peers.d\n    state: directory", task_file.read_text(encoding="utf-8"))
 
+    def test_fedora_resolver_dropin_follows_admiral_common_package_install(self) -> None:
+        common_tasks = COMMON_TASKS.read_text(encoding="utf-8")
+        common_spec = COMMON_SPEC.read_text(encoding="utf-8")
+
+        package_install = common_tasks.index(
+            "- name: Install admiral-common baseline package"
+        )
+        resolver_dropin = common_tasks.index(
+            "- name: Disable LLMNR on Fedora secure installs"
+        )
+
+        self.assertLess(package_install, resolver_dropin)
+        self.assertIn(
+            "%dir %attr(0755, root, root) %{_sysconfdir}/systemd/resolved.conf.d",
+            common_spec,
+        )
+
     def test_setup_directories_are_owned_by_admiral_common_rpm(self) -> None:
         common_spec = COMMON_SPEC.read_text(encoding="utf-8")
         ansible_tasks = "\n".join(
