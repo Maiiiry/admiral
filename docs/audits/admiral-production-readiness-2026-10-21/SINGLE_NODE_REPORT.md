@@ -1,8 +1,12 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R61 is invalidated; matrix 0/8.** Exact local Release 61 RPMs were installed on a fresh Rocky Linux 10.2 Single-Node overlay. The install subset passed, but three API samples reported `running/healthy/available` while `user@991.service` was `deactivating` or `inactive`; issue #259 tracks the failure. R61 results are retained as diagnostics only. No full cell passed. Fleet fix `0c805d6` is pushed with green CI; R62 is awaiting coordinated RPM build and fresh-guest revalidation. Fedora Rawhide, AlmaLinux 10 and CentOS Stream have no R61 guest run; all four Multi-Node cells remain NOT TESTED. Exact candidate identity and raw hashes are in `evidence/release61-rocky-single-node-invalidation.md`.<br>
+Current status: **NOT VALIDATED — R62 is invalidated by #256; matrix 0/8.** Exact local Release 62 RPMs were installed on a fresh Rocky Linux 10.2 Single-Node guest. The install subset and several targeted probes ran, but two host-reboot attempts returned stale pre-boot `running/healthy/available` state before fresh runtime health and DB readiness. R62 diagnostics do not count toward a matrix cell. No full cell passed. Fix `admirald@351a713` passed full local Go tests, vet/build and CI [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) and is being packaged into R63; no R63 RPMs exist yet. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 have no R62 guest run; all four Multi-Node cells remain NOT TESTED. Exact identity and evidence hashes are in `evidence/release62-rocky-single-node-invalidation.md`.<br>
 Full dependency closure, lifecycle, persistence, isolation, recovery, concurrency, resource cleanup and performance checks remain required for all four cells.
+
+## Release 62 targeted Rocky Linux 10.2 evidence — invalidated
+
+The exact R62 packages installed on a fresh Rocky Linux 10.2 Single-Node guest. The installer reported 231 tasks with zero failures. Targeted user-manager restart, PostgreSQL outage, process recovery, duplicate concurrent provision, local backup/restore, concurrent update/delete and cgroup-limit checks passed in isolation; same-host isolation was partial because the direct database-IP probe lacked a container IP. Two host-reboot probes failed: after a new boot, the API served an old pre-boot health observation as `running/healthy/available` while the workload was still restoring and PostgreSQL was not ready. This is a **FAIL** under #256, invalidates R62, and gives no matrix credit. Reproduction, hashes and candidate identity are in `evidence/release62-rocky-single-node-invalidation.md`.<br>
 
 ## Release 61 targeted Rocky Linux 10.2 evidence — invalidated
 

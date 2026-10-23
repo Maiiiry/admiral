@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release: 62%{?dist}
+Release: 63%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -24,7 +24,7 @@ URL:     https://github.com/admiral-project/admiral-fleet
 Source0: https://github.com/admiral-project/admiral-fleet/archive/%{commit}.tar.gz
 Source1: admiral-fleet.service
 Source2: fleet.env
-Source3: https://github.com/admiral-project/admirald/archive/9b8f1299fe43d0540442b4bc05cdbe0c5f4611aa.tar.gz
+Source3: https://github.com/admiral-project/admirald/archive/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
+- Rebuild coordinated RC5 packages for stale-health reboot recovery fix
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-62
 - Detect rootless user systemd manager deactivation before workload health reports
 

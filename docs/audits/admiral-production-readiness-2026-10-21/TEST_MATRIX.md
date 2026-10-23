@@ -1,17 +1,36 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Latest local RPM candidate status — 2026-10-23:** Release 61 was built locally and staged in `packaging/build/repos/el10-rc5-r61-x86_64/`. A fresh Rocky Linux 10.2 Single-Node install passed, but its user-manager restart regression recorded three `running/healthy/available` API samples while `user@991.service` was `deactivating` or `inactive`; this invalidated Release 61 under #259. Fleet fix `0c805d6293bfb11fd4f015f1b0ccff520481e627` is pushed to `origin/main`, and CI run [39878457179](https://github.com/admiral-project/admiral-fleet/actions/runs/39878457179) is green. Release 62 RPMs are not yet built. Exact R61 evidence and hashes are in `evidence/release61-rocky-single-node-invalidation.md`.<br>
-**Current matrix completion: 0/8.** Release 61 has partial Rocky Single-Node diagnostics only, invalidated for release validation; prior candidate evidence remains historical. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 have no R61 run. All four Multi-Node cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidates do not count toward a future candidate.
+**Latest local RPM candidate status — 2026-10-23:** Release 62 was built locally and installed on a fresh Rocky Linux 10.2 Single-Node guest. Two host-reboot probes reproduced stale `running/healthy/available` responses before a fresh post-boot runtime report (#256), invalidating R62. The exact candidate, evidence hashes and result are in `evidence/release62-rocky-single-node-invalidation.md`. R62's RPM build used `--nodeps`; it did not verify builder-side dependency resolution. Fix `admirald@351a713` now expires observations older than 15 seconds; the full Go suite, vet/build and CI run [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) pass. All six root package Release fields and exact refs are being prepared for R63; no R63 RPM build exists yet.<br>
+**Current matrix completion: 0/8.** R62 yielded targeted Rocky Single-Node diagnostics only, invalidated for release validation; none of its scenarios count toward a matrix cell. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 have no R62 run. All four Multi-Node cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidate evidence does not count toward a future candidate.
 
-| Target OS (x86_64) | Single-Node — Release 61 | Multi-Node — Release 61 |
+| Target OS (x86_64) | Single-Node — Release 62 | Multi-Node — Release 62 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED — no R61 guest run | NOT TESTED — fresh three-guest run pending |
-| Rocky Linux 10 | INVALIDATED — install subset passed; manager-restart false health #259 | NOT TESTED — fresh three-guest run pending |
-| AlmaLinux 10 | NOT TESTED on R61 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
-| CentOS Stream 10 | NOT TESTED on R61 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
+| Fedora Rawhide | NOT TESTED — no R62 guest run | NOT TESTED — fresh three-guest run pending |
+| Rocky Linux 10 | INVALIDATED — two stale-availability reboot failures, #256 | NOT TESTED — fresh three-guest run pending |
+| AlmaLinux 10 | NOT TESTED on R62 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
+| CentOS Stream 10 | NOT TESTED on R62 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R61's named Rocky scenarios are retained as diagnostic evidence but invalidated for release validation by #259; hashes are in `evidence/release61-rocky-single-node-invalidation.md`. The local R61 repo and runtime probes do not replace a clean COPR build or the complete required scenario set. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R62's targeted Rocky scenarios are retained as diagnostic evidence but invalidated for release validation by #256; hashes are in `evidence/release62-rocky-single-node-invalidation.md`. The local R62 repo and runtime probes do not replace a clean dependency-resolved build or the complete required scenario set. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+
+## Release 62 named Rocky Linux 10.2 diagnostic scenarios — invalidated
+
+These checks ran on the exact R62 packages. Their local logs and hashes are retained in the ignored, mode-restricted `packaging/build/validation/rc5-r62/` directory. They are diagnostic evidence only; the #256 host-reboot failure invalidates all R62 observations for matrix credit.
+
+| R62 scenario | Result | Evidence |
+|---|---|---|
+| Fresh install and service baseline | PASS — installation recap `ok=231 changed=97 unreachable=0 failed=0`; exact packages installed | `install-rocky.log` |
+| Rootless user systemd manager restart (#259) | PASS — no false availability during restart; SQL marker persisted, cleanup passed | `rocky-r62-user-systemd-restart.log` |
+| PostgreSQL service outage (#260) | PASS — API became unavailable in 5.744 s, stayed unavailable during 55 s observation, DB recovered and marker persisted | `rocky-r62-db-service-outage.log` |
+| Process recovery | PASS — app container, admirald and Fleet restarted; no duplicate provision; cleanup passed | `rocky-r62-process-recovery.log` |
+| Same-key concurrent provision | PASS — concurrent requests converged on one operation and one instance; cleanup passed | `rocky-r62-concurrent-idempotency.log` |
+| Local database backup/restore | PASS — restore while running rejected; checksum and SQL marker verified after restore | `rocky-r62-backup-restore.log` |
+| Same-host isolation | PARTIAL — distinct secrets, volumes and network namespaces; no privileged containers or Podman socket mount; direct DB-IP probe NOT TESTED (no container IP) | `rocky-r62-same-host-isolation.log` |
+| Concurrent update/delete | PASS — instance ended deprovisioned and no workload resources remained | `rocky-r62-concurrent-update-delete.log` |
+| Pod cgroup resource limits | PASS — each pod cgroup showed `memory.max=536870912`, `cpu.max=100000 100000` | `rocky-r62-cgroup-limits.log` |
+| Host reboot and readiness | **FAIL twice** — API served pre-boot healthy observation as available before a fresh post-boot observation and service readiness | `release62-rocky-single-node-invalidation.md` |
+
+No R62 named scenario completes a cell. The build used `--nodeps`; this is recorded as a packaging validation gap.
 
 ## Release 61 named runtime scenarios — partial Rocky Single-Node evidence
 

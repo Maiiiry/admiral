@@ -1,0 +1,5 @@
+# Release 62 targeted validation scripts
+
+These scripts reproduce the scoped Rocky Linux 10.2 Single-Node checks recorded in `../../evidence/release62-rocky-single-node-invalidation.md`. The wrapper `admiralctl-validation-user.sh` runs the installed CLI as the unprivileged `validator` account and assigns only test-owned `/var/tmp/adm-r62-*` run directories to it. Run each script only on a disposable guest installed from the exact candidate being evaluated. `r62-host-reboot.sh` reboots the guest and must be launched from the host-side harness so SSH reconnection and boot-ID change can be observed.
+
+The scripts require the installed Admiral packages, Podman, systemd, PostgreSQL access through Admiral's supported backup tooling, `jq`, and the deterministic E2E fixtures in the audit tree. They clean up their test workloads on exit. Logs may include instance identifiers, timestamps and environment data; retain raw logs as mode `0600` and do not publish them. The exact R62 reboot-failure archives and checksums are recorded in the evidence report. R62 is invalidated and these scripts do not constitute passing matrix evidence.

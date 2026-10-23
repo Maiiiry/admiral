@@ -15,7 +15,7 @@
 
 Name:    admiralctl
 Version: 0.0.1rc5
-Release: 62%{?dist}
+Release: 63%{?dist}
 Summary: Admiral Command-Line Interface
 
 License: Apache-2.0
@@ -23,7 +23,7 @@ ExclusiveArch: x86_64 aarch64
 URL:     https://github.com/admiral-project/admiralctl
 Source0: https://github.com/admiral-project/admiralctl/archive/%{commit}.tar.gz
 Source1: admiralctl.yaml
-Source2: https://github.com/admiral-project/admirald/archive/9b8f1299fe43d0540442b4bc05cdbe0c5f4611aa.tar.gz
+Source2: https://github.com/admiral-project/admirald/archive/351a713dec3a3672a22707c1e15a7f77f827e1c5.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -87,6 +87,9 @@ test "$(./admiralctl version 2>&1)" = "admiralctl %{version}"
 restorecon -F %{_bindir}/admiralctl 2>/dev/null || :
 
 %changelog
+* Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-63
+- Rebuild coordinated RC5 packages for stale-health reboot recovery fix
+
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-62
 - Rebuild coordinated RC5 packages with rootless manager state monitoring
 

@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: Admiral RC5 Release 61 is the latest local RPM candidate, pinned to root `6b55f7510aef822a6bf34c6e639f2a410fb19204` and the component SHAs in `evidence/release61-rocky-single-node-invalidation.md`. Targeted runtime checks ran on a fresh Rocky 10.2 Single-Node guest. Three false `healthy/available` samples during rootless user-systemd manager deactivation invalidated R61 under #259. The evidence remains diagnostic; matrix completion is 0/8. Fleet fix `0c805d6` is on `origin/main` with green CI; R62 RPMs have not yet been built. Fedora, AlmaLinux, CentOS Stream and all Multi-Node cells have no R61 runs. The local repo remains unpublished; the RPM build bypassed builder-side BuildRequires using `--nodeps`, while package `%check` steps ran.
+Latest audit run: Admiral RC5 Release 62 is the latest local RPM candidate, built from root `df279377c1e558ad5256c6457f3795665f1963de`. Two fresh-boot probes on Rocky 10.2 returned stale `running/healthy/available` state before a post-boot health observation, reproducing #256 and invalidating R62. Matrix completion remains 0/8. The exact-candidate evidence is in `evidence/release62-rocky-single-node-invalidation.md`. The local RPM build used `--nodeps`, so builder-side BuildRequires resolution is not established. The fix is pushed as `admirald@351a713`, full local tests/vet/build and component CI [39883445112](https://github.com/admiral-project/admirald/actions/runs/39883445112) are green. Root R63 packaging pins are prepared; there is no R63 build yet.
 
 ## Scope and evidence rules
 
