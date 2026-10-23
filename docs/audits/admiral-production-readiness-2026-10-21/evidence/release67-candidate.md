@@ -1,6 +1,15 @@
 # RC5 Release 67 candidate record
 
-**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; SCOPED SINGLE-NODE RUNTIME SCENARIOS PASSED ON ALL FOUR TARGET OSes; ALL FOUR MULTI-NODE OSes HAVE SCOPED THREE-GUEST RESULTS. Matrix: 0/8.**
+**Status: INVALIDATED FOR ACTIVE RELEASE-GATE CREDIT by #267. Six RPMs were built for both native targets and scoped scenarios were executed, but the AlmaLinux Multi-Node controlled worker-removal regression failed. Matrix: 0/8. All R67 results below remain historical evidence tied to R67 and do not validate a rebuilt candidate.**
+
+The failure and exact reproduction are documented in
+[`release67-alma-multinode-node-removal.md`](release67-alma-multinode-node-removal.md).
+The typed-error fix is pushed at `admirald@a4d39ae6b5db92bd7e6e5257dc8f6b919af52668`
+and `admiralctl@fa2a65e866310bd82bea78859804b6c3aea7989a`; both component CI
+runs passed ([admirald](https://github.com/admiral-project/admirald/actions/runs/40030035439),
+[admiralctl](https://github.com/admiral-project/admiralctl/actions/runs/40030034925)).
+All six RPM specs are incremented to Release 68 and the relevant source pins
+are updated locally. No Release 68 package has been built or validated yet.
 
 Release 66 is invalidated for active release-gate credit by the Fedora fresh
 Multi-Node worker-install failure tracked in [issue #266](https://github.com/admiral-project/admiral/issues/266).

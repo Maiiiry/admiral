@@ -1,5 +1,7 @@
 # Single-Node report
 
+> **Candidate decision update — 2026-10-23:** R67 is invalidated for active release-gate credit by a separate Multi-Node worker-removal defect on AlmaLinux (#267). The Single-Node observations below remain historical evidence for Release 67 and must be rerun on the rebuilt candidate; they do not count toward the active matrix. Completion remains 0/8.
+
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 > **R67 status:** Fresh Fedora Rawhide, Rocky Linux, AlmaLinux and CentOS Stream Single-Node guests installed their exact native Release 67 packages. In addition to lifecycle/reboot checks, named local backup/restore, auth-negative, partial same-host isolation, cgroup, concurrent mutation, service/process and user-systemd recovery probes were run. Outcomes and per-capture hashes are in [`release67-single-node-extended-regressions.md`](evidence/release67-single-node-extended-regressions.md). No full cell is complete; matrix remains 0/8.
 
