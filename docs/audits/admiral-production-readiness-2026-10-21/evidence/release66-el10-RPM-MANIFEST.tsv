@@ -1,0 +1,15 @@
+name	epoch	version	release	arch	sha256	file
+admiral-common	0	0.0.1rc5	66.el10	noarch	eec5d172b43cd41a0fab773c56d8787e1871ed7088f0d076647aa9a0e3440a1e	admiral-common-0.0.1rc5-66.el10.noarch.rpm
+admiral-flagship	0	0.0.1rc5	66.el10	noarch	77e9208aca23e12b80b4964c92007870950f063bebba85841780a51c846d0a52	admiral-flagship-0.0.1rc5-66.el10.noarch.rpm
+admiral-fleet	0	0.0.1rc5	66.el10	x86_64	8c2bea5d4b02f822fa43984378bc40bb1732254447b311df1df7c87d12f92284	admiral-fleet-0.0.1rc5-66.el10.x86_64.rpm
+admiral-harbor	0	0.0.1rc5	66.el10	noarch	09f0cbb30d57930e4d2bc1644c191e404f34543baa1fee7ce980e25d05195c0b	admiral-harbor-0.0.1rc5-66.el10.noarch.rpm
+admiralctl	0	0.0.1rc5	66.el10	x86_64	df7fe8f357cd0897063ed76b49eb64727bfc72e0f1cd272935899a3fd5a50087	admiralctl-0.0.1rc5-66.el10.x86_64.rpm
+admirald	0	0.0.1rc5	66.el10	x86_64	59d1f280e0103abe369159d1084dee85d0f4addafc682573a2e9beb3546eb560	admirald-0.0.1rc5-66.el10.x86_64.rpm
+python3-alembic	0	1.20.1	4.el10	noarch	1202cb98a552cc6f2fed878e9a77fb17376ab4f69f187d24acb6187b3f02d243	python3-alembic-1.20.1-4.el10.noarch.rpm
+python3-flask	1	3.1.3	3.el10	noarch	ce3450ade4d6392be966dfc892c13be9a4fb4f3a47116110b07ad5b51e5926ff	python3-flask-3.1.3-3.el10.noarch.rpm
+python3-flask-alembic	0	3.3.0	4.el10	noarch	ea64ed8d34350d485be5195a86ea93ebdd8bdfa62b41ac34794460c9ae1343c4	python3-flask-alembic-3.3.0-4.el10.noarch.rpm
+python3-flask-login	0	0.6.3	9.el10	noarch	787e16890562c303997fc6ccfe211002efe57437e860884c522e48d2103db28b	python3-flask-login-0.6.3-9.el10.noarch.rpm
+python3-flask-sqlalchemy	0	3.1.1	10.el10	noarch	13e08d4a66cd57689f5e75dd0df3bb8ae555d66496f3094bfca0d117153537cf	python3-flask-sqlalchemy-3.1.1-10.el10.noarch.rpm
+python3-mistune	0	3.4.0	1.el10	noarch	a037c635768458e127565605b47b0d66578990afaaf92db8f34d23482f1c84d1	python3-mistune-3.4.0-1.el10.noarch.rpm
+python3-sqlalchemy	0	2.0.55	4.el10	x86_64	b9ed57bf3ff6365fbda98ba21c18bba7b2e81b9088e8f071280eaecdf69cfbc5	python3-sqlalchemy-2.0.55-4.el10.x86_64.rpm
+python3-typing-extensions	0	4.16.0	1.el10	noarch	eb33d5bd18a49f98db41ee3d355ceb885399940725657d73e63a4373b10c8a31	python3-typing-extensions-4.16.0-1.el10.noarch.rpm

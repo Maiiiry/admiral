@@ -1,9 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT READY for release; matrix 0/8.** R65 is invalidated by HIGH issue #264: a real central PostgreSQL outage made node-token database errors consume the invalid-credential rate limit, temporarily blocking valid workers after recovery. The fix is pushed but not packaged or runtime-validated. Earlier selected unauthenticated/invalid-token probes and workload-isolation samples remain candidate-specific diagnostics only. Direct cross-workload PostgreSQL-IP access, cross-tenant filesystem/secret reads, capability escalation, host/kernel escape, complete endpoint authorization and systematic log-secret scanning remain NOT TESTED. Evidence: [`release65-invalidation-central-db-auth.md`](evidence/release65-invalidation-central-db-auth.md).
-R49–R52 observations are candidate-specific history only. R53 includes the #246 source fix and has passed package checks; the named R53 isolation samples do not establish a security guarantee or complete a cell. Build identity and runtime hashes are in the R53 candidate, initial and follow-up execution reports.
-Scope: API/UI authentication and authorization, node trust, workload isolation, secrets, host exposure, packaging and dependencies.
+Current status: **NOT VALIDATED — matrix 0/8.** R66 runtime inspection confirmed SELinux Enforcing and rootless Podman on fresh Rocky/Fedora Single-Node guests; AlmaLinux R66 covered the scoped authenticated database-outage recovery path. These checks do not establish isolation or security readiness. Cross-workload DB network access, cross-tenant filesystem/secret reads, effective capabilities, socket exposure negatives, broad endpoint authorization, systematic secret/log scanning and full dependency triage remain **NOT TESTED**. R65 #264 behavior is corrected in R66 targeted AlmaLinux evidence; issue #264 remains open pending the matrix review.
 
 ## Controls observed in source and packaging
 
@@ -50,4 +48,4 @@ Scope: API/UI authentication and authorization, node trust, workload isolation, 
 
 ## Current security verdict
 
-For historical Release 42, the HTTP/2 endpoint was reachable from a worker and candidate Go binaries had reachable advisories (`ADM-F-003`); the parser accepted placeholder keys (`ADM-F-007`); and Harbor emitted an unsafe Markdown URL (`ADM-F-004`). R53's limited same-host isolation samples do not cover cross-workload traffic, secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths or current RPM advisory triage. The current Release 53 security assessment remains **NOT VALIDATED**.
+Historical Release 42–53 findings and selected controls remain documented above. R66 adds only a few scoped runtime checks: SELinux Enforcing and rootless Podman on Rocky/Fedora Single-Node, plus the authenticated Fleet retry behavior during the AlmaLinux hub PostgreSQL outage. Cross-workload traffic and secret separation, effective capabilities, worker identity negatives, external listener exposure, secret canary paths and a current full RPM advisory triage remain NOT TESTED. The Release 66 security assessment remains **NOT VALIDATED**; these probes do not establish a production security guarantee.

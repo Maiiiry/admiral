@@ -1,17 +1,30 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Candidate status — 2026-10-23:** R65 is **INVALIDATED**, and R66 has not yet been built. A central PostgreSQL outage on the three-guest AlmaLinux R65 topology caused valid Fleet tokens to consume the invalid-auth limiter and receive HTTP 429 after PostgreSQL recovered. This confirmed HIGH finding #264 invalidates all R65 matrix credit. The source fix is pushed to `admirald/main` (`643d203576037a12eba59d534d51d170acae9b5d`); local unit suite and vet pass, but GitHub CI run [39915433860](https://github.com/admiral-project/admirald/actions/runs/39915433860) remains in progress. Details and reproducible evidence: [`release65-invalidation-central-db-auth.md`](evidence/release65-invalidation-central-db-auth.md).<br>
-**Current matrix completion: 0/8.** The active target remains Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only, each in Single-Node and Multi-Node. R65 scenario results are retained as candidate-specific diagnostics only and none complete a cell. R66 requires all six RPMs to be rebuilt before any fresh cell evidence is recorded.
+**Candidate status — 2026-10-23:** RC5 Release 66 is built and installed on fresh Rocky Linux 10.2, Fedora Rawhide and AlmaLinux 10.2 guests. Root and all five component CI runs for the selected candidate pins are green. R65 remains invalidated by #264; the exact R66 AlmaLinux three-guest run passed the targeted central-PostgreSQL outage regression (HTTP 503/`Retry-After`, zero 401/429, workers recovered).<br>
+**Current matrix completion: 0/8.** Target: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64, Single-Node and Multi-Node. R66 has scoped test evidence but no complete matrix cell; candidate-specific PASS rows below do not imply a cell pass.
 
-| Target OS (x86_64) | Single-Node — R65 | Multi-Node — R65 |
+| Target OS (x86_64) | Single-Node — R66 | Multi-Node — R66 |
 | --- | --- | --- |
-| Fedora Rawhide | INVALIDATED — partial diagnostics only | NOT TESTED on R65 |
-| Rocky Linux 10 | INVALIDATED — partial diagnostics only | NOT TESTED on R65 |
-| Alma Linux 10 | INVALIDATED — partial diagnostics only | INVALIDATED — #264 reproduced on this R65 three-guest run |
-| CentOS Stream 10 | INVALIDATED — partial diagnostics only | NOT TESTED on R65 |
+| Fedora Rawhide | PARTIAL — fresh install, workload lifecycle, idempotency, service restart, host reboot/data persistence and cleanup; no cell credit | NOT TESTED |
+| Rocky Linux 10 | PARTIAL — fresh install, workload lifecycle, idempotency, service restart, host reboot/data persistence and cleanup; no cell credit | NOT TESTED |
+| Alma Linux 10 | NOT TESTED | PARTIAL — three-guest install, placement, #264/#237/#227/#228 targeted regressions, hub/worker reboot and partition/rejoin; no cell credit |
+| CentOS Stream 10 | NOT TESTED | NOT TESTED |
 
-Matrix completion: **0/8**. Both topologies remain **NOT VALIDATED**; Multi-Node also has a confirmed HIGH defect on R65. The R65 named probes do not cover all acceptance scenarios and, due to #264, are invalidated for release credit. Direct cross-workload PostgreSQL-IP reachability, sustained stress/performance and several Multi-Node checks remain NOT TESTED. Fedora requires its own Python 3.15 RPMs; the EL10 package set is not treated as Fedora evidence. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception. Candidate-specific evidence and hashes are in [`release65-single-node-progress.md`](evidence/release65-single-node-progress.md), [`release65-alma-multinode-progress.md`](evidence/release65-alma-multinode-progress.md), [`release65-invalidation-central-db-auth.md`](evidence/release65-invalidation-central-db-auth.md), and [`release65-local-log-sha256.txt`](evidence/release65-local-log-sha256.txt).
+Matrix completion: **0/8**. Single-Node and Multi-Node are **NOT VALIDATED** for production. Remaining gaps include AlmaLinux/CentOS Single-Node, Rocky/Fedora/CentOS Multi-Node, public route/TLS/DNS, broad auth and tenant-isolation negatives, memory/disk exhaustion, task-boundary crashes, concurrent conflicting updates/deletes, systematic security review and controlled performance/stress sampling. R66 exact candidate, CI, RPM NEVRAs/checksums and seed hashes are in [`release66-candidate.md`](evidence/release66-candidate.md); scoped runtime records are [`release66-single-node-targeted.md`](evidence/release66-single-node-targeted.md) and [`release66-alma-multinode-targeted.md`](evidence/release66-alma-multinode-targeted.md).
+
+## R66 targeted execution records — scoped, no cell credit
+
+| Test ID | Platform / topology | Scenario | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| `R66-SN-ROCKY-BOOT-01` | Rocky Linux 10.2 x86_64 / Single-Node | Fresh seeded guest, exact R66 RPM install, secure install, services and rootless Podman baseline | PASS, scoped | `release66-single-node-targeted.md`; raw log hashes recorded there |
+| `R66-SN-ROCKY-LIFECYCLE-01` | Rocky Linux 10.2 x86_64 / Single-Node | Provision whoami/PostgreSQL, HTTP and DB readiness, same-key replay, deprovision and resource cleanup | PASS, scoped | Same report; operation/instance IDs and raw log hashes recorded |
+| `R66-SN-ROCKY-REBOOT-01` | Rocky Linux 10.2 x86_64 / Single-Node | Real guest reboot, changed boot ID, services/workload recover, SQL marker persists, HTTP 200, cleanup | PASS, scoped | `rocky-single-exact-reboot-final.log`, SHA-256 in report |
+| `R66-SN-FEDORA-BOOT-01` | Fedora Rawhide x86_64 / Single-Node | Fresh seeded guest, exact R66 RPM install, secure install, services and rootless Podman baseline | PASS, scoped | `release66-single-node-targeted.md`; raw log hashes recorded there |
+| `R66-SN-FEDORA-LIFECYCLE-01` | Fedora Rawhide x86_64 / Single-Node | Provision whoami/PostgreSQL, HTTP and DB readiness, same-key replay, deprovision and resource cleanup | PASS, scoped | Same report; operation/instance IDs and raw log hashes recorded |
+| `R66-SN-FEDORA-REBOOT-01` | Fedora Rawhide x86_64 / Single-Node | Real guest reboot, changed boot ID, services/workload recover, SQL marker persists, HTTP 200, cleanup | PASS, scoped | `fedora-single-exact-reboot-final.log`, SHA-256 in report |
+| `R66-MN-ALMA-DB-01` | AlmaLinux 10.2 x86_64 / three-guest Multi-Node | Central PostgreSQL outage, valid Fleet requests, recovery and workload/data integrity | PASS for #264 regression, scoped | [`release66-alma-multinode-targeted.md`](evidence/release66-alma-multinode-targeted.md), log hashes included |
+| `R66-MN-ALMA-REBOOT-PARTITION-01` | AlmaLinux 10.2 x86_64 / three-guest Multi-Node | Hub/worker reboots, worker network partition/rejoin, instance effective availability | PASS for named scenarios, scoped | Same AlmaLinux Multi-Node evidence report |
 
 ## R63 targeted Rocky Single-Node diagnostics — invalidated
 

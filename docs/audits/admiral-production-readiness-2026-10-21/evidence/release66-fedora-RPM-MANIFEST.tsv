@@ -1,0 +1,15 @@
+name	epoch	version	release	arch	sha256	file
+admiral-common	0	0.0.1rc5	66.fc46	noarch	02030f70625817a0dde0032cbd1d95bff6f9045fe825b1a33d4cf8a010108a92	admiral-common-0.0.1rc5-66.fc46.noarch.rpm
+admiral-flagship	0	0.0.1rc5	66.fc46	noarch	12766ee802506f8c68c27a5a135b9a3ea8e4f60dc6524882ff07ec30cf1d7007	admiral-flagship-0.0.1rc5-66.fc46.noarch.rpm
+admiral-fleet	0	0.0.1rc5	66.fc46	x86_64	6852a8006a7c7337098429417fa6e60316953dcd33a2e365d5fc0b8eb8a8a82a	admiral-fleet-0.0.1rc5-66.fc46.x86_64.rpm
+admiral-harbor	0	0.0.1rc5	66.fc46	noarch	87ff594d08c255ddc6b863e626e10f749d7cf40b15381655d9a5b47f9bc769a4	admiral-harbor-0.0.1rc5-66.fc46.noarch.rpm
+admiralctl	0	0.0.1rc5	66.fc46	x86_64	82b8d22ac4075833e7ba07d81e3a3e11d636657a92b312fb0ae79bdaefcef0c2	admiralctl-0.0.1rc5-66.fc46.x86_64.rpm
+admirald	0	0.0.1rc5	66.fc46	x86_64	d52af9ee32a9bb306d35b52f03105bb91730d471dadd506822388e3bba76dc0e	admirald-0.0.1rc5-66.fc46.x86_64.rpm
+python3-alembic	0	1.20.1	4.fc46	noarch	b87f647629f3379f5758e617a869cea333386c3a1e712269c1b2b442ec83eb17	python3-alembic-1.20.1-4.fc46.noarch.rpm
+python3-flask	1	3.1.3	3.fc46	noarch	3808da4a9bd00f79f68759e40839a10c10599a6c14c90dd6a1809647df879b4b	python3-flask-3.1.3-3.fc46.noarch.rpm
+python3-flask-alembic	0	3.3.0	4.fc46	noarch	dd84154d4b54fca868fb4941dc06daeae0c90d668bedf202c4f24956e881f678	python3-flask-alembic-3.3.0-4.fc46.noarch.rpm
+python3-flask-login	0	0.6.3	9.fc46	noarch	2c504de96a23178542c4697ba818d0ed222dc0eace85708c10dee9b4fd34e1d5	python3-flask-login-0.6.3-9.fc46.noarch.rpm
+python3-flask-sqlalchemy	0	3.1.1	10.fc46	noarch	4b0e18831b9affa903b627be44096a4d3b7e90ff345a8ccbf6919e8ee7384be0	python3-flask-sqlalchemy-3.1.1-10.fc46.noarch.rpm
+python3-mistune	0	3.4.0	1.fc46	noarch	4df6bd4722ae04ea595213f1faef64e717aef5892c7de8f20c936a94b31c1f1d	python3-mistune-3.4.0-1.fc46.noarch.rpm
+python3-sqlalchemy	0	2.0.55	4.fc46	x86_64	e676d92e02e217e3f0fd98c403d8cb6ec4bbe19c5e13b1feb650baad718b169e	python3-sqlalchemy-2.0.55-4.fc46.x86_64.rpm
+python3-typing-extensions	0	4.16.0	1.fc46	noarch	72950d1ac83061990a6384e4269105b2aea238f5e7e859c8f22b41d3582cc5d0	python3-typing-extensions-4.16.0-1.fc46.noarch.rpm

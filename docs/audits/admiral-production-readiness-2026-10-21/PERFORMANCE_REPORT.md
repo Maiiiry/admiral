@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R65 has been invalidated by HIGH issue #264, and R66 has not yet been built. No progressive concurrency sweep, controlled resource-pressure profile, repeatable throughput run, or p50/p95/p99 calculation has been completed. Resource exhaustion and all Multi-Node performance measurements remain NOT TESTED. Do not use R65 functional diagnostics as current-candidate evidence.
+Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R66 functional probes include individual operation durations but no progressive load, repeated sample set or p50/p95/p99 calculation. CPU, memory, swap, file descriptor, I/O and stress behavior have not been measured under controlled conditions. All performance and scalability acceptance remains **NOT TESTED**.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
