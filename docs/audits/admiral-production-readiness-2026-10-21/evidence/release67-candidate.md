@@ -1,6 +1,6 @@
 # RC5 Release 67 candidate record
 
-**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; FEDORA MULTI-NODE BOOTSTRAP PASSED AS A SCOPED REGRESSION. Matrix: 0/8.**
+**Status: SIX RPMs BUILT FOR BOTH NATIVE TARGETS; LOCAL REPOSITORIES READY; FEDORA MULTI-NODE BOOTSTRAP AND WORKLOAD LIFECYCLE PASSED AS SCOPED REGRESSIONS. Matrix: 0/8.**
 
 Release 66 is invalidated for active release-gate credit by the Fedora fresh
 Multi-Node worker-install failure tracked in [issue #266](https://github.com/admiral-project/admiral/issues/266).
@@ -100,6 +100,21 @@ does not complete a Fedora Multi-Node release cell. Full steps, IDs, recaps,
 timings and log hashes are recorded in
 [`release67-fedora-multinode-bootstrap.md`](release67-fedora-multinode-bootstrap.md).
 
+## Scoped R67 Fedora Multi-Node workload result
+
+On the same fresh three-guest topology, the exact `.fc46` candidate then passed
+one small `e2e-whoami` workload lifecycle on each worker in turn. Both explicit
+placements returned `succeeded` and `running/healthy/available`; sequential
+same-key replay returned the original operation and instance. PostgreSQL was
+ready on poll 2, each SQL marker was inserted/read back, and the hub received
+HTTP 200 from each worker over WireGuard. Both deprovisions succeeded and left
+no matching containers, pods, volumes, user units or files. A post-check found
+all three nodes active/healthy/available, zero active pods, and the exact R67
+`.fc46` package set on hub and workers. This is scoped workload evidence, not
+a complete Multi-Node cell. The procedure, operation/instance IDs, raw-log
+hashes, and one failed harness attempt are recorded in
+[`release67-fedora-multinode-placement.md`](release67-fedora-multinode-placement.md).
+
 ## Repository helper correction discovered during R67 staging
 
 Reviewing the existing `publish-candidate-repo.sh` exposed a latent cross-distro
@@ -121,9 +136,9 @@ validation for EL10 remains pending. The issue remains open.
   10 x86_64 × Single-Node/Multi-Node.
 - Matrix: **0/8**. RPM builds, CI and repository metadata do not count as a
   runtime cell pass.
-- A scoped fresh Fedora three-node secure install has passed on exact R67
-  packages. The guests remain available for follow-up workload scenarios; this
-  result does not give a complete matrix cell credit.
+- Scoped fresh Fedora three-node secure bootstrap and one workload
+  placement/replay/HTTP/SQL/deprovision cycle on each worker passed on exact R67
+  packages. This does not give a complete matrix cell credit.
 - Continue remaining Single-Node and Multi-Node scenarios across the four
   x86_64 OSes using only exact Release 67 RPMs built for each distro.
 - Broad isolation, stress/performance, resource-exhaustion, interruption and
