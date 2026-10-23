@@ -1,7 +1,7 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** No R67 RPMs or runtime tests have completed. Release 66 is invalidated for active matrix credit by issue #266; its observations below are historical and must be rerun on the exact R67 packages. Matrix remains 0/8.
+> **R67 status:** A fresh Fedora three-guest installation and worker enrollment passed as a scoped #266 regression, with heartbeat and WireGuard handshakes verified. No R67 reboot, partition, service-failure, interruption or recovery injection has been run. R66 resilience results are historical and invalidated for matrix credit. Matrix remains 0/8.
 
 Current status: **NOT VALIDATED — matrix 0/8.** R66 resilience evidence includes Single-Node host reboots on all four OSes and Multi-Node hub reboots on AlmaLinux, CentOS Stream and Rocky Linux, plus worker reboot/partition and database-outage recovery on the tested EL10 Multi-Node topologies. Targeted #227 service-failure and #228 Podman-removal injections passed on AlmaLinux and CentOS Multi-Node, and on all four Single-Node OSes for #227. These named regressions passed with cleanup; they do not cover the full resilience matrix. Memory/disk exhaustion, in-flight task interruption, callback loss, network latency, external dependency loss, Fedora Multi-Node recovery and Rocky #227/#228 fault injection remain **NOT TESTED**. See the R66 Single-Node and Multi-Node evidence reports.
 

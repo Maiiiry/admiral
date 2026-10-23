@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** No R67 RPMs or runtime tests have completed. Release 66 is invalidated for active matrix credit by issue #266; its observations below are historical and must be rerun on the exact R67 packages. Matrix remains 0/8.
+> **R67 status:** The exact Fedora `.fc46` candidate completed a scoped fresh three-guest secure bootstrap. SELinux was Enforcing, LLMNR was disabled with no 5355 listener, unicast DNS worked, and each temporary worker-bootstrap key was rejected after setup. No tenant-isolation or general authorization-negative tests have run on R67. Release 66 is invalidated for matrix credit. Matrix remains 0/8.
 
 Current status: **NOT VALIDATED — matrix 0/8.** R66 runtime inspection confirmed SELinux Enforcing and rootless Podman on fresh Single-Node guests for all four target OSes. AlmaLinux/CentOS Single-Node include partial co-resident workload checks that denied a tested host-alias app-port connection; AlmaLinux Multi-Node covered authenticated database-outage recovery. Exact R66 Go RPM metadata, source vulnerability scans and a CentOS Multi-Node HTTP/2 authentication-boundary probe resolve historical finding #209 for this candidate. These scoped checks do not establish overall security readiness. Cross-workload DB network access, cross-tenant filesystem/secret reads, full effective capability verification, socket exposure negatives, broad endpoint authorization, systematic secret/log scanning, Python RPM backport triage and full OS dependency triage remain **NOT TESTED**. R65 #264 behavior is corrected in R66 targeted AlmaLinux evidence; issue #264 remains open pending the matrix review.
 

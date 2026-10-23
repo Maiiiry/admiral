@@ -1,7 +1,7 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** No R67 RPMs or runtime tests have completed. Release 66 is invalidated for active matrix credit by issue #266; its observations below are historical and must be rerun on the exact R67 packages. Matrix remains 0/8.
+> **R67 status:** The six-package EL10 and Fedora sets are built and their separate 14-package local repos are published. No R67 guest install or Single-Node runtime test has run. Release 66 is invalidated for active matrix credit by #266; its observations below are historical and must be rerun against exact R67 NEVRAs. Matrix remains 0/8.
 
 Current R67 execution: **NOT STARTED. Single-Node is NOT VALIDATED; matrix 0/8.** Historical R66 Single-Node probes covered all four target OSes, but are invalidated for R67 by issue #266 and cannot be carried forward as cell credit. R67 must rerun those scenarios against its exact NEVRAs. Public DNS/TLS routing, full security/isolation negatives, conflicting concurrency, resource pressure, broad fault injection and controlled performance also remain outstanding. See [`release67-candidate.md`](evidence/release67-candidate.md) and historical [`release66-single-node-targeted.md`](evidence/release66-single-node-targeted.md), [`release66-el10-single-node-targeted.md`](evidence/release66-el10-single-node-targeted.md).
 
