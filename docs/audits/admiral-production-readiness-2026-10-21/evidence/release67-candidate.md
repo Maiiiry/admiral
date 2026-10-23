@@ -203,6 +203,16 @@ Details, exact IDs, commands, raw manifest hashes and limitations:
 [`release67-centos-multinode-concurrent-idempotency.md`](release67-centos-multinode-concurrent-idempotency.md),
 and [`release67-el10-multinode-database-backup-restore.md`](release67-el10-multinode-database-backup-restore.md).
 
+Both EL10 Multi-Node candidates also passed a separate active-workload W2
+reboot/recovery probe on the exact Release 67 packages. AlmaLinux's boot ID
+changed; the control plane kept the instance unavailable until health
+converged, the SQL marker persisted, HTTP remained 200, and cleanup plus the
+three-node postcheck passed. Raw logs and excluded helper-preflight evidence
+are retained with verified manifests; see
+[`release67-alma-multinode-worker-reboot.md`](release67-alma-multinode-worker-reboot.md)
+and [`release67-centos-multinode-worker-reboot.md`](release67-centos-multinode-worker-reboot.md).
+This is scoped reboot evidence only and does not complete either OS cell.
+
 ## Repository helper correction discovered during R67 staging
 
 Reviewing the existing `publish-candidate-repo.sh` exposed a latent cross-distro
