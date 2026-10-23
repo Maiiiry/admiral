@@ -1,7 +1,7 @@
 # Architecture review — Admiral production-readiness audit
 
 Audit started: 2026-10-21 UTC<br>
-Latest audit run: Admiral RC5 Release 58 is the latest local candidate, pinned to root `321e968` and component SHAs in `evidence/release58-candidate.md`. Targeted runtime checks ran on fresh Rocky 10.2, AlmaLinux 10.2 and CentOS Stream 10 Single-Node guests. One intermittent stale `healthy/available` result during rootless user-systemd manager restart invalidated R58 for release validation (#259). The evidence remains diagnostic; matrix completion is 0/8. Fedora Rawhide and all Multi-Node cells remain untested. The local repo remains unpublished, and the Admiral RPM build skipped `%check`.
+Latest audit run: Admiral RC5 Release 60 is the latest local RPM candidate, pinned to root `1ee2654` and the component SHAs in `evidence/release60-rocky-single-node-invalidation.md`. Targeted runtime checks ran on a fresh Rocky 10.2 Single-Node guest. A false `healthy/available` result during rootless user-systemd manager restart invalidated R60 under #259. The evidence remains diagnostic; matrix completion is 0/8. Fedora, AlmaLinux, CentOS Stream and all Multi-Node cells have no R60 runs. The local repo remains unpublished; the RPM build bypassed builder-side BuildRequires using `--nodeps`, while package `%check` steps ran.
 
 ## Scope and evidence rules
 

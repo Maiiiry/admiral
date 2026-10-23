@@ -1,8 +1,12 @@
 # Single-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-Current status: **NOT VALIDATED — R58 is invalidated; matrix 0/8.** Exact local Release 58 RPMs were installed on fresh Rocky Linux 10.2, AlmaLinux 10.2 and CentOS Stream 10 overlays. Most named scenarios passed within their documented scope, but a rootless user-systemd restart produced one intermittent false `healthy/available` observation on Rocky; issue #259 tracks it. R58 results are retained as diagnostics only. No full cell passed. Fedora Rawhide Single-Node is NOT TESTED; all four Multi-Node cells are NOT TESTED. Exact evidence and raw hashes are in `evidence/release58-el10-single-node-execution.md` and its SHA-256 manifest.<br>
+Current status: **NOT VALIDATED — R60 is invalidated; matrix 0/8.** Exact local Release 60 RPMs were installed on a fresh Rocky Linux 10.2 Single-Node overlay. The install subset and PostgreSQL outage/recovery scenario passed, but a user-systemd manager restart produced `running/healthy/available` while the pod was activating, the DB container was absent and HTTP returned `000`; issue #259 tracks the failure. R60 results are retained as diagnostics only. No full cell passed. Fedora Rawhide, AlmaLinux 10 and CentOS Stream have no R60 guest run; all four Multi-Node cells remain NOT TESTED. Exact candidate identity and raw hashes are in `evidence/release60-rocky-single-node-invalidation.md`.<br>
 Full dependency closure, lifecycle, persistence, isolation, recovery, concurrency, resource cleanup and performance checks remain required for all four cells.
+
+## Release 60 targeted Rocky Linux 10.2 evidence — invalidated
+
+On the fresh `adm-r60-rocky-single` overlay, the exact six Release 60 RPMs installed and the secure installer completed with zero failed tasks. The targeted PostgreSQL service outage test transitioned the API to unavailable after four seconds and recovered with the SQL marker intact. A later rootless `user@991.service` restart exposed `running/healthy/available` while the pod was activating, the DB container was absent and HTTP was `000`; this is a **FAIL** that invalidates R60 under #259. The runtime case is partial single-node diagnostic evidence only, not a matrix pass. Candidate pins, RPM checksums, event times and raw-log hashes: `evidence/release60-rocky-single-node-invalidation.md`.
 
 ## Release 56 targeted Single-Node results — partial, not cell passes
 

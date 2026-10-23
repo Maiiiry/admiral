@@ -1,17 +1,28 @@
 # Test matrix and traceability
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-**Latest local candidate status — 2026-10-22:** Release 58 is built locally with pinned Python RPM requirements and staged in `packaging/build/repos/el10-rc5-r58-x86_64/`. Local DNF install and BuildRequires resolution succeeded; Flagship passed 266 tests, Harbor 350, and all three Go module suites passed. The Admiral RPM build skipped `%check` because the builder has older installed Python RPMs; the suites ran separately against staged RPM contents. Exact Release 58 RPMs were installed on fresh disposable Rocky 10.2, AlmaLinux 10.2 and CentOS Stream 10 Single-Node guests. One intermittent false-availability observation after a rootless systemd manager restart invalidated R58 for release validation; see issue #259 and `evidence/release58-el10-single-node-execution.md`. R58 remains unpublished; no clean COPR build is claimed.<br>
-**Current matrix completion: 0/8.** Rocky, Alma and CentOS have partial R58 scenario diagnostics, invalidated for release validation; no full-cell result exists. Fedora Rawhide Single-Node and all four Multi-Node cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidates do not count toward a future candidate.
+**Latest local RPM candidate status — 2026-10-23:** Release 60 was built locally and staged in `packaging/build/repos/el10-rc5-r60-x86_64/`. Fresh Rocky Linux 10.2 Single-Node installation and the targeted PostgreSQL outage/recovery scenario passed. The rootless user-manager restart test then observed `running/healthy/available` while the pod was `activating`, PostgreSQL was absent and HTTP returned `000`; this invalidated Release 60 under #259. A Fleet fix is pushed as `c902a2895c1b12c18f4607b92f13c83515b3da25`, with green CI. Release 61 specs and pins are prepared locally but no R61 RPM build or guest run has occurred yet. R60 evidence and SHA-256 values are in `evidence/release60-rocky-single-node-invalidation.md`.<br>
+**Current matrix completion: 0/8.** Release 60 has partial Rocky Single-Node diagnostics only, invalidated for release validation; prior candidate evidence remains historical. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 have no R60 run. All four Multi-Node cells are NOT TESTED. Target matrix: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, x86_64 only; each in Single-Node and Multi-Node. Each Multi-Node cell requires three isolated guests: one admin/portal hub and two workers. Historical candidates do not count toward a future candidate.
 
-| Target OS (x86_64) | Single-Node — Release 58 | Multi-Node — Release 58 |
+| Target OS (x86_64) | Single-Node — Release 60 | Multi-Node — Release 60 |
 | --- | --- | --- |
-| Fedora Rawhide | NOT TESTED — no R58 guest run | NOT TESTED — fresh three-guest run pending |
-| Rocky Linux 10 | INVALIDATED — partial R58 scenarios; false-availability finding #259 | NOT TESTED — fresh three-guest run pending |
-| AlmaLinux 10 | INVALIDATED — partial R58 scenarios; candidate R58 invalidated by #259 | NOT TESTED — fresh three-guest run pending |
-| CentOS Stream 10 | INVALIDATED — partial R58 scenarios; candidate R58 invalidated by #259 | NOT TESTED — fresh three-guest run pending |
+| Fedora Rawhide | NOT TESTED — no R60 guest run | NOT TESTED — fresh three-guest run pending |
+| Rocky Linux 10 | INVALIDATED — partial R60 scenarios; false-healthy finding #259 | NOT TESTED — fresh three-guest run pending |
+| AlmaLinux 10 | NOT TESTED on R60 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
+| CentOS Stream 10 | NOT TESTED on R60 — older candidate evidence invalidated | NOT TESTED — fresh three-guest run pending |
 
-Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R58's EL10 named scenarios are retained as diagnostic evidence but are invalidated for release validation by #259; raw logs and SHA-256 values are in `evidence/release58-el10-single-node-execution.md` and its manifest. Local R58 repo and runtime probes do not replace a clean COPR build or the complete required scenario set. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+Matrix completion: **0/8**. Single-Node and Multi-Node remain **NOT VALIDATED**. R60's named Rocky scenarios are retained as diagnostic evidence but invalidated for release validation by #259; hashes are in `evidence/release60-rocky-single-node-invalidation.md`. The local R60 repo and runtime probes do not replace a clean COPR build or the complete required scenario set. Rocky Linux 10 uses the documented EPEL pyOpenSSL 25.0.0 seed exception.
+
+## Release 60 named runtime scenarios — partial Rocky Single-Node evidence
+
+| R60 coverage | Rocky Linux 10.2 |
+|---|---|
+| Fresh install / service baseline | PASS (install subset only) |
+| PostgreSQL service outage and recovery / SQL persistence | PASS — API unavailable after 4 s; marker survived recovery |
+| `admiral-apps` user systemd manager restart | **FAIL — one false `healthy/available` sample while pod was activating and PostgreSQL absent; #259** |
+| Cleanup after fault scenarios | PASS — no residual units or workload resources |
+
+Release 60 is invalidated; these are targeted scenario results and do not count as a matrix cell. Exact candidate pins, package hashes, raw-log hashes and transition timestamps are in `evidence/release60-rocky-single-node-invalidation.md`.
 
 ## Release 58 named runtime scenarios — partial EL10 Single-Node evidence
 
