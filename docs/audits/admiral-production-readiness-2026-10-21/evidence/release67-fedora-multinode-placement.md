@@ -89,3 +89,8 @@ It does not prove behavior during a worker outage, concurrent update/delete,
 host restart, interrupted task, secret-isolation attack, backup restore or
 sustained load. No new product issue was identified; the initial failed
 attempt was caused by the validation harness passing an unregistered node ID.
+
+After preserving the logs and confirming zero active pods/resources, all three
+Fedora validation guests were shut down gracefully to release host memory. The
+VM definitions and overlays remain available for the next R67 scenarios; no
+seed image or evidence log was deleted.

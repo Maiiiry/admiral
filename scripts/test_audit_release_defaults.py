@@ -40,3 +40,11 @@ def test_audit_helpers_default_to_the_coordinated_rpm_release():
         assert match.group(1) == expected, (
             f"{helper} defaults to Release {match.group(1)}, but RPM specs use {expected}"
         )
+
+
+def test_single_node_installer_selects_native_candidate_dist_tag():
+    helper = AUDIT_HELPERS[0].read_text()
+    assert "el10) repo_name=admiral-local-el10.repo; rpm_suffix=el10;" in helper
+    assert "fedora) repo_name=admiral-local-fedora.repo; rpm_suffix=fc46;" in helper
+    assert 'packages+=("${package}-0.0.1rc5-${expected_release}.${rpm_suffix}")' in helper
+    assert '[[ $actual == "0.0.1rc5-${expected_release}.${rpm_suffix}" ]]' in helper

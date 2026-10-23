@@ -12,8 +12,8 @@ release=${ADMIRAL_RC_RELEASE:-67}
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ $node_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid guest IPv4" >&2; exit 2; }
 case "$distro" in
-  el10) repo_name=admiral-local-el10.repo; mistune_nevra=python3-mistune-3.4.0-1.el10.noarch ;;
-  fedora) repo_name=admiral-local-fedora.repo; mistune_nevra=python3-mistune-3.4.0-1.fc46.noarch ;;
+  el10) repo_name=admiral-local-el10.repo; rpm_suffix=el10; mistune_nevra=python3-mistune-3.4.0-1.el10.noarch ;;
+  fedora) repo_name=admiral-local-fedora.repo; rpm_suffix=fc46; mistune_nevra=python3-mistune-3.4.0-1.fc46.noarch ;;
   *) echo "unsupported distribution profile: $distro" >&2; exit 2 ;;
 esac
 repo_file=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)/packaging/build/validation/rc5-r${release}/$repo_name
@@ -33,9 +33,9 @@ ssh_args=(-i "$ssh_key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKno
   ssh "${ssh_args[@]}" "$target" sudo install -o root -g root -m 0644 \
     "$remote_repo_tmp" /etc/yum.repos.d/admiral-local.repo
   ssh "${ssh_args[@]}" "$target" rm -f -- "$remote_repo_tmp"
-  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$distro" "$mistune_nevra" "$release" <<'REMOTE'
+  ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$distro" "$mistune_nevra" "$release" "$rpm_suffix" <<'REMOTE'
 set -euo pipefail
-distribution=$1 expected_mistune_nevra=$2 expected_release=$3
+distribution=$1 expected_mistune_nevra=$2 expected_release=$3 rpm_suffix=$4
 install_args=()
 if [[ $distribution == fedora ]]; then
   # The Rawhide candidate support RPM is built separately from the COPR build.
@@ -47,14 +47,14 @@ if [[ $distribution == el10 ]]; then
   dnf config-manager --set-enabled crb
 fi
 dnf copr enable -y admiral-project/admiral
-  packages=()
-  for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
-    packages+=("${package}-0.0.1rc5-${expected_release}.el10")
-  done
-  dnf install -y "${install_args[@]}" "${packages[@]}"
+packages=()
+for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
+  packages+=("${package}-0.0.1rc5-${expected_release}.${rpm_suffix}")
+done
+dnf install -y "${install_args[@]}" "${packages[@]}"
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
   actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' "$package")
-  [[ $actual == "0.0.1rc5-${expected_release}.el10" ]] || { echo "$package has unexpected NEVRA: $actual" >&2; exit 1; }
+  [[ $actual == "0.0.1rc5-${expected_release}.${rpm_suffix}" ]] || { echo "$package has unexpected NEVRA: $actual" >&2; exit 1; }
 done
 rpm -q --qf '%{NAME}-%{VERSION}-%{RELEASE}.%{ARCH}\n' python3-mistune | grep -Fx "$expected_mistune_nevra"
 REMOTE
