@@ -1,5 +1,9 @@
 # Review of open issues linked to master tracker #200
 
+> Later triage: see [`issue-fix-confirmed-triage-2026-10-24.md`](issue-fix-confirmed-triage-2026-10-24.md)
+> for the 2026-10-24 review of all open `fix-confirmed` issues (26 eligible for
+> closure, 22 retained, none returned to `needs-work`).
+
 Review date: 2026-10-21 UTC<br>
 Repository/candidate reviewed: root `748b703662eafdaf3919bad28787d0264f06bf16`, Release 42; component heads and CI evidence are recorded in `source-manifest.txt`.<br>
 Authority: current linked-subissue list from GitHub, individual issue acceptance criteria, and the independent consolidated code-review comments posted on 2026-10-21.<br>
