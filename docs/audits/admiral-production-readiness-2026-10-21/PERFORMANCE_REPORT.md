@@ -1,9 +1,11 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **R67 status:** Scoped Single-Node install, lifecycle and reboot runs are recorded for all four OSes, plus Fedora Multi-Node functional runs. Individual installer and operation timings are observations only. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
+> **Current R68 status (2026-10-24):** RC5 Release 68 (`0.0.1rc5-68`) is the active exact candidate (root/package source `4077c4ddb9d233682961d36c3570c63e70eb6405`). Current results and cell limits are linked from [`release68-candidate.md`](evidence/release68-candidate.md); matrix completion is **0/8** and this report does not establish a complete cell. R67 results below are historical and are not R68 matrix credit.
 
-Current status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** R67 secure installer times were 441 seconds on Fedora, 920 on Rocky, 379 on AlmaLinux and 369 on CentOS Stream. Each is a single functional sample from a seeded 2-vCPU/2-GiB guest, not a comparable benchmark: host load and repository timing were not controlled. There are no repeated samples, p50/p95/p99 calculations, progressive load or controlled host/guest resource measurements. CPU, memory, swap, file descriptor, I/O and stress behavior remain unmeasured under controlled conditions. Performance and scalability acceptance remains **NOT TESTED**.
+> **Historical R67 status:** Scoped Single-Node install, lifecycle and reboot runs are recorded for all four OSes, plus Fedora Multi-Node functional runs. Individual installer and operation timings are observations only. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
+
+Current R68 performance status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** No R68 run has measured progressive workload/concurrency load, repeated latency samples, p50/p95/p99, or controlled CPU/memory/I/O/file-descriptor consumption. R67 installer timings below are historical single functional observations and do not count as R68 performance evidence.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 
@@ -11,7 +13,7 @@ This audit defines no product SLO. It will record the measured baseline and the 
 
 For provision, update, pause/resume, backup, restore and deprovision, record operation request-to-terminal latency and separate API request latency where applicable. For repeated samples, report count, p50, p95 and p99, plus failures/timeouts. Record host and guest CPU, RSS, swap, memory pressure, disk free/IO, PostgreSQL activity, process count, file descriptors and Podman/systemd unit state. Multi-Node measurements must include hub and each worker, placement, WireGuard traffic, and one-worker versus two-worker behavior.
 
-## Current evidence
+## Historical R67 observations (not R68 performance evidence)
 
 R67 Single-Node runs provide one functional lifecycle and one host-reboot sample per OS, not a benchmark distribution. The secure installer ran for 441 seconds on Fedora, 920 on Rocky, 379 on AlmaLinux and 369 on CentOS Stream, all on seeded 2-vCPU/2-GiB guests. The Rocky sample includes a recorded host-side wrapper error after the installer itself exited 0. Database readiness was observed on poll 2 (Fedora) and poll 1 (Rocky, AlmaLinux and CentOS Stream) during the basic lifecycle. Post-reboot availability followed DB readiness on the sampled recovery paths. These observations are useful for reproduction only; no SLO or percentile is inferred. See [`release67-single-node-targeted.md`](evidence/release67-single-node-targeted.md).
 

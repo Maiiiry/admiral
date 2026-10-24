@@ -1,0 +1,61 @@
+# Candidate-specific R68 Single-Node raw-log SHA-256. Logs are local, ignored, and mode 0600.
+# Fedora Rawhide
+2005ea417e54b15cdfba6815715457910b1df09e7e65f73dd7480382dfba3053  packaging/build/validation/rc5-r68/fedora-single-install.log
+fab5136eaf4c29ff51c89251c187d5cf7d46b0a112850a5569635a76577b3173  packaging/build/validation/rc5-r68/fedora-single-postcheck.log
+389758dafb42327961da2adf2946fb5e8186e6e0065b4a241d01880a1e5f57da  packaging/build/validation/rc5-r68/fedora-single-lifecycle.log
+0054beb75096def92d4e62f63dac981a0210583ae19e44bbaa3139488169d779  packaging/build/validation/rc5-r68/fedora-single-backup-restore.log
+7db0a3527cbf49391809ff9952d54a388d0e495ba9d4d7363e2707cd36b6c509  packaging/build/validation/rc5-r68/fedora-single-auth-negative.log
+55b29925ae74b0382b65210f10df20a0879522b49c1200e929e69ec2f8923307  packaging/build/validation/rc5-r68/fedora-single-cgroup-limits.log
+dafbdb9ac60f65eb96a40b77554de8ac79b28ad08b769e5f34340d64b1dfd055  packaging/build/validation/rc5-r68/fedora-single-concurrent-idempotency.log
+1ca512d36346a4c52e0653fdc312f35e8e7b7b608c20318841606e722f59eae1  packaging/build/validation/rc5-r68/fedora-single-concurrent-update-delete.log
+0894556e49b692328107dd5fa72da0a5c8bafc8b5afd2769d30d61cc453cbd3c  packaging/build/validation/rc5-r68/fedora-single-db-service-outage.log
+ea122c73320a2798af2dff822d89515a991c1f2630ebd51cf4c074f4e3c4baaf  packaging/build/validation/rc5-r68/fedora-single-failed-service-final.log
+33818d470024368197d0524f529c3ccdb22a965c169c1f6b3a2ca182562920ce  packaging/build/validation/rc5-r68/fedora-single-process-recovery.log
+5c633fb4865c83eee386772e0c1a9d18a4be6714811721760c1cac6fa1e108fb  packaging/build/validation/rc5-r68/fedora-single-host-reboot.log
+ee191324d7343135b57fbb998e055f52b2343c306bc791d800d18c25295090df  packaging/build/validation/rc5-r68/fedora-single-user-systemd-restart-final.log
+32fb7b77fe0aba7a511130777a5071e4919256c8f7d52bd0053a73799eae65f1  packaging/build/validation/rc5-r68/fedora-single-same-host-isolation.log
+# Rocky Linux 10
+49b013535d47e49c8416a0748f69f6f243449f94c17c30dc254ea6e5fe0b23aa  packaging/build/validation/rc5-r68/rocky-single-install.log
+5405d99dbb63c450f4fe3331d14e3358ba8bffd399d5fb8a3f4c4806a3fec2b4  packaging/build/validation/rc5-r68/rocky-single-postcheck.log
+8d0a8f082839927bbd99428a3fb65738916fe83932d3b1926f0e540acaa8f049  packaging/build/validation/rc5-r68/rocky-single-lifecycle.log
+5ab9a07361b19a8c2be626e2ee203a51d8ea04f5c782a7498051fe687783343f  packaging/build/validation/rc5-r68/rocky-single-backup-restore.log
+cd1e733d6ffc7f7c4a839a92e9472b17022fb6dc96cf947356c989cd9cafa051  packaging/build/validation/rc5-r68/rocky-single-auth-negative.log
+7c86ee8e0fdd04fc154e4424e1b7488530c6aa06e8f7bd7221000dd39535fcfa  packaging/build/validation/rc5-r68/rocky-single-cgroup-limits.log
+2ccb9111773aec5b270e8b01cfbf2cf30d2a63d94d666b874a43aaa7ed627c9a  packaging/build/validation/rc5-r68/rocky-single-concurrent-idempotency.log
+033a40958904ee7ac0a809986a4bb360e82a7a8dab99ffd6ebd6f25b54f235f1  packaging/build/validation/rc5-r68/rocky-single-concurrent-update-delete.log
+176b0184a8d8e1ea0e17e23cff37729226f9ae778ea489a141f6b85ead7a58db  packaging/build/validation/rc5-r68/rocky-single-db-service-outage.log
+d4986d7d54aa1ee4bd9a8e89b9185395733340fd425ffd8ed69a8ff855c30d49  packaging/build/validation/rc5-r68/rocky-single-failed-service-single-node.log
+a0218a20bea29982c90502fa7889ce2aee83cd1ddf2f06f86205fd69d0de8f4b  packaging/build/validation/rc5-r68/rocky-single-process-recovery.log
+fecb96819910a26929b34d94213b351567ca43ea0b32241d92c7d7b6f3ea8d46  packaging/build/validation/rc5-r68/rocky-single-host-reboot.log
+b4259faaebd28f852d1228243a24693796581e1107a7eb4efb368409063d2a47  packaging/build/validation/rc5-r68/rocky-single-user-systemd-restart-final.log
+b973fdac9474782ed34d9e86efd34e0c0c658a6ddb912bd3ddea427da301aa6d  packaging/build/validation/rc5-r68/rocky-single-same-host-isolation.log
+# AlmaLinux 10
+744c6d67a08a3f672e52771c59b39912889739e0c54259263f2457058eeb4ca4  packaging/build/validation/rc5-r68/alma-single-install.log
+016d90d3b668e82dde7fb4b51f5861845f8ad36b7a6f25069a77fe762c9288b1  packaging/build/validation/rc5-r68/alma-single-postcheck.log
+36fd7fd5ab3ead00f0f6b70d2684c818c63cf3b017983e71b055ad41a29c75a7  packaging/build/validation/rc5-r68/alma-single-lifecycle.log
+c1eb64d697cc32d576007110e9a70ffdb9e2451b5ddab181283e13570bae715a  packaging/build/validation/rc5-r68/alma-single-backup-restore-verified.log
+59798ca88989c4c34d2634ca2bff3cc62e1454daeebfbe68d848214780eda669  packaging/build/validation/rc5-r68/alma-single-auth-negative.log
+6eec92e498bbfc4da781ac819b75d18d37b4a52ae2b59d325903708c163db9cf  packaging/build/validation/rc5-r68/alma-single-cgroup-limits.log
+1f656833f1237ed472da0d41b3ca142517f8e2ff0e1fdbd72b108db8a21b5f16  packaging/build/validation/rc5-r68/alma-single-concurrent-idempotency.log
+9b78eab0b5c4cc5f9ab53727c442f5573dcd9cadf81b13b302fb557e63a9f13c  packaging/build/validation/rc5-r68/alma-single-concurrent-update-delete.log
+0def0341fff2806a4781e173d2f9417a0d2f2df505cc328597c5b2981701876c  packaging/build/validation/rc5-r68/alma-single-db-service-outage.log
+5251dd943d5b73ec1ac316d876b107e15d487e0fc87810975ce9dd9f94147d68  packaging/build/validation/rc5-r68/alma-single-failed-service.log
+cb56d762bf57df97e814c363322dd9b389524911d026eabb6679b2c101a53576  packaging/build/validation/rc5-r68/alma-single-process-recovery.log
+d4b79dcbe9b2015cf1a056b5e24c7b0b1350e0152141a96df1b000a19d3aa32f  packaging/build/validation/rc5-r68/alma-single-host-reboot.log
+dbbe1b4391f262daac48cdbcb7769003199d681ccd6cf104c061a3958fabddf4  packaging/build/validation/rc5-r68/alma-single-user-systemd-restart.log
+4eb491073a0e8b6e497ebb3361ef2ceb198a68530b6e6a4198fba815b46fa114  packaging/build/validation/rc5-r68/alma-single-same-host-isolation-verified.log
+# CentOS Stream 10
+86cf937aca53db0580a9c257b5f3fe891c49ded59c27b180cc2dbc907ae8c1ab  packaging/build/validation/rc5-r68/centos-single-install.log
+701049aab78cea14a379a62b9b0e2546b1bd8ad063e1751b9a648e0c17470c57  packaging/build/validation/rc5-r68/centos-single-postcheck.log
+5a8ad08adb6a0c9148800246e159b2a70fb1b77b5fc168428cc71521c88f53dc  packaging/build/validation/rc5-r68/centos-single-lifecycle.log
+ff597cff3ac3c3da2b8a1339de7d79f3a978d3253a73eaa039dcf171bac0f350  packaging/build/validation/rc5-r68/centos-single-backup-restore-verified.log
+59798ca88989c4c34d2634ca2bff3cc62e1454daeebfbe68d848214780eda669  packaging/build/validation/rc5-r68/centos-single-auth-negative.log
+5fbae00118c9b86d18682b4d2919924220b5e1d3797d9dc234b85ed18a569605  packaging/build/validation/rc5-r68/centos-single-cgroup-limits.log
+f48d0a469f6fd5bdda9e5e28b4e42d30c7ad4f7b70ea63604eebaa28e2cb7bc9  packaging/build/validation/rc5-r68/centos-single-concurrent-idempotency.log
+9c1dcce79aca033a9f16141f72e1728df4423e086ec7f1181672fc02283cff7c  packaging/build/validation/rc5-r68/centos-single-concurrent-update-delete.log
+88d3d6c44289ed5a0147f006c674e6dfaddca3d605aca8c5ede9945f8fea2640  packaging/build/validation/rc5-r68/centos-single-db-service-outage.log
+33a594877399c5ee25a060e05a187d4a5448e3448dc2d3efb2728005271bcef1  packaging/build/validation/rc5-r68/centos-single-failed-service.log
+3b9696f45c80a6185cbecdf7cf7973d960698712c11144ddc406d7c0826f085b  packaging/build/validation/rc5-r68/centos-single-process-recovery.log
+a70e42ba7843a478aa3a9b20a1d3c8e219e5b07abdd7ec82ee33dee0280bc2f6  packaging/build/validation/rc5-r68/centos-single-host-reboot.log
+cf8531f050a33d5f6b2fc56ac711ba4872916a978dd5f3d752b690b49e45766b  packaging/build/validation/rc5-r68/centos-single-user-systemd-restart.log
+0e9eeb0504c949a380393a295be64c839ad6c73b4471ad0b40000fe1aba0b556  packaging/build/validation/rc5-r68/centos-single-same-host-isolation.log

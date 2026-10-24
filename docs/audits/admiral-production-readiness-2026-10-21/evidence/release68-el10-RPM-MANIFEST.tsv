@@ -1,0 +1,7 @@
+# path	name	epoch:version-release.arch	sha256
+rc5-r68/el10/x86_64/admiral-common-0.0.1rc5-68.el10.noarch.rpm	admiral-common	0:0.0.1rc5-68.el10.noarch	ee1179d118450174cc9d99d051b1030f8b814a59d7ebb7b9b7225ec95a03f0c2
+rc5-r68/el10/x86_64/admiral-flagship-0.0.1rc5-68.el10.noarch.rpm	admiral-flagship	0:0.0.1rc5-68.el10.noarch	2cd26ae82387dcc23a12e8f960a801cd5455c6e49011ca7659f8388a2ab05da2
+rc5-r68/el10/x86_64/admiral-fleet-0.0.1rc5-68.el10.x86_64.rpm	admiral-fleet	0:0.0.1rc5-68.el10.x86_64	b32b407bacfbacbc24b2fac85997a0967ea2dca6014f578ec6701e0ba7f18892
+rc5-r68/el10/x86_64/admiral-harbor-0.0.1rc5-68.el10.noarch.rpm	admiral-harbor	0:0.0.1rc5-68.el10.noarch	3232f18fb055e04f838b69dc1326129186be82f80ca8305cf3dfa082d7b29b67
+rc5-r68/el10/x86_64/admiralctl-0.0.1rc5-68.el10.x86_64.rpm	admiralctl	0:0.0.1rc5-68.el10.x86_64	3321b8f38775c26ee00d9565f40481fc72cef9ef5f4d0e67358af41b82b90004
+rc5-r68/el10/x86_64/admirald-0.0.1rc5-68.el10.x86_64.rpm	admirald	0:0.0.1rc5-68.el10.x86_64	4ab7ab462d131aa7b6a0618c1b95c91a87978c0be19fd2c6a5c1ed14a6b17be1
