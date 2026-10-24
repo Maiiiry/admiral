@@ -2,11 +2,11 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Active functional gate — four x86_64 platforms, Release 71
+## Active functional gate — four x86_64 platforms, Release 72
 
-The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 71 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
+The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 72 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
 
-**Current R71 matrix: 0/8; RPM build and runtime execution pending.** No evidence from Release 70 or earlier carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R72 matrix: 0/8; build and runtime validation pending.** R71 was invalidated by the exact-candidate Fedora readiness observation in [its candidate record](evidence/release71-candidate.md). No evidence from R71 or earlier carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
@@ -15,7 +15,7 @@ The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLin
 | AlmaLinux 10 x86_64 | NOT TESTED | NOT TESTED |
 | CentOS Stream 10 x86_64 | NOT TESTED | NOT TESTED |
 
-Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs. ARM64 is outside this release-blocking matrix and must not be counted as x86_64 evidence.
+Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs.
 
 ## Historical Release 70 — Rocky Linux 10 only; no R71 credit
 
