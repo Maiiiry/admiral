@@ -1,11 +1,11 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Current R68 status (2026-10-24):** RC5 Release 68 (`0.0.1rc5-68`) is the active exact candidate (root/package source `4077c4ddb9d233682961d36c3570c63e70eb6405`). Current results and cell limits are linked from [`release68-candidate.md`](evidence/release68-candidate.md); matrix completion is **0/8** and this report does not establish a complete cell. R67 results below are historical and are not R68 matrix credit.
+> **Current gate status (2026-10-24):** R68 (`0.0.1rc5-68`, source `4077c4ddb9d233682961d36c3570c63e70eb6405`) is invalidated for matrix credit by #268 after one CentOS Stream 10 Multi-Node storage report showed `0/unknown` against a declared `1G` tier. The fix is pushed as `admiral-fleet@029bb53da6c2bef7d567213a5fd6ab106d56d68c`; its component CI succeeded. Coordinated R69 native RPM builds and fresh-guest runtime validation are pending. Matrix completion is **0/8**. All R68 results in this report are historical and do not transfer to R69.
 
 > **Historical R67 status:** Scoped Single-Node install, lifecycle and reboot runs are recorded for all four OSes, plus Fedora Multi-Node functional runs. Individual installer and operation timings are observations only. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
 
-Current R68 performance status: **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** No R68 run has measured progressive workload/concurrency load, repeated latency samples, p50/p95/p99, or controlled CPU/memory/I/O/file-descriptor consumption. R67 installer timings below are historical single functional observations and do not count as R68 performance evidence.
+Historical R68 performance status (no R69 evidence): **NOT VALIDATED — no controlled performance campaign; matrix 0/8.** No R68 run has measured progressive workload/concurrency load, repeated latency samples, p50/p95/p99, or controlled CPU/memory/I/O/file-descriptor consumption. R67 installer timings below are historical single functional observations and do not count as R68 performance evidence.
 
 This audit defines no product SLO. It will record the measured baseline and the limiting resource for each workload. Results must identify the exact candidate, guest OS, VM sizing, app definition, concurrency, database mode, image-cache state, and host load. Cold image pulls must be reported separately from warm container creation.
 

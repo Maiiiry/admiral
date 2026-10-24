@@ -1,9 +1,24 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-RC5 Release 68 is the active package candidate; exact source pins, native package manifests and CI are in [`release68-candidate.md`](evidence/release68-candidate.md). R68 Single-Node scenarios have been run on all four target OSes but no cell is complete. On AlmaLinux Multi-Node, scoped exact-candidate placement/replay/runtime/cleanup passed on W1 and W2, three concurrent same-key provision requests deduplicated to one operation/task/instance, the #267 active-worker refusal/idle-worker removal regression passed, and the #264 central PostgreSQL outage recovery regression passed; #264 and #267 remain open. The other three Multi-Node OSes and each full cell catalog remain pending. R67 results are historical and do not count toward R68. Matrix completion remains **0/8**.
+R68 is invalidated for matrix credit by #268. Its exact source/package record is historical in [`release68-candidate.md`](evidence/release68-candidate.md). Fleet fix `029bb53da6c2bef7d567213a5fd6ab106d56d68c` is pushed and component CI [40052142923](https://github.com/admiral-project/admiral-fleet/actions/runs/40052142923) succeeded; Release 69 native RPM builds and fresh-guest tests are pending. Matrix completion remains **0/8**. Findings remain open unless explicitly resolved upstream; scoped candidate evidence does not close issues.
 
 Severity follows the audit criteria. Open findings remain open until a fix is revalidated in the affected topologies; a source change or passing component test alone does not close a live-system finding. Historical finding ADM-F-007 / #212 is resolved upstream and is explicitly marked below.
+
+## ADM-F-037 — Workload storage report briefly loses its configured tier limit ([#268](https://github.com/admiral-project/admiral/issues/268))
+
+**Status:** Observed once on R68 CentOS Stream 10 Multi-Node and not reproduced in an 18-sample same-candidate repeat. R68 is invalidated for release-matrix credit. A source fix is pushed in `admiral-fleet@029bb53`; local full tests, `go vet`, and component CI passed. Runtime regression on the new candidate is pending. Issue #268 remains open with `fix-proposed`; this is not a cell PASS.
+
+* **Severity:** LOW (transient incorrect storage status; no quota bypass or data loss observed).
+* **Component:** `admiral-fleet` workload provisioning and periodic storage status collection.
+* **Environment:** RC5 Release 68 (`0.0.1rc5-68.el10`), CentOS Stream 10 x86_64, real three-guest Multi-Node; W2.
+* **Reproduction:** Provision a workload whose tier declares `storage: 1G`; sample instance storage status immediately after creation and inspect `/var/lib/admiral/instances/<instance>/tier.json` on the worker. Exact timing may not reproduce reliably.
+* **Expected:** The configured limit remains represented as 1 GiB or status is explicitly pending measurement; the API must not claim no limit is configured.
+* **Observed:** One early API sample returned `storage_limit_bytes=0`, `storage_state=unknown`, and `no storage limit configured` about three seconds after creation. No corrected observation was captured before deprovision. A same-candidate follow-up yielded 18/18 `1G`/`ok` samples over 90 seconds and did not reproduce the issue.
+* **Evidence:** [`release68-centos-multinode-storage-observation.md`](evidence/release68-centos-multinode-storage-observation.md); first raw manifest SHA-256 `2a50df5fd4fc68b904d4ab9b3df92776619c044e3b394ae00931d79e5dcb3c53`, repeat manifest `4dffd27201fd6d33ccbc858d24096d89ec9fc41ee5cbba40859d3336e2ff4a78`.
+* **Root cause:** Hypothesis, not confirmed at the exact observation instant. Provision previously rendered workload units before writing `tier.json` and ignored metadata write errors, allowing a periodic Fleet scan to race metadata publication.
+* **Recommendation:** Persist and validate tier metadata before rendering/starting workload units; fail provisioning explicitly if metadata cannot be written.
+* **Regression test:** Source test injects a tier-file write failure and asserts no Quadlet or systemd start occurs. Run the exact R69 test on fresh CentOS Stream 10 and AlmaLinux 10 Multi-Node nodes and the affected Single-Node cells; capture immediate API samples, worker metadata, persistent data and cleanup. Revalidate on every OS before considering broader release impact.
 
 ## ADM-F-036 — Active-instance node removal returns HTTP 500 instead of conflict ([#267](https://github.com/admiral-project/admiral/issues/267))
 
