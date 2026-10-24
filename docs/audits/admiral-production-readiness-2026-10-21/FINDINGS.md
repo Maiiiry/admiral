@@ -1,7 +1,7 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-RC5 Release 68 is the active package candidate; exact source pins, native package manifests and CI are in [`release68-candidate.md`](evidence/release68-candidate.md). R68 Single-Node scenarios have been run on all four target OSes but no cell is complete. The exact R68 AlmaLinux Multi-Node regression for #267 passed its active-worker refusal and idle-worker removal checks; the issue remains open and the other three Multi-Node OSes and full cell catalog remain pending. R67 results are historical and do not count toward R68. Matrix completion remains **0/8**.
+RC5 Release 68 is the active package candidate; exact source pins, native package manifests and CI are in [`release68-candidate.md`](evidence/release68-candidate.md). R68 Single-Node scenarios have been run on all four target OSes but no cell is complete. On AlmaLinux Multi-Node, scoped exact-candidate placement/replay/runtime/cleanup checks passed on W1 and W2, as did the #267 active-worker refusal and idle-worker removal regression; #267 remains open. The other three Multi-Node OSes and each full cell catalog remain pending. R67 results are historical and do not count toward R68. Matrix completion remains **0/8**.
 
 Severity follows the audit criteria. Open findings remain open until a fix is revalidated in the affected topologies; a source change or passing component test alone does not close a live-system finding. Historical finding ADM-F-007 / #212 is resolved upstream and is explicitly marked below.
 
