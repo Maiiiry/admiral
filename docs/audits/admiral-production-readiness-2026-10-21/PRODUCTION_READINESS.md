@@ -2,7 +2,7 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-> **Active scope — 2026-10-24:** the functional Release 70 gate on Rocky Linux 10 x86_64 passed in Single-Node and Multi-Node (**2/2**). This document evaluates the broader production-readiness question separately; the functional gate does not establish comprehensive security, isolation, resilience, scalability or performance.
+> **Active scope — 2026-10-24:** Release 71 is being prepared for Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 x86_64 in Single-Node and Multi-Node (**0/8 cells validated; RPM build pending**). Release 70's Rocky-only 2/2 pass is historical. This document evaluates the broader production-readiness question separately; functional cells do not establish comprehensive security, isolation, resilience, scalability or performance.
 
 Production readiness is **NOT VALIDATED**. The functional release gate is narrower than the full production audit and cannot establish production security, fault-tolerance, scalability or performance.
 
@@ -10,8 +10,8 @@ Production readiness is **NOT VALIDATED**. The functional release gate is narrow
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | The Release 70 functional cell passed. Broader isolation/security negatives, resource-exhaustion behavior, stress and performance evidence are incomplete. |
-| Multi-Node | **NOT VALIDATED** | The Release 70 three-guest functional cell passed. Broader distributed concurrency, service/database outage, isolation, resource-exhaustion and performance evidence is incomplete. |
+| Single-Node | **NOT VALIDATED** | The active Release 71 cells have not yet been executed. Broader isolation/security negatives, resource-exhaustion behavior, stress and performance evidence are incomplete. |
+| Multi-Node | **NOT VALIDATED** | The active Release 71 cells have not yet been executed. Broader distributed concurrency, service/database outage, isolation, resource-exhaustion and performance evidence is incomplete. |
 
 Neither topology is READY or CONDITIONALLY READY on current evidence. Exact-commit CI and scoped scenarios do not substitute for a complete matrix cell. No production system was touched.
 
@@ -32,8 +32,8 @@ The Release 46 reference check, exact NEVRAs, hashes and targeted observations a
 
 ## What would change this decision
 
-The Release 70 functional checklist in [issue #200](https://github.com/admiral-project/admiral/issues/200) is complete for the scoped Rocky Linux 10 x86_64 gate. A separate production-readiness assessment would still need reproducible security/isolation negatives, broader fault injection, resource-pressure tests, concurrency and performance measurements, with scope and operating assumptions documented. Any new source/RPM fix requires a new candidate and invalidates its runtime evidence.
+The Release 71 functional checklist in [issue #200](https://github.com/admiral-project/admiral/issues/200) must pass for all four supported x86_64 platforms in both topologies. A separate production-readiness assessment still needs reproducible security/isolation negatives, broader fault injection, resource-pressure tests, concurrency and performance measurements, with scope and operating assumptions documented. Any new source/RPM fix requires a new candidate and invalidates its runtime evidence.
 
 ## Current answer to the audit question
 
-The broader production-readiness question remains **NOT VALIDATED**. The functional Rocky Linux 10 Release 70 gate passed **2/2**, but this run does not establish all security, isolation, fault-tolerance, resource-exhaustion or performance properties required for a production decision. No production-readiness claim is made.
+The broader production-readiness question remains **NOT VALIDATED**. Release 71 has **0/8** functional cells validated so far. Release 70's Rocky Linux result does not count toward this candidate and does not establish all security, isolation, fault-tolerance, resource-exhaustion or performance properties required for a production decision. No production-readiness claim is made.

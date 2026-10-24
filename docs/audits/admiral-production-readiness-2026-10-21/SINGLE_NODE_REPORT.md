@@ -4,6 +4,8 @@ Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
 ## Release 70 — Rocky Linux 10.2 x86_64 functional cell: PASS
 
+This is historical Release 70 evidence only. Release 71 starts a new eight-cell matrix; this result earns no Release 71 credit.
+
 The complete Single-Node functional checklist passed on the exact RC5 Release 70 candidate (`0.0.1rc5-70.el10`, root source commit `fb081f3378813a0b5bd800a1573d0b4773052a44`). This is functional release evidence only; it does not certify full production security, performance, or resilience. Candidate refs, CI, RPM NEVRAs/signatures and RPM/SRPM hashes are in [`release70-candidate.md`](evidence/release70-candidate.md) and [`release70-rpm-sha256.txt`](evidence/release70-rpm-sha256.txt).
 
 - Guest: fresh `adm-r70-rocky-single` overlay, Rocky Linux 10.2 x86_64; updated seed SHA-256 `64d918c2b1b8d69d210372d0e80252798178e3ae9b6b7f4af4dbec2b39b5b3d0`; SELinux Enforcing; post-reboot boot ID `cd6434f6-7323-409a-a114-08a6d4a73bfb`.

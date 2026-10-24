@@ -2,19 +2,26 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Active functional gate — Rocky Linux 10 x86_64, Release 70
+## Active functional gate — four x86_64 platforms, Release 71
 
-The active release gate has two cells. The same exact Release 70 RPM set must pass both. Any source or RPM change invalidates both cells and requires a coordinated six-package rebuild.
+The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 71 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
 
-**Current R70 matrix: 2/2 PASS.** Both cells used the same unchanged Release 70 candidate; no prior-release evidence was carried forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R71 matrix: 0/8; RPM build and runtime execution pending.** No evidence from Release 70 or earlier carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
-| Rocky Linux 10 x86_64 | **PASS** — fresh guest, secure install, lifecycle/resize/control/backup-restore/reboot and cleanup | **PASS** — three fresh guests, secure enrollment, both-worker placement, reboot, partition/rejoin, active/idle node removal and cleanup |
+| Fedora Rawhide x86_64 | NOT TESTED | NOT TESTED |
+| Rocky Linux 10 x86_64 | NOT TESTED | NOT TESTED |
+| AlmaLinux 10 x86_64 | NOT TESTED | NOT TESTED |
+| CentOS Stream 10 x86_64 | NOT TESTED | NOT TESTED |
 
-Candidate pins, exact RPM NEVRAs/signatures and hashes: [`release70-candidate.md`](evidence/release70-candidate.md). Runtime reports: [`SINGLE_NODE_REPORT.md`](SINGLE_NODE_REPORT.md) and [`MULTI_NODE_REPORT.md`](MULTI_NODE_REPORT.md); detailed Multi-Node IDs/timelines: [`release70-multinode-runtime.md`](evidence/release70-multinode-runtime.md). Sanitized raw-log checksums: [`release70-runtime-log-sha256.txt`](evidence/release70-runtime-log-sha256.txt). Raw logs are retained locally under ignored `packaging/build/validation/rc5-r70/`.
+Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs. ARM64 is outside this release-blocking matrix and must not be counted as x86_64 evidence.
 
-The sections below are historical findings and runs from earlier candidates. They do not count toward either Release 70 cell. The 2/2 result is a functional release gate only; it does not certify the broader security, isolation, performance or production-readiness audit.
+## Historical Release 70 — Rocky Linux 10 only; no R71 credit
+
+Release 70 passed its prior Rocky Linux 10 x86_64 functional gate in Single-Node and three-guest Multi-Node (**2/2 for R70 only**). Candidate pins, RPM NEVRAs/signatures and hashes: [`release70-candidate.md`](evidence/release70-candidate.md). Runtime reports: [`SINGLE_NODE_REPORT.md`](SINGLE_NODE_REPORT.md) and [`MULTI_NODE_REPORT.md`](MULTI_NODE_REPORT.md); detailed evidence: [`release70-multinode-runtime.md`](evidence/release70-multinode-runtime.md). Those observations do not count toward R71.
+
+The 2/2 result was a functional release gate only; it did not certify the broader security, isolation, performance or production-readiness audit. The sections below are historical findings and runs from earlier candidates.
 
 ### R68 scenario-level evidence — no cell credit
 

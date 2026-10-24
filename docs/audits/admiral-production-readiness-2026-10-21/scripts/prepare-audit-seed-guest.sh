@@ -51,10 +51,11 @@ grep -Eq '^[[:space:]]*gpgcheck[[:space:]]*=[[:space:]]*1[[:space:]]*$' "$copr_r
   exit 1
 }
 
-if [[ "$os_id" == rocky ]]; then
-  # The active Rocky 10.2 seed uses the verified EPEL 10.1 pyOpenSSL pin
+if [[ "$os_id" == rocky || "$os_id" == almalinux ]]; then
+  # Rocky and AlmaLinux 10.2 use the verified EPEL 10.1 pyOpenSSL 25 pin
   # because the current EPEL build requires a cryptography version that is
-  # not available from the Rocky 10 base repositories.
+  # not available from their base repositories. CentOS Stream 10 provides a
+  # compatible cryptography version and uses its normal EPEL package set.
   pinned_rpm=/var/tmp/python3-pyOpenSSL-25.0.0-1.el10_1.noarch.rpm
   dnf install -y curl
   curl --fail --location --retry 3 --retry-all-errors --connect-timeout 10 --max-time 90 \

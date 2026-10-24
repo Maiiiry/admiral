@@ -1,7 +1,7 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Active functional gate — Release 70:** Rocky Linux 10 x86_64 only. The exact unchanged candidate passed Multi-Node on three real guests. Together with the Single-Node result, the functional matrix is **2/2 PASS**. This is not a full production-readiness certification.
+> **Historical Release 70 result:** Rocky Linux 10 x86_64 Multi-Node passed on three real guests. Together with its Single-Node result, the Release 70-only functional matrix was **2/2 PASS**. These results do not count toward the active Release 71 eight-cell matrix and do not certify full production readiness.
 
 ## Release 70 — Rocky Linux 10.2 x86_64 Multi-Node cell: PASS
 

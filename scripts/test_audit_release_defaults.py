@@ -61,9 +61,10 @@ def test_candidate_install_helpers_do_not_bypass_dnf_vendor_resolution():
         assert "--nodeps" not in text, helper
 
 
-def test_rocky_seed_profile_pins_verified_pyopenssl():
+def test_rocky_and_alma_seed_profiles_pin_verified_pyopenssl():
     seed_setup = SEED_PREPARATION.read_text()
-    assert 'if [[ "$os_id" == rocky ]]; then' in seed_setup
+    assert 'if [[ "$os_id" == rocky || "$os_id" == almalinux ]]; then' in seed_setup
+    assert 'if [[ "$os_id" == centos ]]; then' not in seed_setup
     assert "python3-pyOpenSSL-25.0.0-1.el10_1.noarch.rpm" in seed_setup
     assert "eb5d2a6be0e47099c63fa042f83afac12021820bfc0d79fa0f9dcd57b71941dc" in seed_setup
     assert 'dnf install -y "$pinned_rpm"' in seed_setup
