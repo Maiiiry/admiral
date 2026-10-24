@@ -93,7 +93,7 @@ found.
 | #260 | Repeat the declared-service outage probe on Fedora and Multi-Node. |
 | #267 | Repeat active-node removal refusal on the remaining OSes (Alma R68 and Rocky R70 pass). |
 | #271 | Validate redirect rejection on the exact rebuilt RPM candidate. |
-| #272 | Revalidate on Fedora and run post-removal hub reboot on Rocky. AlmaLinux and CentOS Stream passed scoped helper-failure rollback/retry, removed-peer persistence over hub reboot and private-UI denial checks on the exact R73 RPMs; issue remains open for broader cross-OS coverage. |
+| #272 | Revalidate on Fedora and run helper-failure rollback/retry on Rocky. Rocky, AlmaLinux and CentOS Stream passed scoped removed-peer persistence over hub reboot and private-UI denial checks on the exact R73 RPMs; AlmaLinux and CentOS Stream also passed helper-failure rollback/retry. Issue remains open for broader cross-OS coverage. |
 
 ## Follow-up
 
