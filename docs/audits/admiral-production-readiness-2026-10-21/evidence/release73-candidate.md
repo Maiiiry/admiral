@@ -30,6 +30,7 @@ The root repository fetched every component `origin/main` before preparing R73. 
 - `go test ./...`, `go test -race ./...` and `go vet ./...` in `admirald`: PASS. The GitHub CI run also passed its PostgreSQL-backed tests.
 - All root `scripts/test_*.py` suites: PASS, including installer (76 tests), WireGuard peer add (3), peer revoke (6), and WireGuard role regressions (12).
 - `bash -n scripts/install.sh`, Python compilation, Ansible syntax checks for `ansible/site.yml` and `ansible/wireguard-peers.yml`, and staged `systemd-analyze verify`: PASS.
+- The first root CI run [40080856232](https://github.com/admiral-project/admiral/actions/runs/40080856232) exposed stale Release 72 defaults in three audit helpers and test fixtures that assumed CI ran as root. Both issues were corrected before the R73 build; the follow-up CI result is pending. The failed run is retained as validation evidence.
 - `python3 scripts/validate-release-refs.py`: pending the final root source-ref commit.
 - Six Release 73 RPMs, native EL10 and Fedora Rawhide `%check`, repository signature and NEVRA/SHA-256 manifest: pending.
 

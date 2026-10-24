@@ -160,8 +160,8 @@ def _atomic_replace(path: Path, content: str) -> None:
     metadata = path.stat(follow_symlinks=False)
     if not stat.S_ISREG(metadata.st_mode):
         raise RevocationError(f"refusing to edit non-regular WireGuard configuration {path.name}")
-    if metadata.st_uid != 0 or metadata.st_gid != 0:
-        raise RevocationError(f"WireGuard configuration {path.name} is not owned by root")
+    if metadata.st_uid != os.geteuid() or metadata.st_gid != os.getegid():
+        raise RevocationError(f"WireGuard configuration {path.name} is not owned by the helper user")
     descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.revoke.", dir=path.parent)
     temporary = Path(temporary_name)
     try:
