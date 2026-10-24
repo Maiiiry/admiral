@@ -2,9 +2,13 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Active candidate — Release 73: 2/4 Multi-Node cells partially validated
+## Active candidate — Release 73: 3/4 Multi-Node cells partially validated
 
-Rocky Linux 10 and AlmaLinux 10 have scoped R73 results on fresh three-guest clusters; both full cells remain incomplete. Fedora Rawhide and CentOS Stream 10 Multi-Node are `NOT TESTED`. R72's AlmaLinux/CentOS Stream results are invalidated and do not transfer. Candidate/build/CI record: [`release73-candidate.md`](evidence/release73-candidate.md).
+Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 have scoped R73 results on fresh three-guest clusters; all three full cells remain incomplete. CentOS has clean installs and registration on both workers, workload placement/lifecycle on each, a same-key concurrency pass, and reboot recovery with SQL persistence on both workers. Fedora Rawhide Multi-Node is `NOT TESTED`. R72's AlmaLinux/CentOS Stream results are invalidated and do not transfer. Candidate/build/CI record: [`release73-candidate.md`](evidence/release73-candidate.md).
+
+## R73 CentOS Stream 10 x86_64 scoped Multi-Node execution
+
+Three real guests installed exact native R73 EL10 packages through the signed local repository and passed secure baseline checks. Workloads were explicitly placed on W1 and W2; same-key replay returned the original operation/instance, SQL and storage state persisted, HTTP 200 returned over WireGuard, and cleanup was empty. Three simultaneous same-key clients converged on one operation/task/instance. Real W1 and W2 reboots changed their boot IDs; each instance remained unavailable while runtime recovered, then reached running/healthy/available on two consecutive samples with its SQL marker and HTTP 200 intact. These are **scoped scenario results, not a full cell pass**. W2 partition/rejoin, controlled node removal/peer revocation, hub reboot, re-enrollment, database/outage behavior, in-flight task replay, conflicting mutations, exhaustive isolation/security, resource exhaustion and performance remain untested. The first W1 install attempt used a stale COPR R57 package/repo configuration and is excluded; a clean install from the signed R73 repo passed. Detailed run IDs, evidence hashes and procedures: [`release73-centos-multinode-progress.md`](evidence/release73-centos-multinode-progress.md).
 
 ## R73 Rocky Linux 10.2 x86_64 scoped Multi-Node execution
 

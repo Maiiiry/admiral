@@ -1,6 +1,6 @@
 # RC5 Release 73 candidate record
 
-**Status: Release 73 candidate is built from source commits on `origin/main`; CI is green on the root commit and all five selected component commits. Matrix: 4/8 complete, Rocky and AlmaLinux Multi-Node partially validated, Fedora and CentOS Stream Multi-Node not tested.** R72 is invalidated; no runtime evidence from another candidate carries forward.
+**Status: Release 73 candidate is built from source commits on `origin/main`; CI is green on the root commit and all five selected component commits. Matrix: 4/8 PASS, 3/8 PARTIAL, 1/8 NOT TESTED.** All four Single-Node cells passed. Rocky, AlmaLinux and CentOS Stream Multi-Node have scoped results; Fedora Multi-Node is not tested. R72 is invalidated; no runtime evidence from another candidate carries forward.
 
 ## Scope
 
@@ -38,11 +38,11 @@ The root repository fetched every component `origin/main` before preparing R73. 
 
 ## Runtime matrix
 
-All R73 cells use the exact Release 73 candidate. Four Single-Node cells passed their functional checklist. Rocky and AlmaLinux Multi-Node have scoped real-cluster evidence, but neither full cell is complete. Current gate: **4/8 PASS, 2/8 PARTIAL, 2/8 NOT TESTED**. See [`release73-rocky-multinode-progress.md`](release73-rocky-multinode-progress.md), [`release73-alma-multinode-progress.md`](release73-alma-multinode-progress.md), and the acceptance checklist in master issue [#200](https://github.com/admiral-project/admiral/issues/200).
+All R73 cells use the exact Release 73 candidate. Four Single-Node cells passed their functional checklist. Rocky, AlmaLinux and CentOS Stream have scoped three-guest runtime evidence; the CentOS runs include installation and placement on both workers, same-key concurrency and worker reboot recovery on both nodes. None of the three Multi-Node cells is complete. Current gate: **4/8 PASS, 3/8 PARTIAL, 1/8 NOT TESTED**. See [`release73-rocky-multinode-progress.md`](release73-rocky-multinode-progress.md), [`release73-alma-multinode-progress.md`](release73-alma-multinode-progress.md), [`release73-centos-multinode-progress.md`](release73-centos-multinode-progress.md), and the acceptance checklist in master issue [#200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
 | Fedora Rawhide x86_64 | PASS | NOT TESTED |
 | Rocky Linux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed; cell incomplete |
 | AlmaLinux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed; cell incomplete |
-| CentOS Stream 10 x86_64 | PASS | NOT TESTED |
+| CentOS Stream 10 x86_64 | PASS | PARTIAL — both-worker install/placement, same-key concurrency and reboot recovery on both workers passed; remaining cell scenarios outstanding |

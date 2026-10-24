@@ -6,16 +6,20 @@ Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
 The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 73 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
 
-**Current R73 matrix: 4/8 PASS, 2/8 PARTIAL, 2/8 NOT TESTED.** All four Single-Node cells passed. Rocky Linux 10 and AlmaLinux 10 Multi-Node have scoped passing evidence but neither is a complete cell; Fedora and CentOS Stream Multi-Node are not tested. The six coordinated RPMs are built, root CI and all five component CI runs are green. R72 is invalidated by #272; no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R73 matrix: 4/8 PASS, 3/8 PARTIAL, 1/8 NOT TESTED.** All four Single-Node cells passed. Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 Multi-Node have scoped evidence but none is a complete cell; Fedora Multi-Node is not tested. The six coordinated RPMs are built, root CI and all five component CI runs are green. R72 is invalidated by #272; no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
 | Fedora Rawhide x86_64 | PASS | NOT TESTED |
 | Rocky Linux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed, cell incomplete |
 | AlmaLinux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed, cell incomplete |
-| CentOS Stream 10 x86_64 | PASS | NOT TESTED |
+| CentOS Stream 10 x86_64 | PASS | PARTIAL — three guests; both-worker install, placement/lifecycle, same-key concurrency and reboot recovery on both workers passed; other scenarios remain |
 
 Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs.
+
+### R73 CentOS Stream 10 Multi-Node scoped records
+
+Three real CentOS Stream guests passed secure installation and registration. Explicit placement, same-key replay and cleanup passed on W1 and W2; a three-client same-key race converged to one operation/task/instance; real W1 and W2 reboots recovered PostgreSQL markers, HTTP 200 and healthy/available state. The initial W1 install failure was caused by its stale COPR R57 package/repository configuration; the clean R73 retry passed, and the failure is not a product finding. The cell remains PARTIAL: W2 partition/rejoin, controlled node removal, hub reboot, security and consistency scenarios remain. Exact timings, run IDs, hashes and reproduction scripts are in [`release73-centos-multinode-progress.md`](evidence/release73-centos-multinode-progress.md); the earlier W2-only snapshot is retained in [`release73-centos-multinode-bootstrap.md`](evidence/release73-centos-multinode-bootstrap.md).
 
 ### R73 Rocky Linux 10.2 Multi-Node scoped records
 
