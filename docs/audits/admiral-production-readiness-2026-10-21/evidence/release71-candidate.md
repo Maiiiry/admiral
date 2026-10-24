@@ -22,12 +22,13 @@ The five component submodules were fetched from `origin/main` on 2026-10-24 and 
 
 ## Fix included before the build
 
-The reusable validation-seed helper previously applied EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` only on Rocky Linux. R69/R70 investigation established that AlmaLinux 10.2 needs the same verified compatibility pin; CentOS Stream 10 resolves its native EPEL set and remains unpinned. Release 71 preparation extends the seed script to AlmaLinux, keeps the checksum/GPG verification and EPEL exclusion, and adds a regression assertion. The pin is an audit-seed dependency-resolution exception, not an Admiral RPM dependency change. Issue #269 remains open.
+The reusable validation-seed helper previously applied EPEL `python3-pyOpenSSL-25.0.0-1.el10_1` only on Rocky Linux. R69/R70 investigation established that AlmaLinux 10.2 needs the same verified compatibility pin; CentOS Stream 10 resolves its native EPEL set and remains unpinned. Release 71 preparation extends the seed script to AlmaLinux, keeps the checksum/GPG verification and EPEL exclusion, and adds a regression assertion. Fedora preflight also showed that staged Python RPMs were installed with `NOKEY` warnings. The helper now requires the pinned Admiral validation key, imports it, verifies each package signature, and enables local-package signature checking in DNF. Issues #269 and #270 remain open pending fresh-seed checks. The pyOpenSSL pin is an audit-seed dependency-resolution exception, not an Admiral RPM dependency change.
 
 ## Build and runtime status
 
 - Package-preparation commit: pending commit/CI.
-- Root helper tests: `python3 -m pytest -q scripts/test_*.py` — 137 passed locally.
+- Root helper tests: `python3 -m pytest -q scripts/test_*.py` — 138 passed locally after the seed-signature regression was added.
+- Fedora local RPM signature probe: all eight exact `.fc46` helper RPMs passed `rpmkeys --checksig` against key fingerprint `7103D33100F674D0B3DFAD17B943D0C834ED6667`; `dnf install --setopt=localpkg_gpgcheck=1` completed with no `NOKEY` warnings. The first run without the guest key is preserved as a failed preflight and tracked by #270.
 - `python3 scripts/validate-release-refs.py` — PASS.
 - Native EL10 and Fedora builds: NOT TESTED.
 - RPM manifests, signatures and SHA-256: pending.

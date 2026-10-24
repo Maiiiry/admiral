@@ -69,3 +69,13 @@ def test_rocky_and_alma_seed_profiles_pin_verified_pyopenssl():
     assert "eb5d2a6be0e47099c63fa042f83afac12021820bfc0d79fa0f9dcd57b71941dc" in seed_setup
     assert 'dnf install -y "$pinned_rpm"' in seed_setup
     assert 'sed -i \'/^\\[epel\\]$/a excludepkgs=python3-pyOpenSSL\'' in seed_setup
+
+
+def test_staged_candidate_python_rpms_require_the_pinned_signing_key():
+    seed_setup = SEED_PREPARATION.read_text()
+    assert 'ADMIRAL_AUDIT_RPM_GPG_KEY_FILE' in seed_setup
+    assert "7103D33100F674D0B3DFAD17B943D0C834ED6667" in seed_setup
+    assert 'rpm --import "$candidate_rpm_key"' in seed_setup
+    assert 'rpmkeys --checksig --verbose "$candidate_rpm"' in seed_setup
+    assert "grep -Eiq 'signature.*: OK'" in seed_setup
+    assert 'dnf install -y --setopt=localpkg_gpgcheck=1' in seed_setup

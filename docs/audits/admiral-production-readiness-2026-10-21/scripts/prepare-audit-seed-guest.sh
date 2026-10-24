@@ -103,7 +103,33 @@ if [[ -d /var/tmp/admiral-candidate-python-rpms ]]; then
   shopt -u nullglob
 fi
 if ((${#candidate_python_rpms[@]})); then
-  dnf install -y "${candidate_python_rpms[@]}"
+  candidate_rpm_key=${ADMIRAL_AUDIT_RPM_GPG_KEY_FILE:-}
+  [[ -n $candidate_rpm_key && -f $candidate_rpm_key && ! -L $candidate_rpm_key ]] || {
+    echo "staged candidate Python RPMs require ADMIRAL_AUDIT_RPM_GPG_KEY_FILE" >&2
+    exit 1
+  }
+  expected_key_fingerprint=7103D33100F674D0B3DFAD17B943D0C834ED6667
+  actual_key_fingerprint=$(gpg --batch --with-colons --show-keys "$candidate_rpm_key" |
+    awk -F: '$1 == "fpr" { print $10; exit }')
+  [[ $actual_key_fingerprint == "$expected_key_fingerprint" ]] || {
+    echo "unexpected Admiral candidate RPM signing key fingerprint: $actual_key_fingerprint" >&2
+    exit 1
+  }
+  rpm --import "$candidate_rpm_key"
+  for candidate_rpm in "${candidate_python_rpms[@]}"; do
+    signature_status=$(rpmkeys --checksig --verbose "$candidate_rpm" 2>&1) || {
+      echo "$signature_status" >&2
+      exit 1
+    }
+    if grep -Eq 'NOKEY|NOT OK|BAD' <<<"$signature_status" ||
+        ! grep -Eiq 'signature.*: OK' <<<"$signature_status"; then
+      echo "candidate Python RPM signature verification failed: $candidate_rpm" >&2
+      echo "$signature_status" >&2
+      exit 1
+    fi
+    printf '%s\n' "$signature_status"
+  done
+  dnf install -y --setopt=localpkg_gpgcheck=1 "${candidate_python_rpms[@]}"
 fi
 dnf -y update --refresh --allowerasing
 
