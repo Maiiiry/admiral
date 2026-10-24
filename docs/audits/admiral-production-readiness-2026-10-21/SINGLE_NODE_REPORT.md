@@ -2,9 +2,9 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Active candidate — Release 73: 0/4 Single-Node cells
+## Active candidate — Release 73: 4/4 Single-Node cells PASS
 
-All four Release 73 Single-Node cells are `NOT TESTED`; RPM build is pending. R72's four Single-Node passes are historical and do not count for R73 because #272 invalidated that candidate. See [`release73-candidate.md`](evidence/release73-candidate.md).
+Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 x86_64 each passed the R73 functional Single-Node checklist on the exact native six-RPM candidate. The secure installation, services/API/portal checks, auth-negative probes, rootless workload lifecycle, SQL persistence, resize/update, local backup/restore, host reboot/recovery and final cleanup completed. Raw logs are retained under the ignored `packaging/build/validation/rc5-r73/runtime/single/<os>/` directories. These are functional release-gate passes, not full production-readiness certification; broader isolation, resource exhaustion, systematic fault windows and performance remain incomplete. Candidate/build/CI record: [`release73-candidate.md`](evidence/release73-candidate.md).
 
 ## Historical Release 72 — four Single-Node cells passed
 

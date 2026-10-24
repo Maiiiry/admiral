@@ -1,0 +1,44 @@
+# RC5 Release 73 — Rocky Linux 10 Multi-Node progress
+
+**Result: scoped scenarios passed; this is not a complete Multi-Node cell.** No source or RPM changes were made during these runtime checks.
+
+## Candidate and lab
+
+- Release 73 root candidate commit: `d84c130380ca5db3f73c32762c5f38bcccd75a10`; it matched `origin/main` at build time. This later documentation update does not change the RPM payload.
+- Shared Admiral source: `3faa349a5ba96b051104f1af5d043cb14bc8259d`.
+- Runtime candidate: exact `0.0.1rc5-73.el10` RPMs on Rocky Linux 10.2 x86_64.
+- Lab: three real KVM guests — hub `adm-r73-rocky-mn-hub`, workers `adm-r73-rocky-mn-w1` and `adm-r73-rocky-mn-w2`.
+- Seed: Rocky 10.2 x86_64, refreshed on 2026-10-24, kernel `6.12.0-211.68.1.el10_2`; SHA-256 `616820a180af2505201ae0db17a22b8c0c0516c692c958ac19920a4f078b859e`. A new `dnf --refresh check-update` on the isolated R73 hub at 2026-10-24T11:45:57Z returned exit 0 with empty output. This is a time-bounded check; refresh again before any later validation series.
+- The lab host had 8 GiB RAM and 4 GiB swap. No additional VM was created for these probes.
+- `python3 scripts/validate-release-refs.py`: passed (`RPM source references match checked-out component commits`).
+- GitHub CI passed for root commit `d84c130` (run [40081018598](https://github.com/admiral-project/admiral/actions/runs/40081018598)) and all five selected component commits: [admirald 40080443575](https://github.com/admiral-project/admirald/actions/runs/40080443575), [admiral-fleet 40069777965](https://github.com/admiral-project/admiral-fleet/actions/runs/40069777965), [admiralctl 40030034925](https://github.com/admiral-project/admiralctl/actions/runs/40030034925), [admiral-flagship 39795263415](https://github.com/admiral-project/admiral-flagship/actions/runs/39795263415), and [admiral-harbor 39795262318](https://github.com/admiral-project/admiral-harbor/actions/runs/39795262318).
+
+## Executed scenarios
+
+| Test ID | Procedure and observed result | Status |
+|---|---|---|
+| `R73-ROCKY-MN-BOOT-01` | Secure install on hub and both workers; exact EL10 package NEVRAs; SELinux Enforcing, firewalld active, forwarding disabled, services active, no failed units, rootless Podman clean, three nodes active/healthy/available and fresh WireGuard handshakes. Installers completed without failed or unreachable Ansible tasks. | PASS, scoped |
+| `R73-ROCKY-MN-PLACEMENT-01` | Explicit W1 and W2 placement, same-key replay to the same operation and instance, 1 GiB declared storage limit, PostgreSQL marker write/read, HTTP 200 over WireGuard, deprovision and empty resource inventories. | PASS, scoped |
+| `R73-ROCKY-MN-CONCURRENT-IDEMPOTENCY-01` | Three barrier-synchronized provision requests with the same idempotency key returned one operation, task and instance on W1. All three containers ran, the app returned HTTP 200, and cleanup left empty inventories. | PASS, scoped; one race sample |
+| `R73-ROCKY-MN-WORKER-REBOOT-01` | Real W1 guest reboot changed its boot ID. The first sample showed the expected temporary `stopped/unavailable` state; the next two showed active/healthy node and workload, all three containers, database readiness, HTTP 200 and the persisted SQL marker. Deprovision left no resources. | PASS, scoped |
+| `R73-ROCKY-MN-PARTITION-01` | Temporarily changed W2's hub-side WireGuard allowed IP with a 180-second automatic restoration timer. Hub-to-W2 API traffic failed; W2 became `offline/degraded` with workload unavailable and `heartbeat_timeout` after about 118 seconds. After route restoration, W2 and workload recovered on the second poll (~12 seconds); HTTP 200 and SQL marker persisted. Cleanup passed. | PASS, scoped |
+| `R73-ROCKY-MN-API-CONFLICT-01` | Authenticated active-worker DELETE returned HTTP 409 with active-instance guidance; CLI removal returned exit 1 without removing the node. Workload state stayed healthy and HTTP 200; cleanup passed. | PASS, scoped |
+| `R73-ROCKY-MN-HUB-REBOOT-01` | Real hub reboot changed its boot ID. `admirald`, PostgreSQL and WireGuard recovered; both worker routes, fresh handshakes and post-reboot heartbeats returned; W1 workload remained available with HTTP 200 and persisted SQL marker. Recovery was confirmed at poll 3 (~86 seconds). | PASS, scoped |
+| `R73-ROCKY-MN-NODE-REMOVE-01` | Active W2 removal was rejected while workload was healthy. After deprovision, idle removal deleted the node from inventory and removed its `/32` from both live WireGuard and persistent hub config. The old worker service remained running locally but had no hub peer or node record. | PASS, scoped |
+| `R73-ROCKY-MN-PRIVATE-UI-REVOKE-01` | After W2 removal, its local Fleet service remained active and its stale route still pointed at the hub, but a request to `https://10.99.0.1:5001/` timed out (`curl` exit 28, HTTP `000`). Hub postcheck found zero W2 peers in live `wg-admiral` state and persistent WireGuard config. This verifies the tested private UI path is unreachable from the removed worker. | PASS, scoped |
+| `R73-ROCKY-MN-REENROLL-01` | Re-ran the supported secure worker installer on the same guest. Recap: `ok=146 changed=13 unreachable=0 failed=0`; temporary bootstrap key was rejected; W2 returned active/healthy/available with a fresh WireGuard handshake and exact R73 packages. | PASS, scoped |
+| `R73-ROCKY-MN-REENROLL-PLACEMENT-01` | After re-enrollment, repeated real W1 and W2 placements, idempotency replay, storage convergence, PostgreSQL marker, HTTP 200 and deprovision/empty inventories. W1's storage report was initially pending (`unknown`) for about 40 seconds and then converged to the declared 1 GiB limit; no contradictory limit was observed. | PASS, scoped |
+
+## Harness attempts excluded
+
+The first two concurrent-idempotency attempts are preserved as `FAIL`, but are **not product failures** and are not counted as passes. Run 1's inventory helper switched to `admiral-apps` from an inaccessible `/home/validator` working directory and swallowed the resulting `runuser` error. Run 2 tried `runuser --chdir=/`, which this Rocky util-linux version does not support. Both produced false empty inventories. The captured W1 journal shows app and database startup; run 3 corrected the harness by changing the root shell working directory to `/` before `runuser`, then passed. Evidence and explanations remain in the two original run directories.
+
+The private UI check had two additional harness errors before the corrected pass: the first assertion expected an empty HTTP code rather than curl's `000` on timeout, and a follow-up peer check first treated a WireGuard peer config file as an interface, then failed to tolerate grep's expected no-match exit code. These attempts are retained and classified as harness-only in `node-removal-w2-run2/PRIVATE-UI-HARNESS-ATTEMPTS.md`; they do not count as product failures or passes.
+
+## Limits and cell decision
+
+These are reproducible end-to-end and real fault-injection results for the named scenarios only. They do not complete the Rocky Multi-Node cell or certify production readiness. Not tested in this R73 Rocky run: central PostgreSQL/queue outage, termination during an in-flight task side effect, latency/loss injection beyond a WireGuard partition, failed Podman/systemd operation injection, concurrent conflicting update/delete, memory or disk exhaustion, cross-workload network/secret/socket isolation, post-removal rejection of the old Fleet token, failed-helper rollback/retry, comprehensive unauthorized Fleet/API requests, or performance distributions. The private UI negative applies only to the tested endpoint/path and does not prove all removed-worker access is blocked. The full R73 gate remains **4/8 cell passes**: all four Single-Node cells passed; Rocky Multi-Node has scoped passing scenarios but remains incomplete; the other three Multi-Node cells are not tested. No issue was closed.
+
+## Evidence
+
+Protected raw evidence is under the ignored `packaging/build/validation/rc5-r73/runtime/` tree. The Rocky Multi-Node aggregate SHA-256 manifest is `packaging/build/validation/rc5-r73/runtime/multi/rocky/rocky-r73-multinode-evidence.sha256`; it covers 340 Rocky Multi-Node artifacts, seed freshness records, and the private UI reproduction script. Manifest SHA-256: `8e293d5cf5eca6e735626a10ef285f1b06503e0492cd0c1314f2664e6a351bdb`; all entries passed `sha256sum -c`. The run-2 node-removal folder contains the private UI negative, peer-revocation postcheck, harness-attempt notes and per-run manifest. Reproduction script: [`r73-rocky-multinode-private-ui-after-removal.sh`](scripts/r73-rocky-multinode-private-ui-after-removal.sh). Raw validation artifacts are not copied into tracked documentation because they may contain environment-specific identifiers; no secret values are recorded here.

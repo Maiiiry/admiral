@@ -4,9 +4,9 @@ Audit ID: `ADM-AUDIT-2026-10-21`. The active release gate covers Fedora Rawhide,
 
 ## Active candidate — Release 73
 
-**Status: #272 fix is pushed and `admirald` CI is green; coordinated RPM builds pending. Matrix: 0/8.** R72 is invalidated after its worker-removal scenario reproduced #272 on AlmaLinux 10 and CentOS Stream 10. R72 had four Single-Node cells PASS, two Multi-Node cells PARTIAL, and two Multi-Node cells NOT TESTED. No R72 evidence carries into R73. See the [R72 candidate record](evidence/release72-candidate.md) and the new [R73 candidate record](evidence/release73-candidate.md).
+**Status: Release 73 six-RPM candidate is built; root and all five component CI runs are green. Matrix: 4/8 PASS, Rocky Multi-Node PARTIAL, three Multi-Node cells NOT TESTED.** All four Single-Node cells passed. Rocky Multi-Node has scoped runtime evidence for install, placement, concurrency, reboots, partition/rejoin, removal/revocation and re-enrollment, but the cell is incomplete. R72 is invalidated after its worker-removal scenario reproduced #272 on AlmaLinux 10 and CentOS Stream 10; no R72 evidence carries into R73. See the [R72 candidate record](evidence/release72-candidate.md) and the [R73 candidate record](evidence/release73-candidate.md).
 
-The release gate checklist is tracked in [master issue #200](https://github.com/admiral-project/admiral/issues/200). Build all six packages at Release 73 using native EL10 and Fedora Rawhide toolchains. Record exact NEVRAs, signatures and SHA-256 values before the first cell. Do not bypass DNF dependency resolution or install RPMs built for another distribution.
+The release gate checklist is tracked in [master issue #200](https://github.com/admiral-project/admiral/issues/200). Exact candidate references and CI are in the release record; Rocky runtime evidence and its manifest are in [`release73-rocky-multinode-progress.md`](evidence/release73-rocky-multinode-progress.md). Continue with the untested Multi-Node cells and remaining Rocky scenarios. Do not bypass DNF dependency resolution or install RPMs built for another distribution.
 
 ## Reports
 

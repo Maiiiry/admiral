@@ -1,6 +1,6 @@
 # RC5 Release 73 candidate record
 
-**Status: source fix for #272 is pushed and its CI is green; coordinated RPM builds are pending. Matrix: 0/8.** R72 is invalidated; no runtime evidence from another candidate carries forward.
+**Status: Release 73 candidate is built from source commits on `origin/main`; CI is green on the root commit and all five selected component commits. Matrix: 4/8 complete, with Rocky Multi-Node partially validated.** R72 is invalidated; no runtime evidence from another candidate carries forward.
 
 ## Scope
 
@@ -25,22 +25,23 @@ The root repository fetched every component `origin/main` before preparing R73. 
 - `admirald` remains unprivileged; only the root helper service receives `CAP_NET_ADMIN`.
 - Every package source ref is pinned to the selected component `origin/main`; the common installer payload is pinned to the root commit recorded after package preparation.
 
-## Checks completed before RPM build
+## Build and CI checks
 
 - `go test ./...`, `go test -race ./...` and `go vet ./...` in `admirald`: PASS. The GitHub CI run also passed its PostgreSQL-backed tests.
 - All root `scripts/test_*.py` suites: PASS, including installer (76 tests), WireGuard peer add (3), peer revoke (6), and WireGuard role regressions (12).
 - `bash -n scripts/install.sh`, Python compilation, Ansible syntax checks for `ansible/site.yml` and `ansible/wireguard-peers.yml`, and staged `systemd-analyze verify`: PASS.
-- The first root CI run [40080856232](https://github.com/admiral-project/admiral/actions/runs/40080856232) exposed stale Release 72 defaults in three audit helpers and test fixtures that assumed CI ran as root. Both issues were corrected before the R73 build; the follow-up CI result is pending. The failed run is retained as validation evidence.
-- `python3 scripts/validate-release-refs.py`: pending the final root source-ref commit.
-- Six Release 73 RPMs, native EL10 and Fedora Rawhide `%check`, repository signature and NEVRA/SHA-256 manifest: pending.
+- The first root CI run [40080856232](https://github.com/admiral-project/admiral/actions/runs/40080856232) exposed stale Release 72 defaults in three audit helpers and test fixtures that assumed CI ran as root. Both issues were corrected before the R73 build. Follow-up root CI [40081018598](https://github.com/admiral-project/admiral/actions/runs/40081018598) passed.
+- `python3 scripts/validate-release-refs.py`: PASS on root commit `d84c130380ca5db3f73c32762c5f38bcccd75a10`.
+- Six coordinated Release 73 RPMs were built for EL10 and Fedora Rawhide. Rocky runtime installs confirmed the exact `.el10` NEVRAs; the four Single-Node runs confirmed their native OS package set. RPM payloads were not changed during runtime validation.
+- CI passed for all five selected component SHAs listed above. See run links in the progress reports; no CI status here is inferred from source inspection.
 
 ## Runtime matrix
 
-Every R73 cell starts `NOT TESTED`; matrix **0/8**. All eight cells must use fresh overlays from updated OS seeds and the exact Release 73 package set. Complete the acceptance checklist in master issue [#200](https://github.com/admiral-project/admiral/issues/200), including active-worker refusal, idle-worker revocation, post-removal hub reboot, and negative access checks.
+All R73 cells use the exact Release 73 candidate. Four Single-Node cells passed their functional checklist. Rocky Linux 10 Multi-Node has passing scoped install, placement, concurrency, reboot, partition/rejoin, active-removal refusal, idle removal/WireGuard revocation, private UI reachability negative, re-enrollment, and post-re-enrollment placement scenarios, but the full cell remains incomplete. Current gate: **4/8 PASS, 1/8 PARTIAL, 3/8 NOT TESTED**. See [`release73-rocky-multinode-progress.md`](release73-rocky-multinode-progress.md) and the acceptance checklist in master issue [#200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
-| Fedora Rawhide x86_64 | NOT TESTED | NOT TESTED |
-| Rocky Linux 10 x86_64 | NOT TESTED | NOT TESTED |
-| AlmaLinux 10 x86_64 | NOT TESTED | NOT TESTED |
-| CentOS Stream 10 x86_64 | NOT TESTED | NOT TESTED |
+| Fedora Rawhide x86_64 | PASS | NOT TESTED |
+| Rocky Linux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed; cell incomplete |
+| AlmaLinux 10 x86_64 | PASS | NOT TESTED |
+| CentOS Stream 10 x86_64 | PASS | NOT TESTED |

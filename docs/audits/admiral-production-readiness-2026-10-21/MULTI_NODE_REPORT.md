@@ -2,9 +2,13 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Active candidate — Release 73: 0/4 Multi-Node cells
+## Active candidate — Release 73: 1/4 Multi-Node cells partially validated
 
-All four Release 73 Multi-Node cells are `NOT TESTED`; each requires three fresh guests and the exact native Release 73 packages. R72's partial AlmaLinux and CentOS Stream runs reproduced #272 and invalidate that candidate. See [`release73-candidate.md`](evidence/release73-candidate.md).
+Rocky Linux 10 has scoped R73 results on a fresh three-guest cluster; its full cell remains incomplete. Fedora Rawhide, AlmaLinux 10 and CentOS Stream 10 Multi-Node are `NOT TESTED`. R72's AlmaLinux/CentOS Stream results are invalidated and do not transfer. Candidate/build/CI record: [`release73-candidate.md`](evidence/release73-candidate.md).
+
+## R73 Rocky Linux 10.2 x86_64 scoped Multi-Node execution
+
+A fresh three-guest Rocky Linux 10.2 cluster installed exact `0.0.1rc5-73.el10` packages using the secure profiles. Hub and workers passed service, SELinux, firewall, WireGuard and clean rootless-runtime postchecks. Workloads were explicitly placed on W1 and W2; same-key replay, PostgreSQL marker persistence, 1 GiB tier reporting, HTTP 200 through WireGuard, deprovision and empty inventories passed. A three-client same-key concurrency run produced one operation/task/instance and passed runtime/HTTP/cleanup checks after two earlier harness-only false negatives were diagnosed and retained. W1 reboot preserved SQL state and recovered service; W2 partition transitioned to offline/degraded with unavailable workload then rejoined after route restoration; hub reboot restored both workers and an active workload. Active W2 removal was rejected with HTTP 409, idle removal revoked the live and persistent WireGuard peer, and a request from the removed worker to the tested private UI endpoint timed out (HTTP `000`). Secure re-enrollment restored W2, and new workloads then passed on both workers. This is **scoped scenario evidence, not a full cell pass**. Database/queue outage, in-flight task failures, old Fleet-token rejection after removal, failed-helper rollback/retry, conflicting update/delete, broad security/isolation, resource exhaustion and performance remain untested. Full run IDs, limitations and evidence manifest: [`release73-rocky-multinode-progress.md`](evidence/release73-rocky-multinode-progress.md).
 
 ## Historical Release 72 — incomplete and invalidated
 

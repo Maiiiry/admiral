@@ -6,16 +6,20 @@ Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
 The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 73 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
 
-**Current R73 matrix: 0/8; coordinated RPM builds pending.** R72 is invalidated by #272; its results are historical only and no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R73 matrix: 4/8 PASS, 1/8 PARTIAL, 3/8 NOT TESTED.** All four Single-Node cells passed. Rocky Linux 10 Multi-Node has scoped passing evidence but is not a complete cell; Fedora, AlmaLinux and CentOS Stream Multi-Node are not tested. The six coordinated RPMs are built, root CI and all five component CI runs are green. R72 is invalidated by #272; no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
-| Fedora Rawhide x86_64 | NOT TESTED | NOT TESTED |
-| Rocky Linux 10 x86_64 | NOT TESTED | NOT TESTED |
-| AlmaLinux 10 x86_64 | NOT TESTED | NOT TESTED |
-| CentOS Stream 10 x86_64 | NOT TESTED | NOT TESTED |
+| Fedora Rawhide x86_64 | PASS | NOT TESTED |
+| Rocky Linux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed, cell incomplete |
+| AlmaLinux 10 x86_64 | PASS | NOT TESTED |
+| CentOS Stream 10 x86_64 | PASS | NOT TESTED |
 
 Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs.
+
+### R73 Rocky Linux 10.2 Multi-Node scoped records
+
+These scenario results do not add a full cell pass. Secure three-guest installation/topology, placement on both workers, barrier-synchronized same-key provision replay, W1 reboot with SQL persistence, W2 WireGuard partition/rejoin, hub reboot with an active workload, active-worker removal refusal, idle-worker removal with live/persistent WireGuard revocation, failure to reach the tested private UI endpoint after removal, same-guest secure re-enrollment, and post-re-enrollment placement on both workers passed. The first two concurrency attempts are retained as harness errors and excluded; the corrected third attempt passed. Full details and the raw evidence manifest are in [`release73-rocky-multinode-progress.md`](evidence/release73-rocky-multinode-progress.md). Database outage, in-flight task failure/replay, post-removal old-token rejection, failed-helper rollback/retry, conflicting update/delete, comprehensive isolation/security, resource exhaustion, and performance remain NOT TESTED for this cell.
 
 ## Historical Release 72 — invalidated by #272
 
