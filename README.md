@@ -4,7 +4,7 @@ Admiral is a simple, billing-aware Platform as a Service (PaaS) designed for sof
 
 Admiral focuses on simplicity, predictable operations, low cost, and a secure-by-default deployment model.
 
-**Status:** Functional beta — under validation and not yet recommended for production.
+**Status:** Functional beta — the Release 70 Rocky Linux 10 x86_64 Single-Node and Multi-Node release gate passed (2/2). Full production readiness remains unvalidated; real PayPal payment verification is still pending for 1.0.
 
 Current integration status in this repository:
 

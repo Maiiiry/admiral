@@ -2,7 +2,7 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 Audit began: 2026-10-21 UTC<br>
-> **Active scope — 2026-10-24:** this document does not certify production readiness. The active task is the functional Release 70 gate on Rocky Linux 10 x86_64, Single-Node and Multi-Node. Release 70 is being prepared; current functional matrix is **0/2**. Earlier release evidence does not transfer.
+> **Active scope — 2026-10-24:** the functional Release 70 gate on Rocky Linux 10 x86_64 passed in Single-Node and Multi-Node (**2/2**). This document evaluates the broader production-readiness question separately; the functional gate does not establish comprehensive security, isolation, resilience, scalability or performance.
 
 Production readiness is **NOT VALIDATED**. The functional release gate is narrower than the full production audit and cannot establish production security, fault-tolerance, scalability or performance.
 
@@ -10,8 +10,8 @@ Production readiness is **NOT VALIDATED**. The functional release gate is narrow
 
 | Topology | Decision | Basis |
 | --- | --- | --- |
-| Single-Node | **NOT VALIDATED** | Release 70 runtime checklist has not run yet. |
-| Multi-Node | **NOT VALIDATED** | Release 70 runtime checklist has not run yet. |
+| Single-Node | **NOT VALIDATED** | The Release 70 functional cell passed. Broader isolation/security negatives, resource-exhaustion behavior, stress and performance evidence are incomplete. |
+| Multi-Node | **NOT VALIDATED** | The Release 70 three-guest functional cell passed. Broader distributed concurrency, service/database outage, isolation, resource-exhaustion and performance evidence is incomplete. |
 
 Neither topology is READY or CONDITIONALLY READY on current evidence. Exact-commit CI and scoped scenarios do not substitute for a complete matrix cell. No production system was touched.
 
@@ -32,8 +32,8 @@ The Release 46 reference check, exact NEVRAs, hashes and targeted observations a
 
 ## What would change this decision
 
-Complete every common candidate/evidence gate and every topology-specific check in the [per-cell PASS checklist on issue #200](https://github.com/admiral-project/admiral/issues/200#issuecomment-6378311098) for all eight cells on one unchanged candidate. Reproduce and disposition actionable linked findings. Use fresh isolated guests, native distro RPMs and authenticated secure-mode tests. Measure performance without inventing thresholds. Any required source/RPM fix creates a new candidate and invalidates affected runtime evidence.
+The Release 70 functional checklist in [issue #200](https://github.com/admiral-project/admiral/issues/200) is complete for the scoped Rocky Linux 10 x86_64 gate. A separate production-readiness assessment would still need reproducible security/isolation negatives, broader fault injection, resource-pressure tests, concurrency and performance measurements, with scope and operating assumptions documented. Any new source/RPM fix requires a new candidate and invalidates its runtime evidence.
 
 ## Current answer to the audit question
 
-The production-readiness question cannot yet be answered: **Single-Node and Multi-Node remain NOT VALIDATED**, with matrix completion **0/8**. R68 has been invalidated by #268; its scoped tests are historical. R69 packaging and exact-commit CI are verified, and Single-Node scenarios are underway, but public TLS/isolation and other required checks remain; R69 Multi-Node is untested. No production-readiness claim is made.
+The broader production-readiness question remains **NOT VALIDATED**. The functional Rocky Linux 10 Release 70 gate passed **2/2**, but this run does not establish all security, isolation, fault-tolerance, resource-exhaustion or performance properties required for a production decision. No production-readiness claim is made.

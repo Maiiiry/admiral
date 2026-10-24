@@ -1,13 +1,27 @@
 # Single-Node report
 
-> **Candidate decision update — 2026-10-23:** R67 is invalidated for active release-gate credit by a separate Multi-Node worker-removal defect on AlmaLinux (#267). The Single-Node observations below remain historical evidence for Release 67 and must be rerun on the rebuilt candidate; they do not count toward the active matrix. Completion remains 0/8.
-
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Active functional gate — Release 70:** Rocky Linux 10 x86_64 only. The fresh Release 70 Single-Node checklist has not run yet; current matrix credit is 0/2. R69 results below are historical and do not transfer.
 
-> **Historical R67 status:** Fresh Fedora Rawhide, Rocky Linux, AlmaLinux and CentOS Stream Single-Node guests installed their exact native Release 67 packages. In addition to lifecycle/reboot checks, named local backup/restore, auth-negative, partial same-host isolation, cgroup, concurrent mutation, service/process and user-systemd recovery probes were run. Outcomes and per-capture hashes are in [`release67-single-node-extended-regressions.md`](evidence/release67-single-node-extended-regressions.md). No full cell is complete; matrix remains 0/8.
+## Release 70 — Rocky Linux 10.2 x86_64 functional cell: PASS
 
-Historical R67 execution: **named scenarios passed or are explicitly partial on 4/4 OSes; no complete Single-Node cell. Single-Node remains NOT VALIDATED; matrix 0/8.** R66 probes are historical and invalidated for R67 by #266; none receives R67 cell credit. Exact install/lifecycle/reboot evidence is in [`release67-single-node-targeted.md`](evidence/release67-single-node-targeted.md); additional R67 regression scenarios and log hashes are in [`release67-single-node-extended-regressions.md`](evidence/release67-single-node-extended-regressions.md). External backup, full configuration/secrets lifecycle, direct cross-workload DB/network/storage denial, resource exhaustion, disk-write interruption, other task/failure windows, clean-image dependency closure, public DNS/TLS and controlled performance remain outstanding. See [`release67-candidate.md`](evidence/release67-candidate.md) and historical [`release66-single-node-targeted.md`](evidence/release66-single-node-targeted.md), [`release66-el10-single-node-targeted.md`](evidence/release66-el10-single-node-targeted.md).
+The complete Single-Node functional checklist passed on the exact RC5 Release 70 candidate (`0.0.1rc5-70.el10`, root source commit `fb081f3378813a0b5bd800a1573d0b4773052a44`). This is functional release evidence only; it does not certify full production security, performance, or resilience. Candidate refs, CI, RPM NEVRAs/signatures and RPM/SRPM hashes are in [`release70-candidate.md`](evidence/release70-candidate.md) and [`release70-rpm-sha256.txt`](evidence/release70-rpm-sha256.txt).
+
+- Guest: fresh `adm-r70-rocky-single` overlay, Rocky Linux 10.2 x86_64; updated seed SHA-256 `64d918c2b1b8d69d210372d0e80252798178e3ae9b6b7f4af4dbec2b39b5b3d0`; SELinux Enforcing; post-reboot boot ID `cd6434f6-7323-409a-a114-08a6d4a73bfb`.
+- DNF installed all six exact Release 70 RPMs from the local GPG-signed repository with normal dependency resolution and `gpgcheck=1`. EPEL pyOpenSSL pin was `25.0.0-1.el10_1`. The supported secure Single-Node installer completed; API/Flagship health returned HTTP 200 and Harbor/Flagship registrations were healthy.
+- `R70-ROCKY-SN-LIFECYCLE-01`: real whoami/PostgreSQL workload `inst_918bdca4ec54f4a3`; same-key replay returned the original operation/instance; SQL marker persisted; local HTTP 200; deprovision left no matching containers, pods, volumes, units or files.
+- `R70-ROCKY-SN-RESIZE-01`: `small → medium → small` on `inst_f9bd25a86c1e6aa7`; SQL marker and HTTP 200 remained after each resize.
+- `R70-ROCKY-SN-CONTROL-LIFECYCLE-01`: `inst_f754100433d3dc18` passed pause/resume/stop/start/restart plus admirald stop/start/restart; expected unavailability while stopped and service/API recovery were observed.
+- `R70-ROCKY-SN-BACKUP-RESTORE-01`: local backup `bk_31d327dbec91cefa`; restore while active was rejected with HTTP 409; after a SQL mutation, pause/restore returned the original marker and HTTP 200; backup and workload cleanup completed.
+- `R70-ROCKY-SN-HOST-REBOOT-01`: workload `inst_c348b28b596ffa06`; real VM reboot changed the boot ID, services and health converged, SQL marker persisted, HTTP 200 returned, and cleanup completed.
+- Final postcheck at `2026-10-24T04:10:57Z`: exact six Release 70 NEVRAs, service/API/registration healthy, rootless Podman operating, and no residual test containers, pods or volumes.
+
+The first post-install harness check failed because it invoked the rootless Podman probe from `/home/validator` after secure setup. The probe was corrected to change to `/`; the retained retry passed. This was a harness working-directory error, not a product failure. Both the failed attempt and successful retry are preserved locally.
+
+Raw logs remain ignored and mode `0600` under `packaging/build/validation/rc5-r70/`. Sanitized SHA-256 values are in [`release70-runtime-log-sha256.txt`](evidence/release70-runtime-log-sha256.txt). The executable procedures are in [`scripts/r70/`](scripts/r70/).
+
+## Release 69 and earlier — historical only
+
+No earlier candidate evidence transfers to Release 70. The prior candidate reports and diagnostics remain below for history and must not be counted in the active matrix.
 
 ## Release 67 scoped Single-Node evidence — not full cell passes
 

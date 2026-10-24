@@ -6,13 +6,15 @@ Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
 The active release gate has two cells. The same exact Release 70 RPM set must pass both. Any source or RPM change invalidates both cells and requires a coordinated six-package rebuild.
 
-**Current R70 matrix: 0/2.** Release 69 evidence is historical and does not transfer to the new candidate. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R70 matrix: 2/2 PASS.** Both cells used the same unchanged Release 70 candidate; no prior-release evidence was carried forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
-| Rocky Linux 10 x86_64 | Release 70 not yet run | Release 70 not yet run |
+| Rocky Linux 10 x86_64 | **PASS** — fresh guest, secure install, lifecycle/resize/control/backup-restore/reboot and cleanup | **PASS** — three fresh guests, secure enrollment, both-worker placement, reboot, partition/rejoin, active/idle node removal and cleanup |
 
-The sections below are historical findings and runs from earlier candidates. They do not count toward either Release 70 cell.
+Candidate pins, exact RPM NEVRAs/signatures and hashes: [`release70-candidate.md`](evidence/release70-candidate.md). Runtime reports: [`SINGLE_NODE_REPORT.md`](SINGLE_NODE_REPORT.md) and [`MULTI_NODE_REPORT.md`](MULTI_NODE_REPORT.md); detailed Multi-Node IDs/timelines: [`release70-multinode-runtime.md`](evidence/release70-multinode-runtime.md). Sanitized raw-log checksums: [`release70-runtime-log-sha256.txt`](evidence/release70-runtime-log-sha256.txt). Raw logs are retained locally under ignored `packaging/build/validation/rc5-r70/`.
+
+The sections below are historical findings and runs from earlier candidates. They do not count toward either Release 70 cell. The 2/2 result is a functional release gate only; it does not certify the broader security, isolation, performance or production-readiness audit.
 
 ### R68 scenario-level evidence — no cell credit
 

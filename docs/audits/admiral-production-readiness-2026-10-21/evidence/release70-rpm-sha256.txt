@@ -1,0 +1,28 @@
+# Release 70 package identities and SHA-256
+
+Built natively on Rocky Linux 10.2 x86_64. The binary repository is the local HTTP repository `http://192.168.122.1/rc5-r70/el10/x86_64/`; source RPMs are retained in the ignored local rpmbuild tree. All 14 binary RPMs in the repository passed `rpmkeys --checksig` (digests and signatures OK).
+
+| Artifact | SHA-256 | File |
+|---|---|---|
+| `admiral-common-0.0.1rc5-70.el10.noarch` | `ab0c464d762226c1c19eb3e4cc8de88aca78ed0f1e24f4ccf93cf93d16829803` | `admiral-common-0.0.1rc5-70.el10.noarch.rpm` |
+| `admiral-flagship-0.0.1rc5-70.el10.noarch` | `c1e45d6f7ef0f4ba3528cd033ece47bcbb9069b3bf748b3100cdb76a21c227d4` | `admiral-flagship-0.0.1rc5-70.el10.noarch.rpm` |
+| `admiral-fleet-0.0.1rc5-70.el10.x86_64` | `2e9ebcccd889289af6f01d004aea4f207053e7887a5c1451cb845397dfb67d22` | `admiral-fleet-0.0.1rc5-70.el10.x86_64.rpm` |
+| `admiral-harbor-0.0.1rc5-70.el10.noarch` | `53e75905c176c562d56a31b4c75000e400c9a98bbaba8aebd12989380ba927a6` | `admiral-harbor-0.0.1rc5-70.el10.noarch.rpm` |
+| `admiralctl-0.0.1rc5-70.el10.x86_64` | `56c64a5be8c778a657924156f64bfb2313bec0ec62bd4d3b5a04caf9a8e821a3` | `admiralctl-0.0.1rc5-70.el10.x86_64.rpm` |
+| `admirald-0.0.1rc5-70.el10.x86_64` | `c2d0ec5617cf55a7e576e263b92310ccb13a97e9d16cc026b7b87926852acd11` | `admirald-0.0.1rc5-70.el10.x86_64.rpm` |
+| `python3-alembic-1.20.1-4.el10.noarch` | `be51933822a1b3cfbf40c9a89f86257c004bfa105d31d006ac8a2f797718a692` | `python3-alembic-1.20.1-4.el10.noarch.rpm` |
+| `python3-flask-3.1.3-3.el10.noarch` | `e775409f069aecb3e18b6943bf534cd8bf8f8fb61e301f8d6734ce75d54af25d` | `python3-flask-3.1.3-3.el10.noarch.rpm` |
+| `python3-flask-alembic-3.3.0-4.el10.noarch` | `88a36f5cea1ca12f1ac3ae41f325793880ede71e6e1052c7d3d02aa866e5bf4f` | `python3-flask-alembic-3.3.0-4.el10.noarch.rpm` |
+| `python3-flask-login-0.6.3-9.el10.noarch` | `cbdc542d24da63cb963c57c2e40d64a5e1a2be47f2ed93d678a17336a8ef22a5` | `python3-flask-login-0.6.3-9.el10.noarch.rpm` |
+| `python3-flask-sqlalchemy-3.1.1-10.el10.noarch` | `1c071ec10a6ec4754d0f641cce4d7a972ca7362d3a67e04a9b71599ea634e933` | `python3-flask-sqlalchemy-3.1.1-10.el10.noarch.rpm` |
+| `python3-mistune-3.4.0-1.el10.noarch` | `34c5dc555a564c9ce5037209f1654ea8de78b1d36a29851b494a0b4a211c26f3` | `python3-mistune-3.4.0-1.el10.noarch.rpm` |
+| `python3-sqlalchemy-2.0.55-4.el10.x86_64` | `2b7484a094823a1e1c86ce513b0285f01dc50aa1cca2bf0b3a3385d8d40f8637` | `python3-sqlalchemy-2.0.55-4.el10.x86_64.rpm` |
+| `python3-typing-extensions-4.16.0-1.el10.noarch` | `382e684c79f6d8c5449b01ec73a7a5d34a644a968e619b92b6ae806d7e3f0f05` | `python3-typing-extensions-4.16.0-1.el10.noarch.rpm` |
+| `admiral-common-0.0.1rc5-70.el10.noarch` | `45ef411299b28ee28b7b3bddf9f5674a652560925509d6d62beb502e44b99fa0` | `admiral-common-0.0.1rc5-70.el10.src.rpm` |
+| `admiral-flagship-0.0.1rc5-70.el10.noarch` | `374ea65d1b54562460abc0963f21f3bc85a30335560dd33ae32be8f00418a650` | `admiral-flagship-0.0.1rc5-70.el10.src.rpm` |
+| `admiral-fleet-0.0.1rc5-70.el10.x86_64` | `537ebb30841a65695356a9f4547808ebe7c3efccddc4852e0ebd9930a1fa4e14` | `admiral-fleet-0.0.1rc5-70.el10.src.rpm` |
+| `admiral-harbor-0.0.1rc5-70.el10.noarch` | `ec2ef0c23d5eb479c39c9f432239e0c0fdd34d4a04b3a5802627a28a45cc5ec1` | `admiral-harbor-0.0.1rc5-70.el10.src.rpm` |
+| `admiralctl-0.0.1rc5-70.el10.x86_64` | `57dbcecd95241b2857154c2ae9c8b5e2b54067130a581ad855dcd28d1c049956` | `admiralctl-0.0.1rc5-70.el10.src.rpm` |
+| `admirald-0.0.1rc5-70.el10.x86_64` | `60f701be2321b534425bfef98a9287affb35d4d8fe99ce9854ffadd6506816d4` | `admirald-0.0.1rc5-70.el10.src.rpm` |
+
+The six Admiral source RPMs are included; eight helper RPMs are binary-only repository dependencies.

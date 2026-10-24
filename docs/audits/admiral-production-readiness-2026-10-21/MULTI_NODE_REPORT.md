@@ -1,7 +1,20 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Active functional gate — Release 70:** Rocky Linux 10 x86_64 only, using three real guests. The Release 70 Multi-Node checklist has not run yet; current matrix credit is 0/2. Earlier candidate results below are historical and do not transfer.
+> **Active functional gate — Release 70:** Rocky Linux 10 x86_64 only. The exact unchanged candidate passed Multi-Node on three real guests. Together with the Single-Node result, the functional matrix is **2/2 PASS**. This is not a full production-readiness certification.
+
+## Release 70 — Rocky Linux 10.2 x86_64 Multi-Node cell: PASS
+
+The hub and two workers were freshly cloned from the updated seed and installed with exact Release 70 native EL10 RPMs using secure installation. Baseline checks confirmed active/healthy/available registrations, fresh WireGuard handshakes, SELinux Enforcing, firewalld active, forwarding disabled, required services active, and empty worker inventories. The hub and both workers completed the installer with zero failed or unreachable tasks.
+
+- Explicit W1 and W2 workload placement passed. Sequential same-key replays returned the original operation and instance; each workload reached healthy/available, wrote/read its own PostgreSQL marker, returned HTTP 200 over WireGuard, and deprovisioned with no matching containers, pods, volumes, units or files.
+- Issue #268 regression passed on both workers: the API snapshot and root-owned mode-0600 tier metadata preserved `storage=1G`; two real Fleet reports per workload showed `storage_limit_bytes=1073741824`, `storage_state=ok`, and no “no storage limit configured” message.
+- W1 rebooted with an active workload. Its boot ID changed; after a conservative unavailable observation while the database started, two consecutive samples showed active/healthy node and running/healthy/available workload, SQL marker persistence and HTTP 200. Cleanup was empty.
+- W2 WireGuard partition caused workload unavailability and, after the heartbeat timeout (~119 seconds), `offline/degraded` node state. Restoring the peer returned W2 to active/healthy/available on the first rejoin poll; SQL marker and HTTP 200 persisted, then cleanup was empty.
+- Issue #267 regression passed: one authenticated DELETE for active W1 returned HTTP 409 with active-instance count and `--force` guidance; the CLI surfaced the same non-retried conflict. Separately, removing active W2 preserved workload health/HTTP 200. After deprovision, idle-node removal succeeded and W2 disappeared from the hub inventory.
+- The first node-removal harness attempt had a string-matching assertion mismatch; its fail-safe cleanup ran. The assertion was corrected against the actual CLI text, the complete scenario was rerun, and it passed. Both attempts are retained in the local evidence hashes.
+
+Exact procedure, instance IDs, timestamps, recovery timelines and limitations: [`release70-multinode-runtime.md`](evidence/release70-multinode-runtime.md). Candidate identity, six RPMs and package hashes: [`release70-candidate.md`](evidence/release70-candidate.md). Raw logs remain local and mode `0600`.
 
 
 ## R68 AlmaLinux 10.2 active-worker removal and re-enrollment — scoped
