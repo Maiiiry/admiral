@@ -6,13 +6,13 @@ Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
 The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 73 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
 
-**Current R73 matrix: 4/8 PASS, 1/8 PARTIAL, 3/8 NOT TESTED.** All four Single-Node cells passed. Rocky Linux 10 Multi-Node has scoped passing evidence but is not a complete cell; Fedora, AlmaLinux and CentOS Stream Multi-Node are not tested. The six coordinated RPMs are built, root CI and all five component CI runs are green. R72 is invalidated by #272; no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R73 matrix: 4/8 PASS, 2/8 PARTIAL, 2/8 NOT TESTED.** All four Single-Node cells passed. Rocky Linux 10 and AlmaLinux 10 Multi-Node have scoped passing evidence but neither is a complete cell; Fedora and CentOS Stream Multi-Node are not tested. The six coordinated RPMs are built, root CI and all five component CI runs are green. R72 is invalidated by #272; no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
 | Fedora Rawhide x86_64 | PASS | NOT TESTED |
 | Rocky Linux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed, cell incomplete |
-| AlmaLinux 10 x86_64 | PASS | NOT TESTED |
+| AlmaLinux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed, cell incomplete |
 | CentOS Stream 10 x86_64 | PASS | NOT TESTED |
 
 Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs.
@@ -20,6 +20,10 @@ Each Multi-Node cell requires three real guests of that OS. Fedora guests must r
 ### R73 Rocky Linux 10.2 Multi-Node scoped records
 
 These scenario results do not add a full cell pass. Secure three-guest installation/topology, placement on both workers, barrier-synchronized same-key provision replay, W1 reboot with SQL persistence, W2 WireGuard partition/rejoin, hub reboot with an active workload, active-worker removal refusal, idle-worker removal with live/persistent WireGuard revocation, failure to reach the tested private UI endpoint after removal, same-guest secure re-enrollment, and post-re-enrollment placement on both workers passed. The first two concurrency attempts are retained as harness errors and excluded; the corrected third attempt passed. Full details and the raw evidence manifest are in [`release73-rocky-multinode-progress.md`](evidence/release73-rocky-multinode-progress.md). Database outage, in-flight task failure/replay, post-removal old-token rejection, failed-helper rollback/retry, conflicting update/delete, comprehensive isolation/security, resource exhaustion, and performance remain NOT TESTED for this cell.
+
+### R73 AlmaLinux 10.2 Multi-Node scoped records
+
+These results do not add a full cell pass. Three real AlmaLinux guests passed secure baseline checks, W1/W2 placement with SQL and HTTP verification, one three-client same-key idempotency race, active-node removal refusal, idle-node removal and peer revocation, old Fleet-token rejection (HTTP 401), worker/hub reboot recovery, WireGuard partition/rejoin, same-guest worker re-enrollment, and final cleanup. A stale-node-ID placement attempt and an early health-timing assertion are retained as harness errors; corrected runs passed. Exact run IDs, manifests and reproduction scripts: [release73-alma-multinode-progress.md](evidence/release73-alma-multinode-progress.md). Database outage, failed-helper rollback/retry, post-removal hub-reboot/private-UI checks, conflicting update/delete, comprehensive isolation, resource exhaustion and performance remain untested. Issue #272 remains open with fix-proposed.
 
 ## Historical Release 72 — invalidated by #272
 
@@ -230,7 +234,7 @@ AlmaLinux 10.2 evidence applies to the AlmaLinux 10 target cells and remains sco
 | DISC-01 | Reconstruct components, network and state ownership | Trace source/config; observed graph agrees with deployment packages | Source refs and package/service inventory | PASS (static review; not runtime validation) |
 | ENV-01 | Host preflight and isolation | x86_64 KVM, SELinux Enforcing, 8 GiB RAM + 4 GiB swap, isolated guests; no production target | `evidence/lab-preflight.txt`, libvirt domain inventory | PASS (host capability; guest cells pending) |
 | ENV-02 | Verify official image digests | Downloaded image matches official checksum before overlays | Official checksum and computed digest | PASS for AlmaLinux 10.2 and CentOS Stream 10; Rocky/Fedora prior evidence |
-| ENV-03 | Seed update and reboot | `dnf update` succeeds, updated kernel boots, clean shutdown; cloud-init state reset | `evidence/seed-updates/*.log`, `updated-seed-sha256.txt`; elapsed time was not captured | PARTIAL (AlmaLinux and CentOS Stream seed preparation captured; Rocky/Fedora seed update is not separately captured in this audit evidence set) |
+| ENV-03 | Seed update and reboot | `dnf update` succeeds, updated kernel boots, clean shutdown; cloud-init state reset | Seed hashes and time-bounded fresh-repository checks | PARTIAL — AlmaLinux, CentOS Stream and Rocky seed updates are captured; Rocky R73 seed booted the updated kernel and a fresh clone returned `dnf --refresh check-update` exit 0 at 13:18Z. Fedora seed update/reboot evidence remains to be recorded. See [`release73-rocky-seed-freshness.md`](evidence/release73-rocky-seed-freshness.md). |
 | PKG-01 | Candidate RPM reference and identity | Root spec refs match checked-out submodules; six exact candidate NEVRAs/hashes | `validate-release-refs.py`, SHA-256 manifest | PASS |
 | PKG-02 | Clean install and manual package-owned setup | Install from clean guest; package owns fixed directory modes; admin can configure without Ansible creating fixed dirs | RPM ownership/mode capture and install logs | Scoped PASS on AlmaLinux and CentOS Stream; prior RC subset on Rocky/Fedora; full target cells NOT TESTED |
 | SN-01 | Initialize, configure, start/stop/restart services | Secure installation profile; services recover and health checks reflect observed state | systemd, API and journal snapshots | R66 secure install passed on all four Single-Node OSes; R66 reboot recovery with SQL marker/HTTP passed on all four, with temporary unavailable/stopped states on EL10. R66 hub recovery passed on AlmaLinux and CentOS Stream Multi-Node. Other fault coverage incomplete. |

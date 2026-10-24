@@ -1,6 +1,6 @@
 # RC5 Release 73 candidate record
 
-**Status: Release 73 candidate is built from source commits on `origin/main`; CI is green on the root commit and all five selected component commits. Matrix: 4/8 complete, with Rocky Multi-Node partially validated.** R72 is invalidated; no runtime evidence from another candidate carries forward.
+**Status: Release 73 candidate is built from source commits on `origin/main`; CI is green on the root commit and all five selected component commits. Matrix: 4/8 complete, Rocky and AlmaLinux Multi-Node partially validated, Fedora and CentOS Stream Multi-Node not tested.** R72 is invalidated; no runtime evidence from another candidate carries forward.
 
 ## Scope
 
@@ -33,15 +33,16 @@ The root repository fetched every component `origin/main` before preparing R73. 
 - The first root CI run [40080856232](https://github.com/admiral-project/admiral/actions/runs/40080856232) exposed stale Release 72 defaults in three audit helpers and test fixtures that assumed CI ran as root. Both issues were corrected before the R73 build. Follow-up root CI [40081018598](https://github.com/admiral-project/admiral/actions/runs/40081018598) passed.
 - `python3 scripts/validate-release-refs.py`: PASS on root commit `d84c130380ca5db3f73c32762c5f38bcccd75a10`.
 - Six coordinated Release 73 RPMs were built for EL10 and Fedora Rawhide. Rocky runtime installs confirmed the exact `.el10` NEVRAs; the four Single-Node runs confirmed their native OS package set. RPM payloads were not changed during runtime validation.
+- Rocky seed freshness was rechecked from a fresh clone at 2026-10-24T13:18:39Z: `dnf --refresh check-update` returned 0 with no updates. The seed has the R73 Python dependency set and the Admiral COPR, EPEL, CRB and local signed candidate repositories enabled. Seed hash, package inventory and raw evidence hashes: [`release73-rocky-seed-freshness.md`](release73-rocky-seed-freshness.md).
 - CI passed for all five selected component SHAs listed above. See run links in the progress reports; no CI status here is inferred from source inspection.
 
 ## Runtime matrix
 
-All R73 cells use the exact Release 73 candidate. Four Single-Node cells passed their functional checklist. Rocky Linux 10 Multi-Node has passing scoped install, placement, concurrency, reboot, partition/rejoin, active-removal refusal, idle removal/WireGuard revocation, private UI reachability negative, re-enrollment, and post-re-enrollment placement scenarios, but the full cell remains incomplete. Current gate: **4/8 PASS, 1/8 PARTIAL, 3/8 NOT TESTED**. See [`release73-rocky-multinode-progress.md`](release73-rocky-multinode-progress.md) and the acceptance checklist in master issue [#200](https://github.com/admiral-project/admiral/issues/200).
+All R73 cells use the exact Release 73 candidate. Four Single-Node cells passed their functional checklist. Rocky and AlmaLinux Multi-Node have scoped real-cluster evidence, but neither full cell is complete. Current gate: **4/8 PASS, 2/8 PARTIAL, 2/8 NOT TESTED**. See [`release73-rocky-multinode-progress.md`](release73-rocky-multinode-progress.md), [`release73-alma-multinode-progress.md`](release73-alma-multinode-progress.md), and the acceptance checklist in master issue [#200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
 | Fedora Rawhide x86_64 | PASS | NOT TESTED |
 | Rocky Linux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed; cell incomplete |
-| AlmaLinux 10 x86_64 | PASS | NOT TESTED |
+| AlmaLinux 10 x86_64 | PASS | PARTIAL — scoped scenarios passed; cell incomplete |
 | CentOS Stream 10 x86_64 | PASS | NOT TESTED |
