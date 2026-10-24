@@ -9,7 +9,7 @@ set -euo pipefail
 }
 ssh_key=$1 known_hosts=$2 target=$3 underlay_ip=$4 node_id=$5 output=$6
 distro=${7:-el10}
-release=${ADMIRAL_RC_RELEASE:-69}
+release=${ADMIRAL_RC_RELEASE:-70}
 [[ $release =~ ^[0-9]+$ ]] || { echo "invalid Admiral RPM Release: $release" >&2; exit 2; }
 [[ $underlay_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid underlay IPv4" >&2; exit 2; }
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
@@ -65,7 +65,7 @@ else
   # Fedora Rawhide support RPMs use the local repository with priority
   # 1. Keep normal Fedora/COPR repos enabled so DNF resolves any missing OS
   # requirements using the same enabled package universe as the installer.
-  dnf install -y --allow-vendor-change "${packages[@]}"
+  dnf install -y "${packages[@]}"
 fi
 
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do

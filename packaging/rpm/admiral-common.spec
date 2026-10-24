@@ -5,7 +5,7 @@
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release:        69%{?dist}
+Release:        70%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -250,8 +250,8 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %changelog
-* Sat Oct 24 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-69
-- Rebuild coordinated Admiral candidate
+* Sat Oct 24 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-70
+- Rebuild coordinated Rocky Linux 10 x86_64 functional candidate
 
 * Fri Oct 23 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-66
 - Rebuild coordinated RC5 packages with retryable node authentication database errors

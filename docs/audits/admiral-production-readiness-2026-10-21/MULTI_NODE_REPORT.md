@@ -1,7 +1,7 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Current gate status (2026-10-24):** R68 (`0.0.1rc5-68`, source `4077c4ddb9d233682961d36c3570c63e70eb6405`) is invalidated for matrix credit by the CentOS Stream 10 storage-report mismatch tracked in #268. The fix is pushed as `admiral-fleet@029bb53da6c2bef7d567213a5fd6ab106d56d68c` and component CI succeeded. Coordinated R69 native RPM builds and fresh-guest runtime tests are pending. Matrix completion is **0/8**; all R68 sections below are candidate-specific historical evidence and do not pass R69 cells.
+> **Active functional gate — Release 70:** Rocky Linux 10 x86_64 only, using three real guests. The Release 70 Multi-Node checklist has not run yet; current matrix credit is 0/2. Earlier candidate results below are historical and do not transfer.
 
 
 ## R68 AlmaLinux 10.2 active-worker removal and re-enrollment — scoped

@@ -21,6 +21,10 @@ AUDIT_HELPERS = (
     ROOT
     / "docs/audits/admiral-production-readiness-2026-10-21/scripts/install-admin-portal-audit.sh",
 )
+SEED_PREPARATION = (
+    ROOT
+    / "docs/audits/admiral-production-readiness-2026-10-21/scripts/prepare-audit-seed-guest.sh"
+)
 
 
 def test_audit_helpers_default_to_the_coordinated_rpm_release():
@@ -48,3 +52,19 @@ def test_single_node_installer_selects_native_candidate_dist_tag():
     assert "fedora) repo_name=admiral-local-fedora.repo; rpm_suffix=fc46;" in helper
     assert 'packages+=("${package}-0.0.1rc5-${expected_release}.${rpm_suffix}")' in helper
     assert '[[ $actual == "0.0.1rc5-${expected_release}.${rpm_suffix}" ]]' in helper
+
+
+def test_candidate_install_helpers_do_not_bypass_dnf_vendor_resolution():
+    for helper in AUDIT_HELPERS:
+        text = helper.read_text()
+        assert "--allow-vendor-change" not in text, helper
+        assert "--nodeps" not in text, helper
+
+
+def test_rocky_seed_profile_pins_verified_pyopenssl():
+    seed_setup = SEED_PREPARATION.read_text()
+    assert 'if [[ "$os_id" == rocky ]]; then' in seed_setup
+    assert "python3-pyOpenSSL-25.0.0-1.el10_1.noarch.rpm" in seed_setup
+    assert "eb5d2a6be0e47099c63fa042f83afac12021820bfc0d79fa0f9dcd57b71941dc" in seed_setup
+    assert 'dnf install -y "$pinned_rpm"' in seed_setup
+    assert 'sed -i \'/^\\[epel\\]$/a excludepkgs=python3-pyOpenSSL\'' in seed_setup

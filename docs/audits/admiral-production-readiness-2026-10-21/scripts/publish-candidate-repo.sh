@@ -3,8 +3,10 @@
 # Publish isolated, distro-native x86_64 repositories for one audit candidate.
 set -euo pipefail
 
-[[ $# -eq 1 && $1 =~ ^[0-9]+$ ]] || { echo "usage: $0 RPM_RELEASE" >&2; exit 2; }
+[[ $# -ge 1 && $# -le 2 && $1 =~ ^[0-9]+$ ]] || { echo "usage: $0 RPM_RELEASE [el10|fedora|all]" >&2; exit 2; }
 release=$1
+scope=${2:-all}
+[[ $scope == el10 || $scope == fedora || $scope == all ]] || { echo "invalid repository scope: $scope" >&2; exit 2; }
 project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)
 validation_dir="$project_root/packaging/build/validation/rc5-r${release}"
 repo_root=${ADMIRAL_VALIDATION_REPO_ROOT:-/var/lib/libvirt/images/admiral-validation/repo}
@@ -105,10 +107,9 @@ publish_distro() {
     "$distro" "${#admiral_packages[@]}" "${#helper_rpms[@]}"
 }
 
-publish_distro el10 el10 "$el10_rpms" "$el10_support"
-publish_distro fedora "$fedora_tag" "$fedora_rpms" "$fedora_support"
-
-cat > "$validation_dir/admiral-local-el10.repo" <<EOF
+if [[ $scope == el10 || $scope == all ]]; then
+  publish_distro el10 el10 "$el10_rpms" "$el10_support"
+  cat > "$validation_dir/admiral-local-el10.repo" <<EOF
 [admiral-local]
 name=Admiral RC5 Release ${release} local validation (EL10)
 baseurl=http://192.168.122.1/rc5-r${release}/el10/\$basearch
@@ -117,8 +118,12 @@ gpgcheck=0
 priority=1
 skip_if_unavailable=0
 EOF
+  chmod 0644 "$validation_dir/admiral-local-el10.repo"
+fi
 
-cat > "$validation_dir/admiral-local-fedora.repo" <<EOF
+if [[ $scope == fedora || $scope == all ]]; then
+  publish_distro fedora "$fedora_tag" "$fedora_rpms" "$fedora_support"
+  cat > "$validation_dir/admiral-local-fedora.repo" <<EOF
 [admiral-local]
 name=Admiral RC5 Release ${release} local validation (Fedora Rawhide)
 baseurl=http://192.168.122.1/rc5-r${release}/fedora/\$basearch
@@ -127,6 +132,7 @@ gpgcheck=0
 priority=1
 skip_if_unavailable=0
 EOF
+  chmod 0644 "$validation_dir/admiral-local-fedora.repo"
+fi
 
-chmod 0644 "$validation_dir"/admiral-local-*.repo
-echo "Candidate repository published at $candidate_repo"
+echo "Candidate repository scope '$scope' published at $candidate_repo"

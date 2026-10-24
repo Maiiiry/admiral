@@ -2,20 +2,17 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Current release-gate state — R68 invalidated; R69 build pending
+## Active functional gate — Rocky Linux 10 x86_64, Release 70
 
-R68 (`0.0.1rc5-68`, root/package source commit `4077c4ddb9d233682961d36c3570c63e70eb6405`) is no longer eligible for matrix credit. CentOS Stream 10 Multi-Node exposed a transient mismatch between declared `storage: 1G` and an API storage report of `0/unknown`; the issue is tracked in [#268](https://github.com/admiral-project/admiral/issues/268). The source fix is pushed as `admiral-fleet@029bb53da6c2bef7d567213a5fd6ab106d56d68c`. Local full tests and `go vet` pass; component CI [40052142923](https://github.com/admiral-project/admiral-fleet/actions/runs/40052142923) succeeded. Coordinated Release 69 native RPM builds/runtime runs remain pending. Exact R68 package identity remains in [`release68-candidate.md`](evidence/release68-candidate.md).
+The active release gate has two cells. The same exact Release 70 RPM set must pass both. Any source or RPM change invalidates both cells and requires a coordinated six-package rebuild.
 
-**Matrix completion: 0/8.** No R68 cell completed its full checklist, and no R69 RPM candidate has been built or run. R68 scenario results below are historical and earn no R69 matrix credit.
+**Current R70 matrix: 0/2.** Release 69 evidence is historical and does not transfer to the new candidate. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
-| OS (x86_64) | Single-Node | Multi-Node |
+| Platform | Single-Node | Multi-Node |
 |---|---|---|
-| Fedora Rawhide | R68 scoped scenarios on a fresh guest; full catalog incomplete; no R69 runtime evidence. See [`release68-single-node-progress.md`](evidence/release68-single-node-progress.md). | No R68 or R69 cell pass; R69 runtime not yet run. |
-| Rocky Linux 10 | R68 scoped scenarios on a fresh guest, including the documented EPEL pyOpenSSL seed pin; full catalog incomplete; no R69 runtime evidence. See [`release68-single-node-progress.md`](evidence/release68-single-node-progress.md). | No R68 or R69 cell pass; R69 runtime not yet run. |
-| AlmaLinux 10 | R68 scoped scenarios on a fresh guest; full catalog incomplete; no R69 runtime evidence. See [`release68-single-node-progress.md`](evidence/release68-single-node-progress.md). | R68 scoped three-guest placement/replay/DB-marker/HTTP/cleanup on W1/W2; three-client same-key idempotency; #267 node removal; #264 central PostgreSQL recovery; full catalog incomplete. R69 runtime not yet run. |
-| CentOS Stream 10 | R68 scoped scenarios on a fresh guest; full catalog incomplete; no R69 runtime evidence. See [`release68-single-node-progress.md`](evidence/release68-single-node-progress.md). | R68 scoped three-guest install/postcheck and W1/W2 workload lifecycle; #268 storage-report mismatch was observed once and not reproduced in an 18-sample 90-second repeat. R68 invalidated; R69 runtime not yet run. |
+| Rocky Linux 10 x86_64 | Release 70 not yet run | Release 70 not yet run |
 
-R67 and earlier run tables below are historical evidence for those exact candidates. A source or RPM change creates a new candidate and invalidates previous runtime credit as required by the #200 checklist. R68 AlmaLinux and CentOS results do not transfer to R69. The placement and storage procedures do not establish task-cancellation behavior, partition recovery, comprehensive isolation, load behavior, or a complete Multi-Node cell. ARM64 remains Tier 2 and non-blocking for this x86_64 release gate.
+The sections below are historical findings and runs from earlier candidates. They do not count toward either Release 70 cell.
 
 ### R68 scenario-level evidence — no cell credit
 

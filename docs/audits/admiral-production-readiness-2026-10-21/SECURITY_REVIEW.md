@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Current gate status (2026-10-24):** R68 (`0.0.1rc5-68`, source `4077c4ddb9d233682961d36c3570c63e70eb6405`) is invalidated for matrix credit by #268 after one CentOS Stream 10 Multi-Node storage report showed `0/unknown` against a declared `1G` tier. The fix is pushed as `admiral-fleet@029bb53da6c2bef7d567213a5fd6ab106d56d68c`; its component CI succeeded. Coordinated R69 native RPM builds and fresh-guest runtime validation are pending. Matrix completion is **0/8**. All R68 results in this report are historical and do not transfer to R69.
+> **Active scope note — Release 70:** the current goal is a functional Rocky Linux 10 x86_64 release, not full production-security certification. No exhaustive isolation or security test is represented as passed by the two-cell functional gate.
 
 > **Historical R67 status:** Fedora `.fc46` and Rocky/AlmaLinux/CentOS Stream `.el10` packages completed scoped Single-Node install/lifecycle/reboot checks with SELinux Enforcing and no failed units. Eight unauthenticated/synthetic-invalid-token requests per Single-Node OS returned HTTP 401. Same-host isolation checks were partial: the tested host-mapped app-port access was refused, but direct cross-workload DB-IP access was not tested. The Fedora `.fc46` candidate also passed a scoped fresh three-guest secure bootstrap; LLMNR was disabled with no 5355 listener, unicast DNS worked and temporary worker-bootstrap keys were rejected after setup. Broad authorization and tenant-isolation remain untested. Matrix remains 0/8.
 

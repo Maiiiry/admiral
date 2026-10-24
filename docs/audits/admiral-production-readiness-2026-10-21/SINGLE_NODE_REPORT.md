@@ -3,7 +3,7 @@
 > **Candidate decision update — 2026-10-23:** R67 is invalidated for active release-gate credit by a separate Multi-Node worker-removal defect on AlmaLinux (#267). The Single-Node observations below remain historical evidence for Release 67 and must be rerun on the rebuilt candidate; they do not count toward the active matrix. Completion remains 0/8.
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Current gate status (2026-10-24):** R68 (`0.0.1rc5-68`, source `4077c4ddb9d233682961d36c3570c63e70eb6405`) is invalidated for matrix credit by #268 after one CentOS Stream 10 Multi-Node storage report showed `0/unknown` against a declared `1G` tier. The fix is pushed as `admiral-fleet@029bb53da6c2bef7d567213a5fd6ab106d56d68c`; its component CI succeeded. Coordinated R69 native RPM builds and fresh-guest runtime validation are pending. Matrix completion is **0/8**. All R68 results in this report are historical and do not transfer to R69.
+> **Active functional gate — Release 70:** Rocky Linux 10 x86_64 only. The fresh Release 70 Single-Node checklist has not run yet; current matrix credit is 0/2. R69 results below are historical and do not transfer.
 
 > **Historical R67 status:** Fresh Fedora Rawhide, Rocky Linux, AlmaLinux and CentOS Stream Single-Node guests installed their exact native Release 67 packages. In addition to lifecycle/reboot checks, named local backup/restore, auth-negative, partial same-host isolation, cgroup, concurrent mutation, service/process and user-systemd recovery probes were run. Outcomes and per-capture hashes are in [`release67-single-node-extended-regressions.md`](evidence/release67-single-node-extended-regressions.md). No full cell is complete; matrix remains 0/8.
 

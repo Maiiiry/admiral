@@ -7,7 +7,7 @@ set -euo pipefail
   exit 2
 }
 distro=$1 ssh_key=$2 known_hosts=$3 target=$4 node_ip=$5 node_id=$6 output=$7
-release=${ADMIRAL_RC_RELEASE:-69}
+release=${ADMIRAL_RC_RELEASE:-70}
 [[ $release =~ ^[0-9]+$ ]] || { echo "invalid Admiral RPM Release: $release" >&2; exit 2; }
 [[ $node_id =~ ^[A-Za-z0-9][A-Za-z0-9_.-]{0,62}$ ]] || { echo "invalid node id" >&2; exit 2; }
 [[ $node_ip =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] || { echo "invalid guest IPv4" >&2; exit 2; }
@@ -36,11 +36,6 @@ ssh_args=(-i "$ssh_key" -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKno
   ssh "${ssh_args[@]}" "$target" sudo bash -s -- "$distro" "$mistune_nevra" "$release" "$rpm_suffix" <<'REMOTE'
 set -euo pipefail
 distribution=$1 expected_mistune_nevra=$2 expected_release=$3 rpm_suffix=$4
-install_args=()
-if [[ $distribution == fedora ]]; then
-  # The Rawhide candidate support RPM is built separately from the COPR build.
-  install_args+=(--allow-vendor-change)
-fi
 dnf install -y dnf-plugins-core
 if [[ $distribution == el10 ]]; then
   dnf install -y epel-release
@@ -51,7 +46,7 @@ packages=()
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
   packages+=("${package}-0.0.1rc5-${expected_release}.${rpm_suffix}")
 done
-dnf install -y "${install_args[@]}" "${packages[@]}"
+dnf install -y "${packages[@]}"
 for package in admiral-common admirald admiralctl admiral-fleet admiral-harbor admiral-flagship; do
   actual=$(rpm -q --qf '%{VERSION}-%{RELEASE}\n' "$package")
   [[ $actual == "0.0.1rc5-${expected_release}.${rpm_suffix}" ]] || { echo "$package has unexpected NEVRA: $actual" >&2; exit 1; }

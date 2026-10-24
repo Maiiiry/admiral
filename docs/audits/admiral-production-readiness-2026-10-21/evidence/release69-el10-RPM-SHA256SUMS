@@ -1,0 +1,14 @@
+33ae66a33b84d01830d7ffe61b1e46bc672611cd459ff2499f02136fbd0d499e  ./admiral-common-0.0.1rc5-69.el10.noarch.rpm
+bf8b05a30ff2781a193b72bea39b078a717269f4b281f899fcc1882cfed9a0fc  ./admiral-flagship-0.0.1rc5-69.el10.noarch.rpm
+a6e737fcaa1c5fe77e4cf4b6f3e06a9509dae2f7e898ba202369ae08bbbf2ddf  ./admiral-fleet-0.0.1rc5-69.el10.x86_64.rpm
+980f3d9355c82bf3242b4b96994d324ad7470f9af2d81a14ee7dfa064114b60d  ./admiral-harbor-0.0.1rc5-69.el10.noarch.rpm
+06ffc3e3ed94626054876dd404d723cc2e7137c2830391ea43ece853cdb16968  ./admiralctl-0.0.1rc5-69.el10.x86_64.rpm
+45a16c52fd4712ddbe057d09710e190ae913b2bcbc73dfc13b8859df2760672b  ./admirald-0.0.1rc5-69.el10.x86_64.rpm
+be51933822a1b3cfbf40c9a89f86257c004bfa105d31d006ac8a2f797718a692  ./python3-alembic-1.20.1-4.el10.noarch.rpm
+e775409f069aecb3e18b6943bf534cd8bf8f8fb61e301f8d6734ce75d54af25d  ./python3-flask-3.1.3-3.el10.noarch.rpm
+88a36f5cea1ca12f1ac3ae41f325793880ede71e6e1052c7d3d02aa866e5bf4f  ./python3-flask-alembic-3.3.0-4.el10.noarch.rpm
+cbdc542d24da63cb963c57c2e40d64a5e1a2be47f2ed93d678a17336a8ef22a5  ./python3-flask-login-0.6.3-9.el10.noarch.rpm
+1c071ec10a6ec4754d0f641cce4d7a972ca7362d3a67e04a9b71599ea634e933  ./python3-flask-sqlalchemy-3.1.1-10.el10.noarch.rpm
+34c5dc555a564c9ce5037209f1654ea8de78b1d36a29851b494a0b4a211c26f3  ./python3-mistune-3.4.0-1.el10.noarch.rpm
+2b7484a094823a1e1c86ce513b0285f01dc50aa1cca2bf0b3a3385d8d40f8637  ./python3-sqlalchemy-2.0.55-4.el10.x86_64.rpm
+382e684c79f6d8c5449b01ec73a7a5d34a644a968e619b92b6ae806d7e3f0f05  ./python3-typing-extensions-4.16.0-1.el10.noarch.rpm

@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Current gate status (2026-10-24):** R68 (`0.0.1rc5-68`, source `4077c4ddb9d233682961d36c3570c63e70eb6405`) is invalidated for matrix credit by #268 after one CentOS Stream 10 Multi-Node storage report showed `0/unknown` against a declared `1G` tier. The fix is pushed as `admiral-fleet@029bb53da6c2bef7d567213a5fd6ab106d56d68c`; its component CI succeeded. Coordinated R69 native RPM builds and fresh-guest runtime validation are pending. Matrix completion is **0/8**. All R68 results in this report are historical and do not transfer to R69.
+> **Active scope note — Release 70:** performance benchmarking is outside the current functional-release gate. No performance pass is implied; earlier measurements belong to their named historical candidates.
 
 > **Historical R67 status:** Scoped Single-Node install, lifecycle and reboot runs are recorded for all four OSes, plus Fedora Multi-Node functional runs. Individual installer and operation timings are observations only. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
 

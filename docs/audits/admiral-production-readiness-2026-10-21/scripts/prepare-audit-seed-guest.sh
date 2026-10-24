@@ -52,6 +52,9 @@ grep -Eq '^[[:space:]]*gpgcheck[[:space:]]*=[[:space:]]*1[[:space:]]*$' "$copr_r
 }
 
 if [[ "$os_id" == rocky ]]; then
+  # The active Rocky 10.2 seed uses the verified EPEL 10.1 pyOpenSSL pin
+  # because the current EPEL build requires a cryptography version that is
+  # not available from the Rocky 10 base repositories.
   pinned_rpm=/var/tmp/python3-pyOpenSSL-25.0.0-1.el10_1.noarch.rpm
   dnf install -y curl
   curl --fail --location --retry 3 --retry-all-errors --connect-timeout 10 --max-time 90 \
