@@ -1,9 +1,24 @@
 # Findings
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-R68 is invalidated for matrix credit by #268. Its exact source/package record is historical in [`release68-candidate.md`](evidence/release68-candidate.md). Fleet fix `029bb53da6c2bef7d567213a5fd6ab106d56d68c` is pushed and component CI [40052142923](https://github.com/admiral-project/admiral-fleet/actions/runs/40052142923) succeeded; Release 69 native RPM builds and fresh-guest tests are pending. Matrix completion remains **0/8**. Findings remain open unless explicitly resolved upstream; scoped candidate evidence does not close issues.
+Active candidate: Release 73, **0/8 cells validated**; coordinated RPM builds and fresh-guest tests are pending. R72 is invalidated by #272. Findings remain open unless explicitly resolved upstream; scoped candidate evidence does not close issues.
 
 Severity follows the audit criteria. Open findings remain open until a fix is revalidated in the affected topologies; a source change or passing component test alone does not close a live-system finding. Historical finding ADM-F-007 / #212 is resolved upstream and is explicitly marked below.
+
+## ADM-F-038 — Removed worker retains a trusted WireGuard peer ([#272](https://github.com/admiral-project/admiral/issues/272))
+
+**Status:** Reproduced on exact R72 packages in AlmaLinux 10 and CentOS Stream 10 three-guest Multi-Node runs. R72 is invalidated. Fix proposed in `admirald@83b4dd4db8963ac40a51c00fb9e52a9f2081df5c`; component CI [40080443575](https://github.com/admiral-project/admirald/actions/runs/40080443575) passed, including PostgreSQL-backed tests. RPM packaging and R73 runtime revalidation are pending. Issue #272 remains open with `fix-proposed`.
+
+* **Severity:** MEDIUM — the former Fleet token was rejected with HTTP 401, but the removed worker remained a cryptographically trusted WireGuard peer and could reach the private admin UI listener.
+* **Component:** `admirald` node deletion, Admiral common package, and hub WireGuard peer lifecycle.
+* **Environment:** RC5 Release 72 (`0.0.1rc5-72.el10`), AlmaLinux 10 and CentOS Stream 10 x86_64, secure three-guest Multi-Node clusters.
+* **Reproduction:** Install a hub and two workers, deprovision W2, remove it through `admiralctl nodes remove`, then inspect the hub's live `wg-admiral` allowed IPs and persistent WireGuard files. From W2, attempt the hub's private UI and a Fleet request with the old token without printing the token.
+* **Expected:** Active-worker removal remains HTTP 409 and preserves workloads. Idle-worker removal removes its database record/token and peer from live and persistent hub state; the removed worker cannot reach protected hub services, including after hub reboot.
+* **Observed:** The node record and token were deleted, and the Fleet request returned HTTP 401, but the removed worker's `/32` remained in the live interface and persistent files. The worker still reached `https://10.99.0.1:5001/` with HTTP 200. This was reproduced on AlmaLinux and CentOS Stream R72.
+* **Evidence:** AlmaLinux raw capture under ignored `packaging/build/validation/rc5-r72/runtime/artifacts/alma-mn/node-removal-w2-retry1/`; CentOS Stream capture under `packaging/build/validation/rc5-r72/runtime/artifacts/centos-mn/node-removal-w2/wireguard-residual/`.
+* **Root cause:** Confirmed by code inspection: node deletion removed database/token state but did not revoke the WireGuard peer. The persistent hub files and running interface therefore continued to trust the worker.
+* **Recommendation:** Revoke the live and persistent peer before committing node/token deletion. Keep the daemon unprivileged, make the helper fail closed, serialize peer addition/removal, and retain the node/token when revocation fails so an operator can retry.
+* **Regression:** On fresh R73 three-guest clusters, test active-worker refusal, successful idle-worker removal, absence from live and persistent peer state, rejected old token, failed-helper response with retained DB/token followed by successful retry, hub reboot with no peer restoration, no access to the private hub UI, and continued health of the hub/remaining worker. Run on all four OSes; do not credit R72 evidence.
 
 ## ADM-F-037 — Workload storage report briefly loses its configured tier limit ([#268](https://github.com/admiral-project/admiral/issues/268))
 

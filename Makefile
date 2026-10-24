@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 VERSION := 0.0.1rc5
-ADMIRAL_COMMON_COMMIT := ad4f6caa0572ebeff54d3dfcb51f635cf346b31e
-ADMIRALD_COMMIT := a7829dbf9b22149740813c3190b1aeb1a7389c4f
+ADMIRAL_COMMON_COMMIT := 4ee49d836c1012a89af2023893674347e02db2be
+ADMIRALD_COMMIT := 83b4dd4db8963ac40a51c00fb9e52a9f2081df5c
 FLEET_COMMIT := fc6909f6c41507d04aa204ebeafbbaaa4ef2c686
 ADMIRALCTL_COMMIT := fa2a65e866310bd82bea78859804b6c3aea7989a
 FLAGSHIP_COMMIT := b7325bbc71fc474a521496e593b2967e4d555ac1
@@ -153,6 +153,8 @@ source-support-files: | $(SOURCEDIR)
 	cp $(SYSTEMDDIR)/admiral-harbor-catalog-sync.timer $(SOURCEDIR)/
 	cp $(SYSTEMDDIR)/admiral-control-plane-backup.service $(SOURCEDIR)/
 	cp $(SYSTEMDDIR)/admiral-control-plane-backup.timer $(SOURCEDIR)/
+	cp $(SYSTEMDDIR)/admiral-wireguard-peer-revoke.socket $(SOURCEDIR)/
+	cp $(SYSTEMDDIR)/admiral-wireguard-peer-revoke@.service $(SOURCEDIR)/
 	cp $(CONFIGDIR)/admirald.ini $(SOURCEDIR)/
 	cp $(CONFIGDIR)/fleet.env $(SOURCEDIR)/
 	cp $(CONFIGDIR)/admiralctl.yaml $(SOURCEDIR)/

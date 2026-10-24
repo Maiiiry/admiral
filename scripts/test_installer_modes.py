@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import pathlib
 import os
+import re
 import subprocess
 import tempfile
 import unittest
@@ -672,10 +673,8 @@ done
         self.assertIn("admiral_secrets_permissions.stat.gr_name == 'root'", secret_assertion)
         self.assertIn("[[ -d /etc/admiral ]] || die", installer_state)
         self.assertNotIn("install -d", installer_state)
-        self.assertIn(
-            "The admiral-common RPM did not create /etc/wireguard/peers.d",
-            INSTALLER.read_text(encoding="utf-8"),
-        )
+        peer_add_helper = (ROOT / "scripts" / "admiral_wireguard_peer_add.py").read_text(encoding="utf-8")
+        self.assertIn("peer_dir.is_dir() or peer_dir.is_symlink()", peer_add_helper)
         for task_file in (
             ROOT / "ansible" / "roles" / "admiral_wireguard" / "tasks" / "main.yml",
             ROOT / "ansible" / "roles" / "admiral_fleet" / "tasks" / "main.yml",
@@ -903,16 +902,7 @@ done
 
         register = fleet.index("- name: Register node with admirald before starting Fleet")
         add_peer = fleet.index(
-            "- name: Add the registered worker's WireGuard peer on the hub before Fleet startup"
-        )
-        persist_peer = fleet.index(
-            "- name: Persist the registered worker's WireGuard peer before Fleet startup"
-        )
-        check_boot_peer = fleet.index(
-            "- name: Check whether the worker peer is in the hub's boot configuration"
-        )
-        persist_boot_peer = fleet.index(
-            "- name: Persist the registered worker's WireGuard peer in the hub boot configuration"
+            "- name: Add and persist the registered worker peer under the shared WireGuard lock"
         )
         start_fleet = fleet.index("- name: Enable and start admiral-fleet after worker registration")
         heartbeat_gate = fleet.index("- name: Wait for the registered Fleet worker to report a healthy heartbeat")
@@ -920,23 +910,26 @@ done
         self.assertIn("%dir %attr(0700, root, root) %{_sysconfdir}/wireguard/peers.d", common_spec)
         self.assertNotIn("Ensure the hub's durable WireGuard peer directory exists", fleet)
         self.assertLess(register, add_peer)
-        self.assertLess(add_peer, persist_peer)
-        self.assertLess(persist_peer, start_fleet)
-        self.assertLess(persist_peer, check_boot_peer)
-        self.assertLess(check_boot_peer, persist_boot_peer)
-        self.assertLess(persist_boot_peer, start_fleet)
+        self.assertLess(add_peer, start_fleet)
         self.assertLess(start_fleet, heartbeat_gate)
-        self.assertIn("- allowed-ips\n      - \"{{ admiral_wireguard_ip }}/32\"", fleet[add_peer:persist_peer])
-        self.assertIn("delegate_to: localhost", fleet[add_peer:persist_peer])
-        self.assertIn("/etc/wireguard/peers.d/", fleet[persist_peer:start_fleet])
-        self.assertIn("blockinfile:", fleet[persist_boot_peer:start_fleet])
-        self.assertIn("/etc/wireguard/wg-admiral.conf", fleet[check_boot_peer:start_fleet])
+        self.assertIn("/usr/libexec/admiral-wireguard-peer-add", fleet[add_peer:start_fleet])
+        self.assertIn("delegate_to: localhost", fleet[add_peer:start_fleet])
+        self.assertIn("ADMIRAL_INTERNAL_TOKEN", fleet[add_peer:start_fleet])
 
         installer = INSTALLER.read_text(encoding="utf-8")
-        peer_registration = installer[installer.index('wg set wg-admiral peer "$SPOKE_KEY"'):]
-        self.assertIn("/etc/wireguard/wg-admiral.conf", peer_registration)
-        self.assertIn("flock -x 9", peer_registration)
-        self.assertIn("[Peer]", peer_registration)
+        peer_registration = installer[installer.index("/usr/libexec/admiral-wireguard-peer-add") :]
+        self.assertIn('"$SPOKE_NODE_ID" "$SPOKE_WG_IP" "$SPOKE_KEY"', peer_registration)
+        self.assertNotIn('wg set wg-admiral peer "$SPOKE_KEY"', peer_registration)
+
+    def test_admin_install_requires_the_wireguard_revocation_socket(self) -> None:
+        installer = INSTALLER.read_text(encoding="utf-8")
+        for profile in ("admin-node", "admin-portal-node"):
+            match = re.search(
+                rf"(?m)^    {re.escape(profile)}\)\s*\n\s*REQUIRED_SERVICES=\(([^)]*)\)",
+                installer,
+            )
+            self.assertIsNotNone(match, profile)
+            self.assertIn("admiral-wireguard-peer-revoke.socket", match.group(1))
 
     def test_rootless_runtime_is_prepared_and_verified(self) -> None:
         installer = INSTALLER.read_text(encoding="utf-8")

@@ -1,0 +1,26 @@
+[Unit]
+Description=Revoke one Admiral WireGuard peer
+After=network.target
+
+[Service]
+Type=exec
+ExecStart=/usr/libexec/admiral-wireguard-revoke-peer
+User=root
+Group=root
+StandardInput=socket
+StandardOutput=socket
+StandardError=journal
+CapabilityBoundingSet=CAP_NET_ADMIN
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ReadWritePaths=/etc/wireguard /run/lock
+RestrictAddressFamilies=AF_UNIX AF_NETLINK
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictRealtime=yes

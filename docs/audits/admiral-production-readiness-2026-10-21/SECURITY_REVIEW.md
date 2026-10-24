@@ -1,7 +1,7 @@
 # Security review
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Active scope note — Release 70:** the current goal is a functional Rocky Linux 10 x86_64 release, not full production-security certification. No exhaustive isolation or security test is represented as passed by the two-cell functional gate.
+> **Active scope note — Release 73:** the functional gate covers four x86_64 OSes and both topologies (eight cells); it is not full production-security certification. R72 reproduced #272: a removed worker retained a live WireGuard route to the hub's private admin UI while its Fleet token was rejected. The source correction is pushed and component CI is green; exact-RPM regression is pending. No exhaustive isolation or security test is represented as passed by the functional gate.
 
 > **Historical R67 status:** Fedora `.fc46` and Rocky/AlmaLinux/CentOS Stream `.el10` packages completed scoped Single-Node install/lifecycle/reboot checks with SELinux Enforcing and no failed units. Eight unauthenticated/synthetic-invalid-token requests per Single-Node OS returned HTTP 401. Same-host isolation checks were partial: the tested host-mapped app-port access was refused, but direct cross-workload DB-IP access was not tested. The Fedora `.fc46` candidate also passed a scoped fresh three-guest secure bootstrap; LLMNR was disabled with no 5355 listener, unicast DNS worked and temporary worker-bootstrap keys were rejected after setup. Broad authorization and tenant-isolation remain untested. Matrix remains 0/8.
 
@@ -55,5 +55,7 @@ Historical R68 security status (no R69 evidence): **NOT VALIDATED — matrix 0/8
 * Harbor contains administrative routes/views as well as customer workflows. Verify the principal/role boundary for every such route and align project contracts/documentation.
 
 ## Current security verdict
+
+R72's #272 result is a confirmed security exposure: a worker that the operator had removed remained a trusted WireGuard peer and could reach the private admin UI. The former Fleet token received HTTP 401, so no API authorization bypass was demonstrated. The proposed remediation is in `admirald@83b4dd4` with green CI; Release 73 must verify route removal, token/record deletion, failed-revocation retry safety, and loss of private-service reachability before this finding can be considered revalidated. Broader tenant isolation and security controls remain NOT TESTED.
 
 Historical Release 42–53 findings and selected controls remain documented above. R66 adds scoped runtime checks: SELinux Enforcing and rootless Podman on all four Single-Node target OSes; partial same-host isolation on AlmaLinux/CentOS Single-Node; and authenticated Fleet retry behavior during the AlmaLinux hub PostgreSQL outage. Cross-workload DB reachability and secret separation, complete effective capabilities, worker identity negatives, external listener exposure, secret canary paths and a current full RPM advisory triage remain NOT TESTED. The Release 66 security assessment remains **NOT VALIDATED**; these probes do not establish a production security guarantee.

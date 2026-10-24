@@ -18,6 +18,8 @@ COMMON_SPEC = ROOT / "packaging" / "rpm" / "admiral-common.spec"
 COMMON_PAYLOAD_PATHS = (
     "ansible",
     "scripts/install.sh",
+    "scripts/admiral_wireguard_revoke_peer.py",
+    "scripts/admiral_wireguard_peer_add.py",
     "scripts/admiral_https_setup.py",
     "scripts/admiral_revoke_bootstrap_key.py",
     "docs/admiral-install.1",

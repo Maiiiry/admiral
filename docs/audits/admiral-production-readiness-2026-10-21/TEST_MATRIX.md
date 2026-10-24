@@ -2,11 +2,11 @@
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
 
-## Active functional gate — four x86_64 platforms, Release 72
+## Active functional gate — four x86_64 platforms, Release 73
 
-The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 72 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
+The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10, each Single-Node and Multi-Node. The same exact Release 73 sources and coordinated six-package RPM set must pass all eight. Any source or RPM change invalidates all cell credit and requires a coordinated six-package rebuild.
 
-**Current R72 matrix: 0/8; build and runtime validation pending.** R71 was invalidated by the exact-candidate Fedora readiness observation in [its candidate record](evidence/release71-candidate.md). No evidence from R71 or earlier carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
+**Current R73 matrix: 0/8; coordinated RPM builds pending.** R72 is invalidated by #272; its results are historical only and no R72 evidence carries forward. The acceptance checklist is tracked in [issue #200](https://github.com/admiral-project/admiral/issues/200).
 
 | Platform | Single-Node | Multi-Node |
 |---|---|---|
@@ -16,6 +16,10 @@ The active release gate has eight cells: Fedora Rawhide, Rocky Linux 10, AlmaLin
 | CentOS Stream 10 x86_64 | NOT TESTED | NOT TESTED |
 
 Each Multi-Node cell requires three real guests of that OS. Fedora guests must receive only native `.fc46` RPMs; EL10 guests must receive only native `.el10` RPMs.
+
+## Historical Release 72 — invalidated by #272
+
+Release 72 used root commit `4ee49d836c1012a89af2023893674347e02db2be` and the six coordinated `0.0.1rc5-72` RPMs. Four Single-Node cells completed the functional checklist. AlmaLinux 10 and CentOS Stream 10 Multi-Node reached targeted checks but failed the controlled worker-removal criterion: the node record/token were removed while the WireGuard peer and route remained. Rocky Linux 10 and Fedora Rawhide Multi-Node were not run. Thus R72 ended at **4/8 PASS, 2/8 PARTIAL, 2/8 NOT TESTED** and was invalidated; these results do not count for R73. Raw evidence remains under the ignored `packaging/build/validation/rc5-r72/` directory, including the two `node-removal-w2` captures.
 
 ## Historical Release 70 — Rocky Linux 10 only; no R71 credit
 

@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: William Moreno Reyes CP | MBA
 # SPDX-License-Identifier: Apache-2.0
 
-%global commit ad4f6caa0572ebeff54d3dfcb51f635cf346b31e
+%global commit 4ee49d836c1012a89af2023893674347e02db2be
 
 Name:    admiral-common
 Version: 0.0.1rc5
-Release:        72%{?dist}
+Release:        73%{?dist}
 Summary: Common files and utilities for Admiral PaaS
 
 License: Apache-2.0
@@ -34,6 +34,8 @@ Source1: admiral-common.sysusers
 Source2: admiral_letsencrypt_deploy_hook.sh
 Source3: admiral-control-plane-backup.service
 Source4: admiral-control-plane-backup.timer
+Source5: admiral-wireguard-peer-revoke.socket
+Source6: admiral-wireguard-peer-revoke@.service
 
 %description
 Common configuration files, Ansible playbooks, and utility scripts
@@ -57,8 +59,13 @@ install -Dm0755 scripts/admiral_revoke_bootstrap_key.py %{buildroot}%{_bindir}/a
 install -Dm0755 scripts/admiral_ssh_delivery_cleanup.py %{buildroot}%{_bindir}/admiral-ssh-delivery-cleanup
 install -Dm0755 scripts/admiral_control_plane_backup.sh %{buildroot}%{_bindir}/admiral-control-plane-backup
 install -Dm0755 scripts/admiral_wireguard_load_peers.sh %{buildroot}%{_libexecdir}/admiral-wireguard-load-peers
+install -Dm0750 scripts/admiral_wireguard_revoke_peer.py %{buildroot}%{_libexecdir}/admiral-wireguard-revoke-peer
+install -Dm0644 scripts/admiral_wireguard_revoke_peer.py %{buildroot}%{_libexecdir}/admiral_wireguard_revoke_peer.py
+install -Dm0750 scripts/admiral_wireguard_peer_add.py %{buildroot}%{_libexecdir}/admiral-wireguard-peer-add
 install -Dm0644 %{SOURCE3} %{buildroot}%{_unitdir}/admiral-control-plane-backup.service
 install -Dm0644 %{SOURCE4} %{buildroot}%{_unitdir}/admiral-control-plane-backup.timer
+install -Dm0644 %{SOURCE5} %{buildroot}%{_unitdir}/admiral-wireguard-peer-revoke.socket
+install -Dm0644 %{SOURCE6} %{buildroot}%{_unitdir}/admiral-wireguard-peer-revoke@.service
 
 # Man pages
 install -Dm0644 docs/admiral-install.1 %{buildroot}%{_mandir}/man1/admiral-install.1
@@ -129,6 +136,8 @@ for filename in sys.argv[1:]:
     source = Path(filename).read_text(encoding="utf-8")
     compile(source, filename, "exec")
 PY
+python3 scripts/test_wireguard_peer_revoke.py
+python3 scripts/test_wireguard_peer_add.py
 
 %pre
 %sysusers_create_package %{name} %{SOURCE1}
@@ -179,8 +188,13 @@ PY
 %{_bindir}/admiral-rootless-subids
 %{_bindir}/admiral-control-plane-backup
 %{_libexecdir}/admiral-wireguard-load-peers
+%attr(0750, root, root) %{_libexecdir}/admiral-wireguard-revoke-peer
+%attr(0644, root, root) %{_libexecdir}/admiral_wireguard_revoke_peer.py
+%attr(0750, root, root) %{_libexecdir}/admiral-wireguard-peer-add
 %{_unitdir}/admiral-control-plane-backup.service
 %{_unitdir}/admiral-control-plane-backup.timer
+%{_unitdir}/admiral-wireguard-peer-revoke.socket
+%{_unitdir}/admiral-wireguard-peer-revoke@.service
 %{_datadir}/admiral/ansible/
 %{_libexecdir}/admiral-letsencrypt-deploy-hook
 
@@ -190,6 +204,7 @@ PY
 %post
 %systemd_post admiral-control-plane-backup.service
 %systemd_post admiral-control-plane-backup.timer
+%systemd_post admiral-wireguard-peer-revoke.socket
 # Ensure rootless runtime directories exist before admiral-fleet first start
 if getent passwd admiral-apps >/dev/null 2>&1; then
     ADMIRAL_APPS_UID=$(id -u admiral-apps)
@@ -230,6 +245,7 @@ restorecon -R /var/lib/admiral-apps/.local/share/containers/storage/ 2>/dev/null
 %preun
 %systemd_preun admiral-control-plane-backup.service
 %systemd_preun admiral-control-plane-backup.timer
+%systemd_preun admiral-wireguard-peer-revoke.socket
 # Only remove runtime state on final package removal. On upgrade, %post creates
 # the current tmpfiles rule and SELinux mapping again.
 if [ "$1" -eq 0 ]; then
@@ -245,11 +261,15 @@ fi
 %postun
 %systemd_postun_with_restart admiral-control-plane-backup.service
 %systemd_postun admiral-control-plane-backup.timer
+%systemd_postun admiral-wireguard-peer-revoke.socket
 if [ "$1" -eq 0 ]; then
     systemd-tmpfiles --remove /usr/lib/tmpfiles.d/admiral-apps.conf >/dev/null 2>&1 || :
 fi
 
 %changelog
+* Sat Oct 24 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-73
+- Add least-privilege systemd socket helper to revoke removed WireGuard peers
+
 * Sat Oct 24 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-70
 - Rebuild coordinated Rocky Linux 10 x86_64 functional candidate
 

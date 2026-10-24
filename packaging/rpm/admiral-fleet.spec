@@ -15,7 +15,7 @@
 
 Name:    admiral-fleet
 Version: 0.0.1rc5
-Release:        72%{?dist}
+Release:        73%{?dist}
 Summary: Admiral Fleet Worker Agent
 
 License: Apache-2.0
@@ -24,7 +24,7 @@ URL:     https://github.com/admiral-project/admiral-fleet
 Source0: https://github.com/admiral-project/admiral-fleet/archive/%{commit}.tar.gz
 Source1: admiral-fleet.service
 Source2: fleet.env
-Source3: https://github.com/admiral-project/admirald/archive/a7829dbf9b22149740813c3190b1aeb1a7389c4f.tar.gz
+Source3: https://github.com/admiral-project/admirald/archive/83b4dd4db8963ac40a51c00fb9e52a9f2081df5c.tar.gz
 
 BuildRequires: golang >= 1.26.10
 BuildRequires: binutils
@@ -112,6 +112,9 @@ loginctl enable-linger admiral-apps 2>/dev/null || :
 %systemd_postun_with_restart admiral-fleet.service
 
 %changelog
+* Sat Oct 24 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-73
+- Rebuild coordinated RC5 Release 73 package set
+
 * Sat Oct 24 2026 William Moreno Reyes <williamjmorenor@gmail.com> - 0.0.1rc5-70
 - Rebuild coordinated Rocky Linux 10 x86_64 functional candidate with tier metadata ordering fix
 

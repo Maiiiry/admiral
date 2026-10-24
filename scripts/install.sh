@@ -1184,6 +1184,7 @@ if [[ "$INSTALL_MODE" == "worker-node" || "$INSTALL_MODE" == "portal-node" ]]; t
         CONTROLLER_ADMIN_TOKEN="$(read_admiral_secret ADMIRAL_ADMIN_TOKEN || true)"
     fi
     export ADMIRAL_ADMIN_TOKEN="$CONTROLLER_ADMIN_TOKEN"
+    export ADMIRAL_INTERNAL_TOKEN="$CONTROLLER_ADMIN_TOKEN"
     [[ -n "$ADMIRAL_ADMIN_TOKEN" ]] || die "Controller admin token is unavailable for WireGuard peer exchange."
     export ADMIRAL_SERVER_URL="https://${INSTALL_ADMIN_WIREGUARD_IP}:8080"
     export ADMIRAL_TLS_CA_FILE="/etc/admiral/tls/ca.pem"
@@ -1195,18 +1196,21 @@ if [[ "$INSTALL_MODE" == "worker-node" || "$INSTALL_MODE" == "portal-node" ]]; t
     if [[ -z "$SPOKE_NODE_ID" ]]; then
         die "Could not resolve the spoke node ID from --node-id or /etc/admiral/*.env after installation."
     fi
-    SPOKE_WG_IP=""
-    for attempt in $(seq 1 30); do
-        WG_LOOKUP_ERROR_FILE="$(mktemp)"
-        SPOKE_WG_IP=$(admiralctl nodes list --output json 2>"$WG_LOOKUP_ERROR_FILE" | SPOKE_NODE_ID="$SPOKE_NODE_ID" python3 -c "
+    lookup_spoke_wireguard_ip() {
+        admiralctl nodes list --output json | SPOKE_NODE_ID="$SPOKE_NODE_ID" python3 -c "
 import os, sys, json
 target = os.environ['SPOKE_NODE_ID']
 data = json.load(sys.stdin)
-for n in data if isinstance(data, list) else data.get('nodes', []):
-    if n.get('node_id') == target or n.get('id') == target:
-        sys.stdout.write(n.get('wireguard_ip', n.get('wg_ip', '')))
+for node in data if isinstance(data, list) else data.get('nodes', []):
+    if node.get('node_id') == target or node.get('id') == target:
+        sys.stdout.write(node.get('wireguard_ip', node.get('wg_ip', '')))
         break
-" 2>>"$WG_LOOKUP_ERROR_FILE" || true)
+"
+    }
+    SPOKE_WG_IP=""
+    for attempt in $(seq 1 30); do
+        WG_LOOKUP_ERROR_FILE="$(mktemp)"
+        SPOKE_WG_IP=$(lookup_spoke_wireguard_ip 2>"$WG_LOOKUP_ERROR_FILE" || true)
         if [[ -s "$WG_LOOKUP_ERROR_FILE" ]]; then
             warn "WireGuard IP lookup attempt $attempt reported: $(tr '\n' ' ' < "$WG_LOOKUP_ERROR_FILE")"
         fi
@@ -1217,34 +1221,11 @@ for n in data if isinstance(data, list) else data.get('nodes', []):
     if [[ -z "$SPOKE_WG_IP" ]]; then
         die "Could not resolve wireguard_ip for spoke node '$SPOKE_NODE_ID' from admirald."
     fi
-    wg set wg-admiral peer "$SPOKE_KEY" allowed-ips "${SPOKE_WG_IP}/32" persistent-keepalive 25
-    [[ -d /etc/wireguard/peers.d ]] || die "The admiral-common RPM did not create /etc/wireguard/peers.d; reinstall the Admiral packages before continuing."
-    PEER_FRAGMENT_NAME="${SPOKE_NODE_ID//[^A-Za-z0-9_.-]/_}"
-    PEER_FRAGMENT_TMP="$(mktemp /etc/wireguard/peers.d/.${PEER_FRAGMENT_NAME}.XXXXXX)"
-    chmod 0600 "$PEER_FRAGMENT_TMP"
-    printf '[Peer]\nPublicKey = %s\nAllowedIPs = %s/32\n' \
-        "$SPOKE_KEY" "$SPOKE_WG_IP" > "$PEER_FRAGMENT_TMP"
-    mv -f "$PEER_FRAGMENT_TMP" "/etc/wireguard/peers.d/${PEER_FRAGMENT_NAME}.conf"
-    [[ -f /etc/wireguard/wg-admiral.conf ]] || die "The hub WireGuard boot configuration is missing; reinstall the admin-node packages before registering workers."
-    exec 9>/run/lock/admiral-wireguard-peer-add.lock
-    flock -x 9 || die "Could not lock the hub WireGuard peer configuration."
-    if ! grep -Fq "PublicKey = ${SPOKE_KEY}" /etc/wireguard/wg-admiral.conf; then
-        PEER_CONFIG_TMP="$(mktemp /etc/wireguard/.wg-admiral.conf.XXXXXX)" || die "Could not create a temporary hub WireGuard configuration."
-        if ! cat /etc/wireguard/wg-admiral.conf > "$PEER_CONFIG_TMP"; then
-            rm -f "$PEER_CONFIG_TMP"
-            die "Could not read the hub WireGuard boot configuration."
-        fi
-        printf '\n# ADMIRAL WORKER PEER %s\n[Peer]\nPublicKey = %s\nAllowedIPs = %s/32\n' \
-            "$PEER_FRAGMENT_NAME" "$SPOKE_KEY" "$SPOKE_WG_IP" >> "$PEER_CONFIG_TMP"
-        chmod 0600 "$PEER_CONFIG_TMP" || {
-            rm -f "$PEER_CONFIG_TMP"
-            die "Could not set secure permissions on the hub WireGuard boot configuration."
-        }
-        mv -f "$PEER_CONFIG_TMP" /etc/wireguard/wg-admiral.conf || {
-            rm -f "$PEER_CONFIG_TMP"
-            die "Could not persist the worker peer in the hub WireGuard boot configuration."
-        }
-    fi
+
+    PEER_ADD_RESULT=$(/usr/libexec/admiral-wireguard-peer-add "$SPOKE_NODE_ID" "$SPOKE_WG_IP" "$SPOKE_KEY") ||
+        die "Could not add the registered WireGuard peer; see the helper error above."
+    [[ "$PEER_ADD_RESULT" == changed || "$PEER_ADD_RESULT" == unchanged ]] ||
+        die "The WireGuard peer helper returned an unexpected result."
     info "WireGuard peer added for spoke node ($SPOKE_WG_IP) on hub."
     handshake_ok=false
     for attempt in {1..30}; do
@@ -1279,10 +1260,10 @@ case "$INSTALL_MODE" in
         REQUIRED_SERVICES=(postgresql caddy admirald admiral-fleet admiral-flagship admiral-harbor admiral-harbor-worker.timer admiral-harbor-catalog-sync.timer firewalld auditd fail2ban)
         ;;
     admin-node)
-        REQUIRED_SERVICES=(postgresql caddy admirald admiral-flagship firewalld auditd fail2ban wg-quick@wg-admiral)
+        REQUIRED_SERVICES=(postgresql caddy admirald admiral-flagship firewalld auditd fail2ban wg-quick@wg-admiral admiral-wireguard-peer-revoke.socket)
         ;;
     admin-portal-node)
-        REQUIRED_SERVICES=(postgresql caddy admirald admiral-flagship admiral-harbor admiral-harbor-worker.timer admiral-harbor-catalog-sync.timer firewalld auditd fail2ban wg-quick@wg-admiral)
+        REQUIRED_SERVICES=(postgresql caddy admirald admiral-flagship admiral-harbor admiral-harbor-worker.timer admiral-harbor-catalog-sync.timer firewalld auditd fail2ban wg-quick@wg-admiral admiral-wireguard-peer-revoke.socket)
         ;;
     worker-node)
         REQUIRED_SERVICES=(admiral-fleet firewalld auditd fail2ban wg-quick@wg-admiral)

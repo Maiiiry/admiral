@@ -60,6 +60,33 @@ class WireGuardPeerExchangeTests(unittest.TestCase):
         self.assertIn("%{_libexecdir}/admiral-wireguard-load-peers", spec)
         self.assertEqual(template.count("admiral-wireguard-load-peers %i"), 1)
 
+    def test_peer_revocation_socket_is_enabled_only_on_hubs(self) -> None:
+        tasks = (WIREGUARD_ROLE / "tasks/main.yml").read_text(encoding="utf-8")
+        socket_unit = (ROOT / "packaging/systemd/admiral-wireguard-peer-revoke.socket").read_text(encoding="utf-8")
+        service_unit = (ROOT / "packaging/systemd/admiral-wireguard-peer-revoke@.service").read_text(encoding="utf-8")
+        helper = (ROOT / "scripts/admiral_wireguard_revoke_peer.py").read_text(encoding="utf-8")
+
+        self.assertIn("name: admiral-wireguard-peer-revoke.socket", tasks)
+        self.assertIn("when: admiral_wireguard_role == 'hub'", tasks)
+        self.assertIn("when: admiral_wireguard_role != 'hub'", tasks)
+        self.assertIn("SocketUser=admiral", socket_unit)
+        self.assertIn("SocketMode=0600", socket_unit)
+        self.assertIn("CapabilityBoundingSet=CAP_NET_ADMIN", service_unit)
+        self.assertIn("ProtectSystem=strict", service_unit)
+        self.assertIn("NoNewPrivileges=yes", service_unit)
+        self.assertIn("def revoke_peer(", helper)
+
+    def test_spoke_peer_add_rechecks_registration_under_shared_lock(self) -> None:
+        installer = (ROOT / "scripts/install.sh").read_text(encoding="utf-8")
+        helper = (ROOT / "scripts/admiral_wireguard_peer_add.py").read_text(encoding="utf-8")
+        fleet = (ROOT / "ansible/roles/admiral_fleet/tasks/main.yml").read_text(encoding="utf-8")
+        self.assertIn("/usr/libexec/admiral-wireguard-peer-add", installer)
+        self.assertIn("export ADMIRAL_INTERNAL_TOKEN=\"$CONTROLLER_ADMIN_TOKEN\"", installer)
+        self.assertIn("fcntl.flock(lock_fd, fcntl.LOCK_EX)", helper)
+        self.assertIn("_registered_node(item_id, item_ip, os.environ)", helper)
+        self.assertIn("/usr/libexec/admiral-wireguard-peer-add", fleet)
+        self.assertNotIn("wg set wg-admiral peer", installer)
+
     def test_peer_loader_replays_fragments_in_order_without_leaking_wg_output(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp = pathlib.Path(temp_dir)
@@ -157,7 +184,9 @@ class WireGuardPeerExchangeTests(unittest.TestCase):
         self.assertIn("admiral_wireguard_subnet.split('/')[-1]", template)
         self.assertIn("AllowedIPs = {{ admiral_wireguard_hub_ip }}/32", template)
         self.assertIn("Require the hub WireGuard interface before registering the worker", fleet_tasks)
-        self.assertIn("map('regex_replace', '\\\\s+', ' ')", fleet_tasks)
+        self.assertIn("Add and persist the registered worker peer under the shared WireGuard lock", fleet_tasks)
+        self.assertIn("/usr/libexec/admiral-wireguard-peer-add", fleet_tasks)
+        self.assertIn("changed_when: admiral_wireguard_peer_add_result.stdout == 'changed'", fleet_tasks)
 
     def test_wireguard_hub_address_is_derived_from_custom_subnet(self) -> None:
         derive_hub_ip = WIREGUARD_FILTER_MODULE.wireguard_hub_ip

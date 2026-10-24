@@ -1,7 +1,7 @@
 # Resilience and failure-injection report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Active scope note — Release 70:** only the functional Rocky Linux 10 x86_64 Single-Node and Multi-Node gate is active. No Release 70 fault-injection result exists yet; older candidate results below are historical.
+> **Active scope note — Release 73:** the functional gate covers Fedora Rawhide, Rocky Linux 10, AlmaLinux 10 and CentOS Stream 10 x86_64 in both topologies. No R73 fault-injection result exists yet. R72 was invalidated after peer revocation failed on AlmaLinux and CentOS Stream; the new source fix is in `admirald@83b4dd4`, and fresh Release 73 runtime checks are pending.
 
 > **Historical R67 status:** All four Single-Node target OSes passed real host-reboot recovery and selected service/database/process-recovery probes. All four OSes passed fresh three-guest Multi-Node bootstrap, scoped placement on both workers, central PostgreSQL outage/recovery, WireGuard partition/rejoin, hub reboot recovery and Podman deletion-failure/retry. In-flight task interruption, resource exhaustion and broad recovery remain untested. Matrix remains 0/8.
 
@@ -49,6 +49,8 @@ The hub marked a suspended worker offline 145 seconds after the VM pause (2-minu
 The AlmaLinux Single-Node guest reboot returned after approximately 28 seconds. System services and workloads came back and database marker `42` survived. Instance state briefly showed `stopped` while Podman containers were already running, then converged within about 36 seconds. A separate `SIGKILL` of the app container was recovered by the generated systemd unit (`Restart=always`) within 3 seconds. The CentOS Stream Single-Node guest also rebooted with a SQL marker in its PostgreSQL volume. The first post-boot probe found only the pod infra container and API state `stopped`; the workload containers later returned, the marker persisted, and the API reached `running/healthy` 91 seconds after the stopped report. A separate deterministic service-failure probe showed that the healthy pod-level signal can hide a failed declared database service (`ADM-F-006`).
 
 ## Current conclusion
+
+R72 established that node deletion could leave both the live and persisted WireGuard peer in place. Removal also deleted the token, so the former worker received HTTP 401 from Fleet but still reached the hub's private admin UI over WireGuard. R73 must re-run removal in fresh three-guest clusters, confirm active-worker removal remains HTTP 409, remove an idle worker, verify the route stays absent after hub reboot, and confirm failed helper calls preserve the node/token for retry. These scenarios have not yet run against Release 73.
 
 R67 targeted scenarios passed for all four Single-Node OSes and for all four
 three-node Multi-Node topologies; none is a full cell pass. Multi-Node bootstrap,

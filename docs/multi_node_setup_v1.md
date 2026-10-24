@@ -296,6 +296,20 @@ longer required. `--no-revoke-ssh-key` remains available for the first
 onboarding run when the operator explicitly needs to preserve bootstrap access,
 but is not required for normal subsequent runs.
 
+### Worker decommission
+
+Remove a worker through `admiralctl nodes remove` only after its workloads have
+been deprovisioned. On the hub, the API revokes the worker's WireGuard address
+from the live interface and persistent peer configuration before deleting the
+node record and token. A local systemd socket activates a root helper with
+`CAP_NET_ADMIN`; the `admirald` service itself stays unprivileged. If peer
+revocation fails, node removal returns an error and the database transaction
+keeps the node and token so the operator can retry. The helper serializes peer
+addition and removal with the same lock used during worker bootstrap.
+
+On an existing hub, update Admiral packages and rerun the admin installation
+profile once to enable the local revocation socket before removing workers.
+
 ---
 
 7. Node registration contract

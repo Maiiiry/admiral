@@ -1,7 +1,7 @@
 # Performance report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Active scope note — Release 70:** performance benchmarking is outside the current functional-release gate. No performance pass is implied; earlier measurements belong to their named historical candidates.
+> **Active scope note — Release 73:** performance benchmarking is outside the current functional-release gate. No R73 performance pass is implied; earlier measurements belong to their named historical candidates.
 
 > **Historical R67 status:** Scoped Single-Node install, lifecycle and reboot runs are recorded for all four OSes, plus Fedora Multi-Node functional runs. Individual installer and operation timings are observations only. No controlled R67 performance or scalability campaign has been run. Matrix remains 0/8.
 

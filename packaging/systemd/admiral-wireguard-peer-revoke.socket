@@ -1,0 +1,13 @@
+[Unit]
+Description=Admiral local WireGuard peer revocation socket
+
+[Socket]
+ListenStream=/run/admiral-wireguard-peer-revoke.sock
+SocketUser=admiral
+SocketGroup=admiral
+SocketMode=0600
+Accept=yes
+RemoveOnStop=yes
+
+[Install]
+WantedBy=sockets.target

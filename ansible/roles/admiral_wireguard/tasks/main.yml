@@ -203,6 +203,22 @@
     state: started
     daemon_reload: true
 
+- name: Enable WireGuard peer revocation socket on hub nodes
+  systemd:
+    name: admiral-wireguard-peer-revoke.socket
+    enabled: true
+    state: started
+    daemon_reload: true
+  when: admiral_wireguard_role == 'hub'
+
+- name: Disable WireGuard peer revocation socket on spoke nodes
+  systemd:
+    name: admiral-wireguard-peer-revoke.socket
+    enabled: false
+    state: stopped
+    daemon_reload: true
+  when: admiral_wireguard_role != 'hub'
+
 - name: Re-assert disabled IP forwarding after WireGuard starts
   sysctl:
     name: "{{ item }}"

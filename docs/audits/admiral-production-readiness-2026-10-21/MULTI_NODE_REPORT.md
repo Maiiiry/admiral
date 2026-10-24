@@ -1,7 +1,16 @@
 # Multi-Node report
 
 Audit ID: `ADM-AUDIT-2026-10-21`<br>
-> **Historical Release 70 result:** Rocky Linux 10 x86_64 Multi-Node passed on three real guests. Together with its Single-Node result, the Release 70-only functional matrix was **2/2 PASS**. These results do not count toward the active Release 71 eight-cell matrix and do not certify full production readiness.
+
+## Active candidate — Release 73: 0/4 Multi-Node cells
+
+All four Release 73 Multi-Node cells are `NOT TESTED`; each requires three fresh guests and the exact native Release 73 packages. R72's partial AlmaLinux and CentOS Stream runs reproduced #272 and invalidate that candidate. See [`release73-candidate.md`](evidence/release73-candidate.md).
+
+## Historical Release 72 — incomplete and invalidated
+
+AlmaLinux 10 and CentOS Stream 10 reached targeted three-guest checks but did not pass worker removal: the database row/token disappeared while the live/persistent WireGuard peer remained and the removed worker could still reach the private admin UI. Active-worker removal refusal and several workload/recovery checks passed in those runs, but neither is a full cell pass. Rocky Linux 10 and Fedora Rawhide Multi-Node were `NOT TESTED`. R72 has no credit for R73.
+
+> **Historical Release 70 result:** Rocky Linux 10 x86_64 Multi-Node passed on three real guests. Together with its Single-Node result, the Release 70-only functional matrix was **2/2 PASS**. These results do not count toward the active Release 73 eight-cell matrix and do not certify full production readiness.
 
 ## Release 70 — Rocky Linux 10.2 x86_64 Multi-Node cell: PASS
 

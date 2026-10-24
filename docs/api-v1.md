@@ -72,6 +72,19 @@ Lista nodos registrados.
 
 Devuelve un nodo concreto.
 
+### `DELETE /api/v1/nodes/{node_id}`
+
+Elimina un nodo sin cargas activas. Para una baja normal, las cargas activas
+producen `409 Conflict`; `?force=true` permite omitir esa comprobación.
+Antes de borrar el registro y revocar su token, `admirald` solicita al helper
+local de systemd retirar la IP WireGuard del nodo del peer activo y de la
+configuración persistente del hub. La baja falla de forma segura si el helper
+no está disponible o no puede completar la revocación.
+
+En un hub ya instalado antes de esta función, vuelve a ejecutar el perfil de
+instalación del hub después de actualizar los RPM para habilitar el socket
+local de revocación.
+
 ### `GET /api/v1/nodes/{node_id}/metrics`
 
 Devuelve metricas del nodo (pods activos, pausados, fallidos; uso de disco).
